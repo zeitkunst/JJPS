@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
+         xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="rdf:#$db.xm1"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="3.0"
+                   em:maxVersion="3.6a1pre" />
+  <RDF:Description RDF:about="urn:mozilla:install-manifest"
+                   em:id="info@journalofjournalperformancestudies.org"
+                   em:name="JJPS"
+                   em:version="0.0.1"
+                   em:creator="JJPS; info@journalofjournalperformancestudies.org"
+                   em:description="Journal of Journal Performance Studies"
+                   em:homepageURL="http://journalofjournalperformancestudies.org"
+                   em:updateKey="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDUhtw/63VMA2Sc0vM72Xr+ZiyDlVdSswbO5IAVCXw/W4XdHZ8IdZCSiCWq8/2d8sOlgyzY82/HoToCvb3qdeH/21XveJS+f6yGgkDqTLr9XdWIyQp3IH6WV8JuC9yl4tNEgPfTPrHB85mApUKk5VIaEda1YqT2mQ5D6+mlTnDP0QIDAQAB">
+                   >
+    <em:targetApplication RDF:resource="rdf:#$db.xm1"/>
+  </RDF:Description>
+</RDF:RDF>

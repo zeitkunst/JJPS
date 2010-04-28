@@ -1,0 +1,32 @@
+$def with (content)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+    <link rel="stylesheet" type="text/css" href="/static/JJPS.css"/>
+    <link rel="stylesheet" type="text/css" media="print" href="/static/JJPSPrint.css" />
+
+    <link rel="alternate" type="application/rss+xml" title="MAICgregator RSS" href="/feed/rss" />
+
+    <script type="text/javascript" src="/static/JJPS.js"></script>
+    <title>$content.title</title>
+</head>
+<body>
+<div id="menu">
+    <ul>
+        <li><a href="/" title="homepage">home</a></li>
+        <li><a href="/schedule" title="schedule">schedule</a></li>
+    </ul>
+</div>
+<div id="content">
+    $:content
+    <div id="footer">
+        <p>Copyleft, <a href="/license">with restrictions</a>, 2009&ndash;2010</p>
+        <p>info --at-- journalofjournalperformancestudies ---dot--- org</p>
+    </div>
+</div>
+
+</body>
+</html>
+

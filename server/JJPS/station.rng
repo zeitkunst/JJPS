@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" xmlns:JJPS="http://journalofjournalperformancestudies.org/ns/1.0/#">
+    <dc:title>RELAX NG Schema for the radio station</dc:title>
+    <dc:creator>Nicholas Knouf</dc:creator>
+    <dc:description>This schema defines the elements that one can expect to find in the radio station schema.</dc:description>
+    <dc:date>2010-04-28</dc:date>
+    <start>
+        <ref name="station" />
+    </start>
+
+    <define name="station">
+        <element name="JJPS:station" >
+            <dc:description></dc:description>
+            <ref name="schedule" />
+            <ref name="programs" />
+            <ref name="personalities" />
+        </element>
+    </define>
+
+    <define name="schedule">
+        <element name="JJPS:schedule" >
+            <dc:description></dc:description>
+            <element name="JJPS:sunday">
+                <oneOrMore>
+                    <ref name="slot" />                
+                </oneOrMore>            
+            </element>
+            <element name="JJPS:monday">
+                <oneOrMore>
+                    <ref name="slot" />                
+                </oneOrMore>            
+            </element>
+            <element name="JJPS:tuesday">
+                <oneOrMore>
+                    <ref name="slot" />                
+                </oneOrMore>            
+            </element>
+            <element name="JJPS:wednesday">
+                <oneOrMore>
+                    <ref name="slot" />                
+                </oneOrMore>            
+            </element>
+            <element name="JJPS:thursday">
+                <oneOrMore>
+                    <ref name="slot" />                
+                </oneOrMore>            
+            </element>
+            <element name="JJPS:friday">
+                <oneOrMore>
+                    <ref name="slot" />                
+                </oneOrMore>            
+            </element>
+            <element name="JJPS:saturday">
+                <oneOrMore>
+                    <ref name="slot" />                
+                </oneOrMore>            
+            </element>
+
+        </element>    
+    </define>
+
+    <define name="slot">
+        <element name="JJPS:slot" >
+            <dc:description></dc:description>
+            <attribute name="startTime">
+                <text />
+            </attribute>                
+            <attribute name="endTime">
+                <text />
+            </attribute>                
+            <attribute name="program">
+                <text />
+            </attribute>                
+            <optional>
+                <attribute name="continue">
+                    <text />
+                </attribute>                
+            </optional>
+        </element>    
+    </define>
+
+    <define name="programs">
+        <element name="JJPS:programs">
+            <dc:description></dc:description>
+            <oneOrMore>
+                <ref name="program" />            
+            </oneOrMore>        
+        </element>    
+    </define>
+
+    <define name="program">
+        <element name="JJPS:program">
+            <attribute name="id">
+                <text />
+            </attribute>
+            <interleave>
+                <element name="JJPS:name">
+                    <text />                
+                </element>            
+                <element name="JJPS:hostedBy">
+                    <oneOrMore>
+                        <element name="JJPS:person">
+                            <attribute name="ref">
+                                <text />
+                            </attribute>                        
+                        </element>                    
+                    </oneOrMore>                
+                </element>
+                <element name="JJPS:description">
+                    <text />                
+                </element>
+                <element name="JJPS:current">
+                    <attribute name="href">
+                        <text />
+                    </attribute>
+                </element>
+                <element name="JJPS:archives">
+                    <zeroOrMore>
+                        <element name="JJPS:archive">
+                            <attribute name="date">
+                                <text />
+                            </attribute>                        
+                            <attribute name="href">
+                                <text />
+                            </attribute>
+                        </element>                    
+                    </zeroOrMore>                
+                </element>
+            </interleave>        
+        </element>    
+    </define>
+
+    <define name="personalities">
+        <element name="JJPS:personalities">
+            <oneOrMore>
+                <element name="JJPS:personality">
+                    <attribute name="id">
+                        <text />
+                    </attribute>
+                    <attribute name="href">
+                        <text />
+                    </attribute>
+                    <element name="JJPS:name">
+                        <text />                    
+                    </element>                
+                    <element name="JJPS:bio">
+                        <text />                    
+                    </element>
+                </element>            
+            </oneOrMore>        
+        </element>    
+    </define>
+</grammar>

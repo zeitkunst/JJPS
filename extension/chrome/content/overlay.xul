@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://JJPS/skin/overlay.css" type="text/css" ?>
+
+<!DOCTYPE window SYSTEM "chrome://JJPS/locale/JJPS.dtd">
+
+<overlay id="JJPSOverlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <script type="application/x-javascript" src="chrome://JJPS/content/jquery.js"/>
+    <script src="chrome://JJPS/content/JJPS.js"/>
+
+    <toolbarpalette id="BrowserToolbarPalette">
+        <toolbarbutton id="JJPSToolbarButton" class=""
+            label="JJPS"
+            oncommand="JJPS.toggleDisplay();"/>
+    </toolbarpalette>
+
+    <vbox id="appcontent">
+    
+    </vbox>
+
+    <statusbar id="statusBar">
+            <statusbarpanel id="JJPSStatusBarIcon" hidden="false"
+                class="JJPSStatusBar" label="JJPS" onclick="JJPS.toggleDisplay();"/>
+    </statusbar>
+
+</overlay>

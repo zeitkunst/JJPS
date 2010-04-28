@@ -1,0 +1,114 @@
+<station xmlns="http://journalofjournalperformancestudies.org/ns/1.0/#">
+    <schedule>
+        <sunday>
+            <slot startTime="00:00" endTime="05:59" program="ProgramOne"/>
+            <slot startTime="06:00" endTime="11:59" program="ProgramTwo"/>
+            <slot startTime="12:00" endTime="17:59" program="ProgramThree"/>
+            <slot startTime="18:00" endTime="23:59" program="ProgramFour"/>
+        </sunday>    
+        <monday>
+            <slot startTime="00:00" endTime="05:59" program="ProgramOne"/>
+            <slot startTime="06:00" endTime="11:59" program="ProgramTwo"/>
+            <slot startTime="12:00" endTime="17:59" program="ProgramThree"/>
+            <slot startTime="18:00" endTime="23:59" program="ProgramFour"/>
+       
+        </monday>
+        <tuesday>
+            <slot startTime="00:00" endTime="05:59" program="ProgramOne"/>
+            <slot startTime="06:00" endTime="11:59" program="ProgramTwo"/>
+            <slot startTime="12:00" endTime="17:59" program="ProgramThree"/>
+            <slot startTime="18:00" endTime="23:59" program="ProgramFour"/>
+        </tuesday>
+        <wednesday>
+            <slot startTime="00:00" endTime="05:59" program="ProgramOne"/>
+            <slot startTime="06:00" endTime="11:59" program="ProgramTwo"/>
+            <slot startTime="12:00" endTime="17:59" program="ProgramThree"/>
+            <slot startTime="18:00" endTime="23:59" program="ProgramFour"/>
+        </wednesday>
+        <thursday>
+            <slot startTime="00:00" endTime="05:59" program="ProgramOne"/>
+            <slot startTime="06:00" endTime="11:59" program="ProgramTwo"/>
+            <slot startTime="12:00" endTime="17:59" program="ProgramThree"/>
+            <slot startTime="18:00" endTime="23:59" program="ProgramFour"/>
+        </thursday>
+        <friday>
+            <slot startTime="00:00" endTime="05:59" program="ProgramOne"/>
+            <slot startTime="06:00" endTime="09:59" program="ProgramTwo"/>
+            <slot startTime="10:00" endTime="11:59" program="ProgramFive"/>
+            <slot startTime="12:00" endTime="17:59" program="ProgramThree"/>
+            <slot startTime="18:00" endTime="23:59" program="ProgramFour"/>
+        </friday>
+        <saturday>
+            <slot startTime="00:00" endTime="05:59" program="ProgramOne"/>
+            <slot startTime="06:00" endTime="11:59" program="ProgramTwo"/>
+            <slot startTime="12:00" endTime="17:59" program="ProgramThree"/>
+            <slot startTime="18:00" endTime="23:59" program="ProgramFour"/>
+        </saturday>
+    </schedule>
+
+    <programs>
+        <program id="ProgramOne">
+            <name>Program One</name>        
+            <hostedBy>
+                <person ref="PersonOne" />            
+            </hostedBy>
+            <description>A basic description for Program One</description>
+            <current href="" />
+            <archives>
+            </archives>
+        </program>    
+        <program id="ProgramTwo">
+            <name>Program Two</name>        
+            <hostedBy>
+                <person ref="PersonOne" />            
+            </hostedBy>
+            <description>A basic description for Program Two</description>
+            <current href="" />
+            <archives>
+            </archives>
+        </program>    
+        <program id="ProgramThree">
+            <name>Program Three</name>        
+            <hostedBy>
+                <person ref="PersonOne" />            
+            </hostedBy>
+            <description>A basic description for Program Three</description>
+            <current href="" />
+            <archives>
+            </archives>
+        </program>    
+        <program id="ProgramFour">
+            <name>Program Four</name>        
+            <hostedBy>
+                <person ref="PersonOne" />            
+            </hostedBy>
+            <description>A basic description for Program Four</description>
+            <current href="" />
+            <archives>
+            </archives>
+        </program>    
+        <program id="ProgramFive">
+            <name>Program Five</name>        
+            <hostedBy>
+                <person ref="PersonTwo" />            
+            </hostedBy>
+            <description>A basic description for Program Five</description>
+            <current href="" />
+            <archives>
+            </archives>
+        </program>    
+
+    </programs>
+
+    <personalities>
+        <personality id="PersonOne" href="">
+            <name>Person One</name>        
+            <bio>No bio, really</bio>
+        </personality>    
+        <personality id="PersonTwo" href="">
+            <name>Person Two</name>        
+            <bio>No bio, really.  Nope!</bio>
+        </personality>    
+
+    </personalities>
+</station>

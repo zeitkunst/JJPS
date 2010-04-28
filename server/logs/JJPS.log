@@ -1,0 +1,713 @@
+WSGIServer: missing FastCGI param REQUEST_METHOD required by WSGI!
+
+WSGIServer: missing FastCGI param SERVER_NAME required by WSGI!
+
+WSGIServer: missing FastCGI param SERVER_PORT required by WSGI!
+
+WSGIServer: missing FastCGI param SERVER_PROTOCOL required by WSGI!
+
+Status: 404 Not Found
+Content-Type: text/html
+Set-Cookie: webpy_session_id=a47a7b76fb549002cd73f9934ccf740e6e66f571; Path=/
+Content-Length: 9
+
+
+not found
+Traceback (most recent call last):
+
+  File "/usr/lib/python2.5/site-packages/flup-1.0.1-py2.5.egg/flup/server/fcgi_base.py", line 558, in run
+
+    protocolStatus, appStatus = self.server.handler(self)
+
+  File "/usr/lib/python2.5/site-packages/flup-1.0.1-py2.5.egg/flup/server/fcgi_base.py", line 1120, in handler
+
+    write(data)
+
+  File "/usr/lib/python2.5/site-packages/flup-1.0.1-py2.5.egg/flup/server/fcgi_base.py", line 1086, in write
+
+    req.stdout.flush()
+
+  File "/usr/lib/python2.5/site-packages/flup-1.0.1-py2.5.egg/flup/server/fcgi_base.py", line 377, in __getattr__
+
+    return getattr(self._file, name)
+
+AttributeError: 'LogIO' object has no attribute 'flush'
+
+Traceback (most recent call last):
+
+  File "./server.py", line 72, in <module>
+
+app.run(Log)
+
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 289, in run
+
+return wsgi.runwsgi(self.wsgifunc(*middleware))
+
+  File "./server.py", line 69, in <lambda>
+
+web.wsgi.runwsgi = lambda func, addr=None: web.wsgi.runfcgi(func, addr)
+
+  File "/usr/lib/python2.5/site-packages/web/wsgi.py", line 17, in runfcgi
+
+return flups.WSGIServer(func, multiplexed=True, bindAddress=addr).run()
+
+  File "/usr/lib/python2.5/site-packages/flup-1.0.1-py2.5.egg/flup/server/fcgi.py", line 111, in run
+
+  File "/usr/lib/python2.5/site-packages/flup-1.0.1-py2.5.egg/flup/server/fcgi_base.py", line 995, in _setupSocket
+
+  File "/usr/lib/python2.5/site-packages/flup-1.0.1-py2.5.egg/flup/server/fcgi_base.py", line 561, in run
+
+AttributeError
+: 
+'LogIO' object has no attribute 'flush'
+WSGIServer: missing FastCGI param REQUEST_METHOD required by WSGI!
+
+WSGIServer: missing FastCGI param SERVER_NAME required by WSGI!
+
+WSGIServer: missing FastCGI param SERVER_PORT required by WSGI!
+
+WSGIServer: missing FastCGI param SERVER_PROTOCOL required by WSGI!
+
+Status: 404 Not Found
+Content-Type: text/html
+Set-Cookie: webpy_session_id=f0b7606fc4faad13d306ac1e90dcbf8bfd2c543c; Path=/
+Content-Length: 9
+
+
+not found
+Traceback (most recent call last):
+
+  File "/usr/lib/python2.5/site-packages/flup-1.0.1-py2.5.egg/flup/server/fcgi_base.py", line 558, in run
+
+    protocolStatus, appStatus = self.server.handler(self)
+
+  File "/usr/lib/python2.5/site-packages/flup-1.0.1-py2.5.egg/flup/server/fcgi_base.py", line 1120, in handler
+
+    write(data)
+
+  File "/usr/lib/python2.5/site-packages/flup-1.0.1-py2.5.egg/flup/server/fcgi_base.py", line 1086, in write
+
+    req.stdout.flush()
+
+  File "/usr/lib/python2.5/site-packages/flup-1.0.1-py2.5.egg/flup/server/fcgi_base.py", line 377, in __getattr__
+
+    return getattr(self._file, name)
+
+AttributeError: 'LogIO' object has no attribute 'flush'
+
+Traceback (most recent call last):
+
+  File "server.py", line 72, in <module>
+
+app.run(Log)
+
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 289, in run
+
+return wsgi.runwsgi(self.wsgifunc(*middleware))
+
+  File "server.py", line 69, in <lambda>
+
+web.wsgi.runwsgi = lambda func, addr=None: web.wsgi.runfcgi(func, addr)
+
+  File "/usr/lib/python2.5/site-packages/web/wsgi.py", line 17, in runfcgi
+
+return flups.WSGIServer(func, multiplexed=True, bindAddress=addr).run()
+
+  File "/usr/lib/python2.5/site-packages/flup-1.0.1-py2.5.egg/flup/server/fcgi.py", line 111, in run
+
+  File "/usr/lib/python2.5/site-packages/flup-1.0.1-py2.5.egg/flup/server/fcgi_base.py", line 995, in _setupSocket
+
+  File "/usr/lib/python2.5/site-packages/flup-1.0.1-py2.5.egg/flup/server/fcgi_base.py", line 561, in run
+
+AttributeError
+: 
+'LogIO' object has no attribute 'flush'
+http://0.0.0.0:8080/
+127.0.0.1:60295 - - [28/Apr/2010 15:29:54] "HTTP/1.1 GET /" - 200 OK
+127.0.0.1:60295 - - [28/Apr/2010 15:29:54] "HTTP/1.1 GET /static/MAICgregator.css" - 404 File not found
+127.0.0.1:60296 - - [28/Apr/2010 15:29:55] "HTTP/1.1 GET /static/MAICgregatorPrint.css" - 404 File not found
+127.0.0.1:60297 - - [28/Apr/2010 15:29:55] "HTTP/1.1 GET /static/MAICgregatorSite.js" - 404 File not found
+127.0.0.1:60298 - - [28/Apr/2010 15:29:55] "HTTP/1.1 GET /static/iconWeb.png" - 404 File not found
+127.0.0.1:60299 - - [28/Apr/2010 15:29:55] "HTTP/1.1 GET /favicon.ico" - 404 Not Found
+127.0.0.1:60299 - - [28/Apr/2010 15:29:58] "HTTP/1.1 GET /favicon.ico" - 404 Not Found
+127.0.0.1:60300 - - [28/Apr/2010 15:30:18] "HTTP/1.1 GET /" - 200 OK
+127.0.0.1:60300 - - [28/Apr/2010 15:30:18] "HTTP/1.1 GET /static/MAICgregator.css" - 404 File not found
+127.0.0.1:60301 - - [28/Apr/2010 15:30:18] "HTTP/1.1 GET /static/MAICgregatorPrint.css" - 404 File not found
+127.0.0.1:60302 - - [28/Apr/2010 15:30:18] "HTTP/1.1 GET /static/MAICgregatorSite.js" - 404 File not found
+127.0.0.1:60303 - - [28/Apr/2010 15:30:18] "HTTP/1.1 GET /static/iconWeb.png" - 404 File not found
+127.0.0.1:53698 - - [28/Apr/2010 15:31:26] "HTTP/1.1 GET /" - 200 OK
+127.0.0.1:53698 - - [28/Apr/2010 15:31:26] "HTTP/1.1 GET /static/JJPS.css" - 404 File not found
+127.0.0.1:53699 - - [28/Apr/2010 15:31:26] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:53700 - - [28/Apr/2010 15:31:26] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 211, in process
+    return self.handle()
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 201, in handle
+    return self._delegate(fn, self.fvars, args)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 384, in _delegate
+    cls = fvars[f]
+KeyError: u'schedule'
+
+127.0.0.1:53701 - - [28/Apr/2010 15:31:29] "HTTP/1.1 GET /schedule" - 500 Internal Server Error
+127.0.0.1:57721 - - [28/Apr/2010 15:41:07] "HTTP/1.1 GET /" - 200 OK
+127.0.0.1:57721 - - [28/Apr/2010 15:41:07] "HTTP/1.1 GET /static/JJPS.css" - 404 File not found
+127.0.0.1:57722 - - [28/Apr/2010 15:41:07] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:57723 - - [28/Apr/2010 15:41:07] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:57724 - - [28/Apr/2010 15:41:08] "HTTP/1.1 GET /" - 200 OK
+127.0.0.1:57724 - - [28/Apr/2010 15:41:08] "HTTP/1.1 GET /static/JJPS.css" - 404 File not found
+127.0.0.1:57725 - - [28/Apr/2010 15:41:08] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:57726 - - [28/Apr/2010 15:41:08] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 211, in process
+    return self.handle()
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 201, in handle
+    return self._delegate(fn, self.fvars, args)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 384, in _delegate
+    cls = fvars[f]
+KeyError: u'schedule'
+
+127.0.0.1:57727 - - [28/Apr/2010 15:41:10] "HTTP/1.1 GET /schedule" - 500 Internal Server Error
+Exception 
+exceptions
+.
+KeyboardInterrupt
+ in 
+<module 'threading' from '/usr/lib/python2.5/threading.pyc'>
+ ignored
+
+http://0.0.0.0:8080/
+127.0.0.1:34601 - - [28/Apr/2010 15:41:46] "HTTP/1.1 GET /" - 200 OK
+127.0.0.1:34601 - - [28/Apr/2010 15:41:46] "HTTP/1.1 GET /static/JJPS.css" - 404 File not found
+127.0.0.1:34602 - - [28/Apr/2010 15:41:46] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:34603 - - [28/Apr/2010 15:41:46] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 211, in process
+    return self.handle()
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 201, in handle
+    return self._delegate(fn, self.fvars, args)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 384, in _delegate
+    cls = fvars[f]
+KeyError: u'schedule'
+
+127.0.0.1:34604 - - [28/Apr/2010 15:41:48] "HTTP/1.1 GET /schedule" - 500 Internal Server Error
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 211, in process
+    return self.handle()
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 201, in handle
+    return self._delegate(fn, self.fvars, args)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 385, in _delegate
+    return handle_class(cls)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 360, in handle_class
+    return tocall(*args)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/server.py", line 71, in GET
+    station = StationSingleton.getStation()
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/server.py", line 79, in getStation
+    if StationSingleton.schedule == None:
+AttributeError: type object 'StationSingleton' has no attribute 'schedule'
+
+127.0.0.1:34607 - - [28/Apr/2010 15:42:03] "HTTP/1.1 GET /schedule" - 500 Internal Server Error
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 211, in process
+    return self.handle()
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 201, in handle
+    return self._delegate(fn, self.fvars, args)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 385, in _delegate
+    return handle_class(cls)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 360, in handle_class
+    return tocall(*args)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/server.py", line 71, in GET
+    station = StationSingleton.getStation()
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/server.py", line 80, in getStation
+    StationSingleton.station = JJPSStation()
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/JJPS/station.py", line 14, in __init__
+    self.stationTree = etree.parse(self.STATION_XML)
+  File "lxml.etree.pyx", line 2693, in lxml.etree.parse (src/lxml/lxml.etree.c:52591)
+  File "parser.pxi", line 1478, in lxml.etree._parseDocument (src/lxml/lxml.etree.c:75665)
+  File "parser.pxi", line 1507, in lxml.etree._parseDocumentFromURL (src/lxml/lxml.etree.c:75993)
+  File "parser.pxi", line 1407, in lxml.etree._parseDocFromFile (src/lxml/lxml.etree.c:75002)
+  File "parser.pxi", line 965, in lxml.etree._BaseParser._parseDocFromFile (src/lxml/lxml.etree.c:72023)
+  File "parser.pxi", line 539, in lxml.etree._ParserContext._handleParseResultDoc (src/lxml/lxml.etree.c:67830)
+  File "parser.pxi", line 625, in lxml.etree._handleParseResult (src/lxml/lxml.etree.c:68877)
+  File "parser.pxi", line 563, in lxml.etree._raiseParseError (src/lxml/lxml.etree.c:68093)
+IOError: Error reading file 'station.xml': failed to load external entity "station.xml"
+
+127.0.0.1:34608 - - [28/Apr/2010 15:42:15] "HTTP/1.1 GET /schedule" - 500 Internal Server Error
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 211, in process
+    return self.handle()
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 201, in handle
+    return self._delegate(fn, self.fvars, args)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 385, in _delegate
+    return handle_class(cls)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 360, in handle_class
+    return tocall(*args)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/server.py", line 73, in GET
+    return render.schedule(scheduleHTML)
+  File "/usr/lib/python2.5/site-packages/web/template.py", line 965, in __getattr__
+    t = self._template(name)
+  File "/usr/lib/python2.5/site-packages/web/template.py", line 962, in _template
+    return self._load_template(name)
+  File "/usr/lib/python2.5/site-packages/web/template.py", line 950, in _load_template
+    raise AttributeError, "No template named " + name
+AttributeError: No template named schedule
+
+127.0.0.1:34610 - - [28/Apr/2010 15:43:24] "HTTP/1.1 GET /schedule" - 500 Internal Server Error
+127.0.0.1:34612 - - [28/Apr/2010 15:44:14] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:34612 - - [28/Apr/2010 15:44:14] "HTTP/1.1 GET /static/JJPS.css" - 404 File not found
+127.0.0.1:34613 - - [28/Apr/2010 15:44:14] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:34614 - - [28/Apr/2010 15:44:14] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:34616 - - [28/Apr/2010 15:45:25] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:34616 - - [28/Apr/2010 15:45:25] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:34616 - - [28/Apr/2010 15:45:25] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:34617 - - [28/Apr/2010 15:45:25] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:34618 - - [28/Apr/2010 15:45:25] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:34618 - - [28/Apr/2010 15:45:25] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:34618 - - [28/Apr/2010 15:45:25] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:34619 - - [28/Apr/2010 15:45:25] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:34620 - - [28/Apr/2010 15:45:38] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:34633 - - [28/Apr/2010 15:45:54] "HTTP/1.1 GET /" - 200 OK
+127.0.0.1:34633 - - [28/Apr/2010 15:45:54] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:34633 - - [28/Apr/2010 15:45:54] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:34634 - - [28/Apr/2010 15:45:54] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:34636 - - [28/Apr/2010 15:45:56] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:34636 - - [28/Apr/2010 15:45:56] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:34637 - - [28/Apr/2010 15:45:56] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:34638 - - [28/Apr/2010 15:45:57] "HTTP/1.1 GET /" - 200 OK
+127.0.0.1:34638 - - [28/Apr/2010 15:45:57] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:34639 - - [28/Apr/2010 15:45:57] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:34640 - - [28/Apr/2010 15:45:58] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:34640 - - [28/Apr/2010 15:45:58] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:34640 - - [28/Apr/2010 15:45:58] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:34641 - - [28/Apr/2010 15:45:58] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:34642 - - [28/Apr/2010 15:46:21] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:34642 - - [28/Apr/2010 15:46:21] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:34642 - - [28/Apr/2010 15:46:21] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:34643 - - [28/Apr/2010 15:46:21] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:42247 - - [28/Apr/2010 15:46:28] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:42247 - - [28/Apr/2010 15:46:28] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:42247 - - [28/Apr/2010 15:46:28] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:42248 - - [28/Apr/2010 15:46:28] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:42249 - - [28/Apr/2010 15:46:34] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:42249 - - [28/Apr/2010 15:46:34] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:42249 - - [28/Apr/2010 15:46:34] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:42250 - - [28/Apr/2010 15:46:34] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:42280 - - [28/Apr/2010 15:49:11] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:42280 - - [28/Apr/2010 15:49:11] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:42280 - - [28/Apr/2010 15:49:11] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:42281 - - [28/Apr/2010 15:49:11] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:42283 - - [28/Apr/2010 15:49:52] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:42283 - - [28/Apr/2010 15:49:52] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:42283 - - [28/Apr/2010 15:49:52] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:42284 - - [28/Apr/2010 15:49:52] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:42285 - - [28/Apr/2010 15:50:10] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:42285 - - [28/Apr/2010 15:50:10] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:42285 - - [28/Apr/2010 15:50:10] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:42286 - - [28/Apr/2010 15:50:10] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:42287 - - [28/Apr/2010 15:50:20] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:42287 - - [28/Apr/2010 15:50:20] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:42287 - - [28/Apr/2010 15:50:20] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:42288 - - [28/Apr/2010 15:50:20] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:42290 - - [28/Apr/2010 15:50:56] "HTTP/1.1 GET /" - 200 OK
+127.0.0.1:42290 - - [28/Apr/2010 15:50:56] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:42290 - - [28/Apr/2010 15:50:56] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:42291 - - [28/Apr/2010 15:50:56] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:42292 - - [28/Apr/2010 15:50:57] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:42292 - - [28/Apr/2010 15:50:57] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:42293 - - [28/Apr/2010 15:50:57] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:42294 - - [28/Apr/2010 15:51:13] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:42294 - - [28/Apr/2010 15:51:13] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:42294 - - [28/Apr/2010 15:51:13] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:42295 - - [28/Apr/2010 15:51:13] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:48409 - - [28/Apr/2010 15:53:25] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:48409 - - [28/Apr/2010 15:53:25] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:48409 - - [28/Apr/2010 15:53:25] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48410 - - [28/Apr/2010 15:53:25] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:48411 - - [28/Apr/2010 15:53:26] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:48411 - - [28/Apr/2010 15:53:26] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:48411 - - [28/Apr/2010 15:53:26] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48412 - - [28/Apr/2010 15:53:26] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:48413 - - [28/Apr/2010 15:53:26] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:48413 - - [28/Apr/2010 15:53:26] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:48413 - - [28/Apr/2010 15:53:26] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48414 - - [28/Apr/2010 15:53:26] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:48415 - - [28/Apr/2010 15:53:27] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:48415 - - [28/Apr/2010 15:53:27] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:48415 - - [28/Apr/2010 15:53:27] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48416 - - [28/Apr/2010 15:53:27] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:48417 - - [28/Apr/2010 15:53:37] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:48417 - - [28/Apr/2010 15:53:37] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:48417 - - [28/Apr/2010 15:53:37] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48418 - - [28/Apr/2010 15:53:37] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:48419 - - [28/Apr/2010 15:53:38] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:48419 - - [28/Apr/2010 15:53:38] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:48419 - - [28/Apr/2010 15:53:38] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48420 - - [28/Apr/2010 15:53:38] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:48421 - - [28/Apr/2010 15:53:39] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:48421 - - [28/Apr/2010 15:53:39] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:48421 - - [28/Apr/2010 15:53:39] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48422 - - [28/Apr/2010 15:53:39] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+127.0.0.1:48424 - - [28/Apr/2010 15:53:49] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:48424 - - [28/Apr/2010 15:53:49] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:48424 - - [28/Apr/2010 15:53:49] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48425 - - [28/Apr/2010 15:53:49] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:48428 - - [28/Apr/2010 15:54:45] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:48428 - - [28/Apr/2010 15:54:45] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:48428 - - [28/Apr/2010 15:54:45] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48429 - - [28/Apr/2010 15:54:45] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+127.0.0.1:48431 - - [28/Apr/2010 15:54:52] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:48431 - - [28/Apr/2010 15:54:52] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:48431 - - [28/Apr/2010 15:54:52] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48432 - - [28/Apr/2010 15:54:52] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+127.0.0.1:48434 - - [28/Apr/2010 15:55:17] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:48434 - - [28/Apr/2010 15:55:17] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:48434 - - [28/Apr/2010 15:55:17] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48435 - - [28/Apr/2010 15:55:17] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:48436 - - [28/Apr/2010 15:55:18] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:48436 - - [28/Apr/2010 15:55:18] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:48436 - - [28/Apr/2010 15:55:18] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48437 - - [28/Apr/2010 15:55:18] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+127.0.0.1:48440 - - [28/Apr/2010 15:56:25] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:48440 - - [28/Apr/2010 15:56:25] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:48440 - - [28/Apr/2010 15:56:25] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48441 - - [28/Apr/2010 15:56:25] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+127.0.0.1:41072 - - [28/Apr/2010 15:56:56] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:41072 - - [28/Apr/2010 15:56:56] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:41072 - - [28/Apr/2010 15:56:56] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:41073 - - [28/Apr/2010 15:56:56] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+127.0.0.1:41075 - - [28/Apr/2010 15:57:44] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:41075 - - [28/Apr/2010 15:57:44] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:41075 - - [28/Apr/2010 15:57:44] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:41076 - - [28/Apr/2010 15:57:44] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 211, in process
+    return self.handle()
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 201, in handle
+    return self._delegate(fn, self.fvars, args)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 385, in _delegate
+    return handle_class(cls)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 360, in handle_class
+    return tocall(*args)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/server.py", line 72, in GET
+    scheduleHTML = station.getScheduleHTML()
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/JJPS/station.py", line 19, in getScheduleHTML
+    self.scheduleHTML = self.constructScheduleHTML(self.scheduleDict)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/JJPS/station.py", line 133, in constructScheduleHTML
+    programTitleA.set("href", "/schedule/" + programRef)
+NameError: global name 'programRef' is not defined
+
+127.0.0.1:57315 - - [28/Apr/2010 16:01:34] "HTTP/1.1 GET /schedule" - 500 Internal Server Error
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 211, in process
+    return self.handle()
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 201, in handle
+    return self._delegate(fn, self.fvars, args)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 385, in _delegate
+    return handle_class(cls)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 360, in handle_class
+    return tocall(*args)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/server.py", line 72, in GET
+    scheduleHTML = station.getScheduleHTML()
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/JJPS/station.py", line 19, in getScheduleHTML
+    self.scheduleHTML = self.constructScheduleHTML(self.scheduleDict)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/JJPS/station.py", line 133, in constructScheduleHTML
+    programTitleA.text = programName
+NameError: global name 'programRef' is not defined
+
+127.0.0.1:57319 - - [28/Apr/2010 16:02:00] "HTTP/1.1 GET /schedule" - 500 Internal Server Error
+http://0.0.0.0:8080/
+127.0.0.1:57321 - - [28/Apr/2010 16:02:19] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:57321 - - [28/Apr/2010 16:02:19] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:57321 - - [28/Apr/2010 16:02:19] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:57322 - - [28/Apr/2010 16:02:19] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:57324 - - [28/Apr/2010 16:02:25] "HTTP/1.1 GET /schedule/ProgramThree" - 404 Not Found
+127.0.0.1:57327 - - [28/Apr/2010 16:04:46] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:57327 - - [28/Apr/2010 16:04:46] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:57327 - - [28/Apr/2010 16:04:46] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:57328 - - [28/Apr/2010 16:04:46] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+127.0.0.1:47890 - - [28/Apr/2010 16:25:00] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:47890 - - [28/Apr/2010 16:25:01] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:47890 - - [28/Apr/2010 16:25:01] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:47891 - - [28/Apr/2010 16:25:01] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:47892 - - [28/Apr/2010 16:25:01] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:47892 - - [28/Apr/2010 16:25:01] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:47892 - - [28/Apr/2010 16:25:01] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:47893 - - [28/Apr/2010 16:25:01] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:47894 - - [28/Apr/2010 16:25:03] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:47894 - - [28/Apr/2010 16:25:03] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:47894 - - [28/Apr/2010 16:25:03] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:47895 - - [28/Apr/2010 16:25:03] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:47896 - - [28/Apr/2010 16:25:05] "HTTP/1.1 GET /" - 200 OK
+127.0.0.1:47896 - - [28/Apr/2010 16:25:05] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:47897 - - [28/Apr/2010 16:25:05] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:47898 - - [28/Apr/2010 16:25:06] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:47898 - - [28/Apr/2010 16:25:06] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:47899 - - [28/Apr/2010 16:25:06] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:47900 - - [28/Apr/2010 16:25:11] "HTTP/1.1 GET /schedule/ProgramOne" - 404 Not Found
+127.0.0.1:47900 - - [28/Apr/2010 16:25:14] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:47900 - - [28/Apr/2010 16:25:14] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:47902 - - [28/Apr/2010 16:25:14] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:47900 - - [28/Apr/2010 16:25:14] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 211, in process
+    return self.handle()
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 201, in handle
+    return self._delegate(fn, self.fvars, args)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 385, in _delegate
+    return handle_class(cls)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 360, in handle_class
+    return tocall(*args)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/server.py", line 72, in GET
+    scheduleHTML = station.getScheduleHTML()
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/JJPS/station.py", line 17, in getScheduleHTML
+    self.scheduleDict = self.constructScheduleDict(self.stationTree)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/JJPS/station.py", line 42, in constructScheduleDict
+    scheduleDict[day][startTime].update(self.getProgramInfoDict(programRef))
+TypeError: 'NoneType' object is not iterable
+
+127.0.0.1:47904 - - [28/Apr/2010 16:25:52] "HTTP/1.1 GET /schedule" - 500 Internal Server Error
+http://0.0.0.0:8080/
+{'programDescription': 'A basic description for Program One', 'programHostedBy': {'Person One': {'bio': 'No bio, really', 'homepage': ''}}, 'programCurrentLink': '', 'programName': 'Program One', 'programRef': 'ProgramOne'}
+{'programDescription': 'A basic description for Program Two', 'programHostedBy': {'Person One': {'bio': 'No bio, really', 'homepage': ''}}, 'programCurrentLink': '', 'programName': 'Program Two', 'programRef': 'ProgramTwo'}
+{'programDescription': 'A basic description for Program Three', 'programHostedBy': {'Person One': {'bio': 'No bio, really', 'homepage': ''}}, 'programCurrentLink': '', 'programName': 'Program Three', 'programRef': 'ProgramThree'}
+{'programDescription': 'A basic description for Program Four', 'programHostedBy': {'Person One': {'bio': 'No bio, really', 'homepage': ''}}, 'programCurrentLink': '', 'programName': 'Program Four', 'programRef': 'ProgramFour'}
+None
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 211, in process
+    return self.handle()
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 201, in handle
+    return self._delegate(fn, self.fvars, args)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 385, in _delegate
+    return handle_class(cls)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 360, in handle_class
+    return tocall(*args)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/server.py", line 72, in GET
+    scheduleHTML = station.getScheduleHTML()
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/JJPS/station.py", line 17, in getScheduleHTML
+    self.scheduleDict = self.constructScheduleDict(self.stationTree)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/JJPS/station.py", line 45, in constructScheduleDict
+    scheduleDict[day][startTime].update(self.getProgramInfoDict(programRef))
+TypeError: 'NoneType' object is not iterable
+
+127.0.0.1:58198 - - [28/Apr/2010 16:27:23] "HTTP/1.1 GET /schedule" - 500 Internal Server Error
+http://0.0.0.0:8080/
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 211, in process
+    return self.handle()
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 201, in handle
+    return self._delegate(fn, self.fvars, args)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 385, in _delegate
+    return handle_class(cls)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 360, in handle_class
+    return tocall(*args)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/server.py", line 72, in GET
+    scheduleHTML = station.getScheduleHTML()
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/JJPS/station.py", line 19, in getScheduleHTML
+    self.scheduleHTML = self.constructScheduleHTML(self.scheduleDict)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/JJPS/station.py", line 93, in constructScheduleHTML
+    time1 = time.strptime(startTime, "%H:%M")
+  File "/usr/lib/python2.5/_strptime.py", line 330, in strptime
+    (data_string, format))
+ValueError: time data did not match format:  data=  fmt=%H:%M
+
+127.0.0.1:58201 - - [28/Apr/2010 16:28:18] "HTTP/1.1 GET /schedule" - 500 Internal Server Error
+http://0.0.0.0:8080/
+127.0.0.1:58204 - - [28/Apr/2010 16:30:16] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:58204 - - [28/Apr/2010 16:30:16] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:58204 - - [28/Apr/2010 16:30:16] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:58205 - - [28/Apr/2010 16:30:16] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:58207 - - [28/Apr/2010 16:30:21] "HTTP/1.1 GET /schedule/ProgramOne" - 404 Not Found
+http://0.0.0.0:8080/
+http://0.0.0.0:8080/
+127.0.0.1:57703 - - [28/Apr/2010 16:40:30] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:57703 - - [28/Apr/2010 16:40:30] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:57703 - - [28/Apr/2010 16:40:30] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:57704 - - [28/Apr/2010 16:40:30] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:57705 - - [28/Apr/2010 16:40:32] "HTTP/1.1 GET /programs/ProgramOne" - 200 OK
+127.0.0.1:57705 - - [28/Apr/2010 16:40:33] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:57706 - - [28/Apr/2010 16:40:33] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:57707 - - [28/Apr/2010 16:40:37] "HTTP/1.1 GET /programs/ProgramTwo" - 200 OK
+127.0.0.1:57707 - - [28/Apr/2010 16:40:37] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:57708 - - [28/Apr/2010 16:40:37] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:57709 - - [28/Apr/2010 16:40:40] "HTTP/1.1 GET /programs/ProgramThree" - 200 OK
+127.0.0.1:57709 - - [28/Apr/2010 16:40:40] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:57710 - - [28/Apr/2010 16:40:40] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:57711 - - [28/Apr/2010 16:40:42] "HTTP/1.1 GET /programs/ProgramFour" - 200 OK
+127.0.0.1:57711 - - [28/Apr/2010 16:40:42] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:57712 - - [28/Apr/2010 16:40:42] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:57713 - - [28/Apr/2010 16:40:59] "HTTP/1.1 GET /programs/ProgramOne" - 200 OK
+127.0.0.1:57713 - - [28/Apr/2010 16:40:59] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:57714 - - [28/Apr/2010 16:40:59] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+127.0.0.1:41169 - - [28/Apr/2010 16:45:00] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:41169 - - [28/Apr/2010 16:45:00] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:41169 - - [28/Apr/2010 16:45:00] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:41170 - - [28/Apr/2010 16:45:00] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 211, in process
+    return self.handle()
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 201, in handle
+    return self._delegate(fn, self.fvars, args)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 385, in _delegate
+    return handle_class(cls)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 360, in handle_class
+    return tocall(*args)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/server.py", line 79, in GET
+    programHTML = station.getProgramInfoHTML(programRef)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/JJPS/station.py", line 185, in getProgramInfoHTML
+    personP.text = hostedBy[person]["name"]
+KeyError: 'name'
+
+127.0.0.1:41171 - - [28/Apr/2010 16:45:01] "HTTP/1.1 GET /programs/ProgramOne" - 500 Internal Server Error
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 211, in process
+    return self.handle()
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 201, in handle
+    return self._delegate(fn, self.fvars, args)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 385, in _delegate
+    return handle_class(cls)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 360, in handle_class
+    return tocall(*args)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/server.py", line 79, in GET
+    programHTML = station.getProgramInfoHTML(programRef)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/JJPS/station.py", line 185, in getProgramInfoHTML
+    personP.text = hostedBy[person]["name"]
+KeyError: 'name'
+
+127.0.0.1:41171 - - [28/Apr/2010 16:45:03] "HTTP/1.1 GET /programs/ProgramOne" - 500 Internal Server Error
+http://0.0.0.0:8080/
+127.0.0.1:41174 - - [28/Apr/2010 16:45:45] "HTTP/1.1 GET /programs/ProgramOne" - 200 OK
+127.0.0.1:41174 - - [28/Apr/2010 16:45:45] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:41174 - - [28/Apr/2010 16:45:45] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:41175 - - [28/Apr/2010 16:45:45] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:54898 - - [28/Apr/2010 16:47:24] "HTTP/1.1 GET /programs/ProgramOne" - 200 OK
+127.0.0.1:54899 - - [28/Apr/2010 16:47:24] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:54898 - - [28/Apr/2010 16:47:24] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:54898 - - [28/Apr/2010 16:47:24] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:54902 - - [28/Apr/2010 16:47:47] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:54902 - - [28/Apr/2010 16:47:47] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:54902 - - [28/Apr/2010 16:47:47] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:54903 - - [28/Apr/2010 16:47:47] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:54904 - - [28/Apr/2010 16:48:13] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:54904 - - [28/Apr/2010 16:48:13] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:54904 - - [28/Apr/2010 16:48:13] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:54905 - - [28/Apr/2010 16:48:13] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+127.0.0.1:54907 - - [28/Apr/2010 16:48:18] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:54907 - - [28/Apr/2010 16:48:18] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:54907 - - [28/Apr/2010 16:48:18] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:54908 - - [28/Apr/2010 16:48:18] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+127.0.0.1:54911 - - [28/Apr/2010 16:48:55] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:54911 - - [28/Apr/2010 16:48:55] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:54911 - - [28/Apr/2010 16:48:55] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:54912 - - [28/Apr/2010 16:48:55] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:54913 - - [28/Apr/2010 16:48:57] "HTTP/1.1 GET /programs/ProgramTwo" - 200 OK
+127.0.0.1:54913 - - [28/Apr/2010 16:48:57] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:54914 - - [28/Apr/2010 16:48:57] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:54915 - - [28/Apr/2010 16:49:30] "HTTP/1.1 GET /programs/ProgramTwo" - 200 OK
+127.0.0.1:54915 - - [28/Apr/2010 16:49:30] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:54916 - - [28/Apr/2010 16:49:30] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:54918 - - [28/Apr/2010 16:49:59] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:54918 - - [28/Apr/2010 16:49:59] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:54918 - - [28/Apr/2010 16:49:59] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:54919 - - [28/Apr/2010 16:49:59] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+127.0.0.1:54921 - - [28/Apr/2010 16:50:04] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:54921 - - [28/Apr/2010 16:50:04] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:54922 - - [28/Apr/2010 16:50:04] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:54921 - - [28/Apr/2010 16:50:04] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+127.0.0.1:54926 - - [28/Apr/2010 16:51:03] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:54926 - - [28/Apr/2010 16:51:03] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:54926 - - [28/Apr/2010 16:51:03] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:54927 - - [28/Apr/2010 16:51:03] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:54928 - - [28/Apr/2010 16:51:04] "HTTP/1.1 GET /programs/ProgramFive" - 200 OK
+127.0.0.1:54928 - - [28/Apr/2010 16:51:04] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:54929 - - [28/Apr/2010 16:51:04] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:54930 - - [28/Apr/2010 16:51:08] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:54930 - - [28/Apr/2010 16:51:08] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:54930 - - [28/Apr/2010 16:51:08] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:54931 - - [28/Apr/2010 16:51:08] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:58777 - - [28/Apr/2010 16:52:02] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:58777 - - [28/Apr/2010 16:52:02] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:58777 - - [28/Apr/2010 16:52:02] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:58778 - - [28/Apr/2010 16:52:02] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+127.0.0.1:50516 - - [28/Apr/2010 16:56:43] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:50516 - - [28/Apr/2010 16:56:43] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:50516 - - [28/Apr/2010 16:56:43] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:50517 - - [28/Apr/2010 16:56:43] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:50518 - - [28/Apr/2010 16:56:44] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:50518 - - [28/Apr/2010 16:56:44] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:50518 - - [28/Apr/2010 16:56:44] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:50519 - - [28/Apr/2010 16:56:44] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:50520 - - [28/Apr/2010 16:56:45] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:50520 - - [28/Apr/2010 16:56:45] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:50520 - - [28/Apr/2010 16:56:45] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:50521 - - [28/Apr/2010 16:56:45] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:50523 - - [28/Apr/2010 16:56:46] "HTTP/1.1 GET /programs/ProgramOne" - 200 OK
+127.0.0.1:50523 - - [28/Apr/2010 16:56:46] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:50524 - - [28/Apr/2010 16:56:46] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:50525 - - [28/Apr/2010 16:56:50] "HTTP/1.1 GET /" - 200 OK
+127.0.0.1:50525 - - [28/Apr/2010 16:56:50] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:50526 - - [28/Apr/2010 16:56:50] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:50527 - - [28/Apr/2010 16:56:51] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:50527 - - [28/Apr/2010 16:56:51] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:50529 - - [28/Apr/2010 16:56:51] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:50531 - - [28/Apr/2010 16:56:52] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:50531 - - [28/Apr/2010 16:56:52] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:50531 - - [28/Apr/2010 16:56:52] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:50532 - - [28/Apr/2010 16:56:52] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+127.0.0.1:50534 - - [28/Apr/2010 16:56:56] "HTTP/1.1 GET /schedule" - 200 OK
+127.0.0.1:50534 - - [28/Apr/2010 16:56:56] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:50534 - - [28/Apr/2010 16:56:56] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:50535 - - [28/Apr/2010 16:56:56] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:45398 - - [28/Apr/2010 17:12:46] "HTTP/1.1 GET /" - 200 OK
+127.0.0.1:45398 - - [28/Apr/2010 17:12:46] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:45398 - - [28/Apr/2010 17:12:46] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:45399 - - [28/Apr/2010 17:12:46] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+127.0.0.1:45406 - - [28/Apr/2010 17:15:45] "HTTP/1.1 GET /" - 200 OK
+127.0.0.1:45406 - - [28/Apr/2010 17:15:45] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:45406 - - [28/Apr/2010 17:15:45] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:45407 - - [28/Apr/2010 17:15:45] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:45408 - - [28/Apr/2010 17:15:46] "HTTP/1.1 GET /" - 200 OK
+127.0.0.1:45408 - - [28/Apr/2010 17:15:46] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:45408 - - [28/Apr/2010 17:15:46] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:45409 - - [28/Apr/2010 17:15:46] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+http://0.0.0.0:8080/
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 211, in process
+    return self.handle()
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 201, in handle
+    return self._delegate(fn, self.fvars, args)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 385, in _delegate
+    return handle_class(cls)
+  File "/usr/lib/python2.5/site-packages/web/application.py", line 360, in handle_class
+    return tocall(*args)
+  File "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/server/server.py", line 81, in GET
+    return render.index(currentNextHTML, "<p>This is a test</p>")
+NameError: global name 'currentNextHTML' is not defined
+
+127.0.0.1:48114 - - [28/Apr/2010 17:19:24] "HTTP/1.1 GET /" - 500 Internal Server Error
+http://0.0.0.0:8080/
+127.0.0.1:48116 - - [28/Apr/2010 17:19:48] "HTTP/1.1 GET /" - 200 OK
+127.0.0.1:48116 - - [28/Apr/2010 17:19:48] "HTTP/1.1 GET /static/JJPS.css" - 200 
+127.0.0.1:48116 - - [28/Apr/2010 17:19:48] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48117 - - [28/Apr/2010 17:19:48] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:48120 - - [28/Apr/2010 17:20:26] "HTTP/1.1 GET /programs/ProgramThree" - 200 OK
+127.0.0.1:48120 - - [28/Apr/2010 17:20:26] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48121 - - [28/Apr/2010 17:20:26] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found
+127.0.0.1:48122 - - [28/Apr/2010 17:20:30] "HTTP/1.1 GET /programs/ProgramFour" - 200 OK
+127.0.0.1:48122 - - [28/Apr/2010 17:20:30] "HTTP/1.1 GET /static/JJPSPrint.css" - 404 File not found
+127.0.0.1:48123 - - [28/Apr/2010 17:20:30] "HTTP/1.1 GET /static/JJPS.js" - 404 File not found

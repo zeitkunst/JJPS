@@ -1,0 +1,9 @@
+content		JJPS    chrome/content/
+
+overlay		chrome://browser/content/browser.xul		chrome://JJPS/content/overlay.xul
+
+
+locale    JJPS  en-US   chrome/locale/en-US/
+
+skin    JJPS    classic/1.0 chrome/skin/
+style   chrome://global/content/customizeToolbar.xul    chrome://JJPS/skin/overlay.css

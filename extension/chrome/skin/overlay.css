@@ -1,0 +1,7 @@
+#JJPSStatusBarIcon
+{
+    width: 55px;
+    margin: 0 0 -1px; /* For Fitts's law (on OS X, at least) */
+    padding: 0 0 1px;
+    list-style-image: url(chrome://JJPS/skin/JJPSStatusBarIcon.png);
+}
