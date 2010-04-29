@@ -23,7 +23,8 @@
             <slot startTime="00:00" endTime="05:59" program="ProgramOne"/>
             <slot startTime="06:00" endTime="11:59" program="ProgramTwo"/>
             <slot startTime="12:00" endTime="17:59" program="ProgramThree"/>
-            <slot startTime="18:00" endTime="23:59" program="ProgramFour"/>
+            <slot startTime="18:00" endTime="22:59" program="ProgramFour"/>
+            <slot startTime="23:00" endTime="23:59" program="ProgramFive"/>
         </wednesday>
         <thursday>
             <slot startTime="00:00" endTime="05:59" program="ProgramOne"/>

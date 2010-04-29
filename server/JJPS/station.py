@@ -8,6 +8,7 @@ NAMESPACES= {"JJPS": "http://journalofjournalperformancestudies.org/ns/1.0/#"}
 
 # All of the JJPS station methods
 class JJPSStation(object):
+    DAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
 
     def __init__(self, stationXML = "station.xml"):
         self.stationXML = stationXML
@@ -219,7 +220,23 @@ class JJPSStation(object):
                 counter += 1
                 continue
             else:
-                currentProgram =  currentDayScheduleDict[currentDay][startTimes[counter - 1]]
-                nextProgram = currentDayScheduleDict[currentDay][startTimes[counter]]
+                pass
+
+        if (counter == len(startTimes)):
+            # This means we have to move to the next day
+            currentDayIndex = self.DAYS.index(currentDay)
+            tomorrowDayIndex = (currentDayIndex + 1) % 7
+            tomorrow = self.DAYS[tomorrowDayIndex]
+            tomorrowDayScheduleDict = self.constructScheduleDict(days = [tomorrow])
+            startTimes = tomorrowDayScheduleDict[tomorrow].keys()
+            startTimes.sort()
+            
+            # Assume that if we've sorted the keys, the first one will point to the first program of the day
+            currentProgram =  currentDayScheduleDict[currentDay][startTimes[counter - 1]]
+            nextProgram = tomorrowDayScheduleDict[tomorrow][startTimes[0]]
+        else:
+            # This means we haven't made it to the next day yet
+            currentProgram =  currentDayScheduleDict[currentDay][startTimes[counter - 1]]
+            nextProgram = currentDayScheduleDict[currentDay][startTimes[counter]]
 
         return (currentProgram, nextProgram)
