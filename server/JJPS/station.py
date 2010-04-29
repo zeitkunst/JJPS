@@ -14,6 +14,9 @@ class JJPSStation(object):
         self.stationXML = stationXML
         self.stationTree = etree.parse(self.stationXML)
 
+    def reloadXML(self):
+        self.stationTree = etree.parse(self.stationXML)
+
     def getScheduleHTML(self):
         self.scheduleDict = self.constructScheduleDict()
         #self.scheduleHTML = self.constructScheduleHTML(self.scheduleDict, days=["sunday"])
@@ -216,7 +219,7 @@ class JJPSStation(object):
             time1 = time.strptime(startTime, "%H:%M")
             time1Hour = time1[3]
 
-            if int(currentHour) > int(time1Hour):
+            if int(currentHour) >= int(time1Hour):
                 counter += 1
                 continue
             else:
@@ -228,12 +231,12 @@ class JJPSStation(object):
             tomorrowDayIndex = (currentDayIndex + 1) % 7
             tomorrow = self.DAYS[tomorrowDayIndex]
             tomorrowDayScheduleDict = self.constructScheduleDict(days = [tomorrow])
-            startTimes = tomorrowDayScheduleDict[tomorrow].keys()
-            startTimes.sort()
+            startTimesTomorrow = tomorrowDayScheduleDict[tomorrow].keys()
+            startTimesTomorrow.sort()
             
             # Assume that if we've sorted the keys, the first one will point to the first program of the day
             currentProgram =  currentDayScheduleDict[currentDay][startTimes[counter - 1]]
-            nextProgram = tomorrowDayScheduleDict[tomorrow][startTimes[0]]
+            nextProgram = tomorrowDayScheduleDict[tomorrow][startTimesTomorrow[0]]
         else:
             # This means we haven't made it to the next day yet
             currentProgram =  currentDayScheduleDict[currentDay][startTimes[counter - 1]]

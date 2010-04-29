@@ -66,6 +66,7 @@ class Log(WsgiLog):
 class index:
     def GET(self):
         station = StationSingleton.getStation()
+        station.reloadXML()
         currentProgram, nextProgram = station.getCurrentAndNextProgram()
 
         currentProgramName = currentProgram["programName"]
@@ -83,12 +84,14 @@ class index:
 class schedule:
     def GET(self):
         station = StationSingleton.getStation()
+        station.reloadXML()
         scheduleHTML = station.getScheduleHTML()
         return render.schedule(scheduleHTML)
 
 class ViewProgram:
     def GET(self, programRef):
         station = StationSingleton.getStation()
+        station.reloadXML()
         programHTML = station.getProgramInfoHTML(programRef)
         return render.schedule(programHTML)
 
