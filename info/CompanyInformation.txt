@@ -3,4 +3,5 @@ http://biz.yahoo.com/ic/101/101967.html
 
 Reed Elsevier:
 http://finance.yahoo.com/q/pr?s=enl
+rss: http://finance.yahoo.com/rss/headline?s=ENL
 http://finance.yahoo.com/q/pr?s=ruk
