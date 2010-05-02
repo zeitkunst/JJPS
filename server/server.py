@@ -26,7 +26,7 @@ from wsgilog import WsgiLog, LogIO
 import textile
 
 # My own library imports
-from JJPS.station import JJPSStation
+from JJPS.Station import JJPSStation
 
 import config
 
@@ -106,8 +106,8 @@ class StationSingleton(object):
     getStation = staticmethod(getStation)
 
 # Finally, setup our web application
-#if (config.fastcgi):
-#    web.wsgi.runwsgi = lambda func, addr=None: web.wsgi.runfcgi(func, addr)
+if (config.fastcgi):
+    web.wsgi.runwsgi = lambda func, addr=None: web.wsgi.runfcgi(func, addr)
 
 if __name__ == "__main__":
     app.run(Log)
