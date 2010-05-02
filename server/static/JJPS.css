@@ -69,3 +69,7 @@ blockquote, q {
 #scheduleDiv .programItem {
     border: 1px #000 solid;
 }
+
+#scheduleDiv .highlightProgram {
+    background-color: #ddd;
+}

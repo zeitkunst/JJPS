@@ -57,7 +57,7 @@ class JJPSStation(object):
         # TODO
         # Make configurable
         # If we make each minute a pixel, that means that the full schedule will be 1440 pixels high, at least.  So, add in a scaling factor so that this is more reasonable, say 800 high.
-        HOUR_PIXEL_CONVERSION = 0.42
+        HOUR_PIXEL_CONVERSION = 0.60
     
         scheduleDiv = etree.Element("div")
         scheduleDiv.set("id", "scheduleDiv")
@@ -77,7 +77,11 @@ class JJPSStation(object):
             timeDiv.append(hourP)
     
         scheduleDiv.append(timeDiv)
-    
+
+        nowDay = time.strftime("%A").lower()
+        nowHour = time.strftime("%H:%M")
+
+
         for day in days:
             currentDaySchedule = scheduleDict[day]
     
@@ -95,6 +99,16 @@ class JJPSStation(object):
     
             for startTime in startTimes:
                 endTime = scheduleDict[day][startTime]["endTime"]
+
+                # Find out if this block is highlighted or not
+                if (day == nowDay):
+                    if ((nowHour >= startTime) and (nowHour < endTime)):
+                        highlightProgram = True
+                    else:
+                        highlightProgram = False
+                else:
+                    highlightProgram = False
+
     
                 # First, convert from 00:00 format
                 time1 = time.strptime(startTime, "%H:%M")
@@ -113,7 +127,11 @@ class JJPSStation(object):
                 programRef = scheduleDict[day][startTime]["programRef"]
                 programNameID = programName.replace(" ", "_")
                 programDiv.set("id", programNameID)
-                programDiv.set("class", "programItem")
+
+                if highlightProgram:
+                    programDiv.set("class", "programItem highlightProgram")
+                else:
+                    programDiv.set("class", "programItem")
                 programDiv.set("style", "min-height: %spx" % str(int(totalMinutes)))
     
                 programTitleH3 = etree.Element("h3")
