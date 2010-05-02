@@ -26,9 +26,9 @@ from wsgilog import WsgiLog, LogIO
 import textile
 
 # My own library imports
-from JJPS.Station import JJPSStation
+from JJPS.Station import Station
 
-import config
+import serverConfig
 
 version = "0.01"
 
@@ -46,7 +46,7 @@ if web.config.get('_session') is None:
 else:
     session = web.config._session
 
-render = web.template.render('templates/', base = 'layout', cache = config.cache)
+render = web.template.render('templates/', base = 'layout', cache = serverConfig.cache)
 #renderAdmin = web.template.render('templates/', base = 'layoutAdmin', cache = config.cache)
 
 class Log(WsgiLog):
@@ -56,9 +56,9 @@ class Log(WsgiLog):
             application,
             logformat = '%(message)s',
             tofile = True,
-            file = config.log_file,
-            interval = config.log_interval,
-            backups = config.log_backups
+            file = serverConfig.log_file,
+            interval = serverConfig.log_interval,
+            backups = serverConfig.log_backups
         )
         sys.stdout = LogIO(self.logger, logging.INFO)
         sys.stderr = LogIO(self.logger, logging.ERROR)
@@ -101,13 +101,13 @@ class StationSingleton(object):
 
     def getStation():
         if StationSingleton.station == None:
-            StationSingleton.station = JJPSStation(stationXML = "JJPS/station.xml")
+            StationSingleton.station = Station(configFile = "JJPSConfig.ini")
         return StationSingleton.station
     getStation = staticmethod(getStation)
 
 # Finally, setup our web application
-if (config.fastcgi):
-    web.wsgi.runwsgi = lambda func, addr=None: web.wsgi.runfcgi(func, addr)
+#if (config.fastcgi):
+#    web.wsgi.runwsgi = lambda func, addr=None: web.wsgi.runfcgi(func, addr)
 
 if __name__ == "__main__":
     app.run(Log)

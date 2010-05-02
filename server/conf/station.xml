@@ -3,7 +3,8 @@
         <sunday>
             <slot startTime="00:00" endTime="05:59" program="ProgramOne"/>
             <slot startTime="06:00" endTime="11:59" program="ProgramTwo"/>
-            <slot startTime="12:00" endTime="17:59" program="ProgramThree"/>
+            <slot startTime="12:00" endTime="16:59" program="ProgramThree"/>
+            <slot startTime="17:00" endTime="17:59" program="ProgramOne"/>
             <slot startTime="18:00" endTime="18:59" program="NewsProgram"/>
             <slot startTime="19:00" endTime="23:59" program="ProgramFour"/>
         </sunday>    
@@ -55,63 +56,63 @@
     </schedule>
 
     <programs>
-        <program id="ProgramOne">
+        <program id="ProgramOne" processed="0">
             <name>Program One</name>        
             <hostedBy>
-                <person ref="PersonOne" />            
+                <person ref="PersonOne"/>            
             </hostedBy>
             <description>A basic description for Program One</description>
-            <current href="" />
+            <current href=""/>
             <archives>
             </archives>
         </program>    
-        <program id="ProgramTwo">
+        <program id="ProgramTwo" processed="0">
             <name>Program Two</name>        
             <hostedBy>
-                <person ref="PersonOne" />            
+                <person ref="PersonOne"/>            
             </hostedBy>
             <description>A basic description for Program Two</description>
-            <current href="" />
+            <current href=""/>
             <archives>
             </archives>
         </program>    
-        <program id="ProgramThree">
+        <program id="ProgramThree" processed="0">
             <name>Program Three</name>        
             <hostedBy>
-                <person ref="PersonOne" />            
+                <person ref="PersonOne"/>            
             </hostedBy>
             <description>A basic description for Program Three</description>
-            <current href="" />
+            <current href=""/>
             <archives>
             </archives>
         </program>    
-        <program id="ProgramFour">
+        <program id="ProgramFour" processed="0">
             <name>Program Four</name>        
             <hostedBy>
-                <person ref="PersonOne" />            
+                <person ref="PersonOne"/>            
             </hostedBy>
             <description>A basic description for Program Four</description>
-            <current href="" />
+            <current href=""/>
             <archives>
             </archives>
         </program>    
-        <program id="ProgramFive">
+        <program id="ProgramFive" processed="0">
             <name>Program Five</name>        
             <hostedBy>
-                <person ref="PersonTwo" />            
+                <person ref="PersonTwo"/>            
             </hostedBy>
             <description>A basic description for Program Five</description>
-            <current href="" />
+            <current href=""/>
             <archives>
             </archives>
         </program>    
-        <program id="NewsProgram">
+        <program id="NewsProgram" processed="1">
             <name>News</name>        
             <hostedBy>
-                <person ref="PersonTwo" />            
+                <person ref="PersonTwo"/>            
             </hostedBy>
             <description>All the news that's fit to hear!</description>
-            <current href="" />
+            <current href="news.mp3"/>
             <archives>
             </archives>
         </program>    

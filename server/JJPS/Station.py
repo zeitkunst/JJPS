@@ -1,21 +1,65 @@
+import ConfigParser
 import datetime, time
 
 import lxml
 from lxml.html import builder as E
 from lxml import etree
+import mpd
+
+import Sound
+
+#TODO
+# * implement proper logging facility
+# * Setup proper configuration options (for path to XML file, path to sound processing code, access to texts and TF-IDF infos, etc); this should be separate from "config.py" used by the webserver
 
 NAMESPACES= {"JJPS": "http://journalofjournalperformancestudies.org/ns/1.0/#"}
 
 # All of the JJPS station methods
-class JJPSStation(object):
+class Station(object):
     DAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
 
-    def __init__(self, stationXML = "station.xml"):
-        self.stationXML = stationXML
+    def __init__(self, configFile = "JJPSConfig.ini"):
+        self.config = ConfigParser.RawConfigParser()
+        self.config.read(configFile)
+
+        self.stationXML = self.config.get("Station", "xmlPath")
         self.stationTree = etree.parse(self.stationXML)
+        self.soundProcess = Sound.Process(config = self.config)
+        self.soundStream = Sound.Stream(config = self.config)
 
     def reloadXML(self):
         self.stationTree = etree.parse(self.stationXML)
+
+    def processSound(self):
+        currentProgram, nextProgram = self.getCurrentAndNextProgram()
+
+        # TODO
+        # Add in proper exception handling
+        self.soundProcess.processUpcomingShows(nextProgram)
+
+        # Update processed variables
+        currentProgramRef = currentProgram["programRef"]
+        xpathString = "//JJPS:program[@id='%s']" % currentProgramRef
+        currentProgram = self.stationTree.xpath(xpathString, namespaces = NAMESPACES)
+        currentProgram[0].set("processed", "0")
+
+        nextProgramRef = nextProgram["programRef"]
+        xpathString = "//JJPS:program[@id='%s']" % nextProgramRef
+        nextProgram = self.stationTree.xpath(xpathString, namespaces = NAMESPACES)
+        nextProgram[0].set("processed", "1")
+
+        # Write out XML file
+        fp = open(self.config.get("Station", "xmlPath"), "w")
+        fp.write(etree.tostring(self.stationTree))
+        fp.close()
+
+    def restartStream(self):
+        currentProgram, nextProgram = self.getCurrentAndNextProgram()
+        self.soundStream.restart(currentProgram)
+
+    def switchProgram(self):
+        program, nextProgram = self.getCurrentAndNextProgram()
+        self.soundStream.restart(program)
 
     def getScheduleHTML(self):
         self.scheduleDict = self.constructScheduleDict()
@@ -158,6 +202,7 @@ class JJPSStation(object):
             return None
     
         programName = program[0].xpath("JJPS:name/text()", namespaces = NAMESPACES)[0]
+        programProcessed = program[0].xpath("@processed", namespaces = NAMESPACES)[0]
         programDescription = program[0].xpath("JJPS:description/text()", namespaces = NAMESPACES)[0]
         programCurrentLink = program[0].xpath("JJPS:current", namespaces = NAMESPACES)[0].get("href")
         programHostedBy = program[0].xpath("JJPS:hostedBy/JJPS:person", namespaces = NAMESPACES)
@@ -180,6 +225,7 @@ class JJPSStation(object):
         programDict["programCurrentLink"] = programCurrentLink
         programDict["programHostedBy"] = hostedBy
         programDict["programRef"] = programRef
+        programDict["programProcessed"] = int(programProcessed)
         
         return programDict
 

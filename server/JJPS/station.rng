@@ -93,6 +93,10 @@
             <attribute name="id">
                 <text />
             </attribute>
+            <attribute name="processed">
+                <text />
+            </attribute>
+
             <interleave>
                 <element name="JJPS:name">
                     <text />                
