@@ -6,16 +6,13 @@ configFile = "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/tr
 if __name__ == "__main__":
     station = Station(configFile = configFile)
 
-    # TODO
-    # make configurable
-    fp = open("/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/trunk/server/currentProcessedProgram", "r")
-    currentProgramProcessed = fp.read()
-    fp.close()
+    lastProcessedProgram = station.config.get("Stream", "lastProcessedProgram")
 
     currentProgram, nextProgram = station.getCurrentAndNextProgram()
 
-    if (currentProgramProcessed != nextProgram["programRef"]):
+    if (lastProcessedProgram != nextProgram["programRef"]):
         station.processSound()
-        fp = open("/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/trunk/server/currentProcessedProgram", "w")
-        fp.write(nextProgram["programRef"])
+        station.config.set("Stream", "lastProcessedProgram", nextProgram["programRef"])
+        fp = open(configFile, "w")
+        station.config.write(fp)
         fp.close()
