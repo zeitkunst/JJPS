@@ -6,7 +6,8 @@
             <slot startTime="12:00" endTime="16:59" program="ProgramThree"/>
             <slot startTime="17:00" endTime="17:59" program="ProgramOne"/>
             <slot startTime="18:00" endTime="18:59" program="NewsProgram"/>
-            <slot startTime="19:00" endTime="23:59" program="ProgramFour"/>
+            <slot startTime="19:00" endTime="19:59" program="ProgramFour"/>
+            <slot startTime="20:00" endTime="23:59" program="NewsProgram"/>
         </sunday>    
         <monday>
             <slot startTime="00:00" endTime="05:59" program="ProgramOne"/>
@@ -56,7 +57,7 @@
     </schedule>
 
     <programs>
-        <program id="ProgramOne" processed="0">
+        <program id="ProgramOne" processed="1">
             <name>Program One</name>        
             <hostedBy>
                 <person ref="PersonOne"/>            
@@ -106,7 +107,7 @@
             <archives>
             </archives>
         </program>    
-        <program id="NewsProgram" processed="1">
+        <program id="NewsProgram" processed="0">
             <name>News</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            

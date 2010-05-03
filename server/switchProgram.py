@@ -16,6 +16,6 @@ if __name__ == "__main__":
 
     if (currentProgramName != currentProgram["programRef"]):
         station.switchProgram()
-        fp = open("currentProgramName", "w")
+        fp = open("/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/trunk/server/currentProgramName", "w")
         fp.write(currentProgram["programRef"])
         fp.close()

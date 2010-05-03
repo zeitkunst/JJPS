@@ -44,6 +44,7 @@ class Stream(object):
     def restart(self, currentProgram):
         if (currentProgram['programCurrentLink'] == ''):
             self.mpdClient.stop()
+            self.mpdClient.clear()
             self.mpdClient.add("stationID.mp3")
             self.mpdClient.repeat(1)
             self.mpdClient.play()
@@ -51,6 +52,7 @@ class Stream(object):
             # We seem to have an actual path, so play it
             currentProgramPath = currentProgram['programCurrentLink']
             self.mpdClient.stop()
+            self.mpdClient.clear()
             self.mpdClient.add(currentProgramPath)
             self.mpdClient.repeat(1)
             self.mpdClient.play()
@@ -64,6 +66,7 @@ class Process(object):
         self.config = config
 
     def processUpcomingShows(self, nextProgram):
+        print "here"
         if not nextProgram['programProcessed']:
             try:
                 process = getattr(self, nextProgram['programRef'])
@@ -83,8 +86,9 @@ class Process(object):
         quotesCSV = urllib.urlopen(quotesURL)
         
         reader = csv.reader(quotesCSV)
-
-        newsString = "This is the news for " + time.strftime("%A, %d %B, %Y") + "\n\n"
+        
+        currentTime = time.strftime("%A, %d %B, %Y")
+        newsString = "This is the news for " + currentTime + "\n\n"
 
         newsString += "And now, for the markets.\n\n"
         
@@ -93,10 +97,10 @@ class Process(object):
             name = row[1]
             price = row[2]
             date = row[3]
-            time = row[4]
+            timeTraded = row[4]
             change = row[5]
             volume = row[9]
-            newsString += "%s, with stock code %s, had a price of %s at %s on a change of %s and volume of %s" % (name, code, str(price), time, str(change), str(volume))
+            newsString += "%s, with stock code %s, had a price of %s at %s on a change of %s and volume of %s" % (name, code, str(price), timeTraded, str(change), str(volume))
             newsString += "\n\n"
         
         newsString += "And now, for the news.\n\n"

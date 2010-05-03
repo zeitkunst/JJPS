@@ -10,7 +10,8 @@ import Sound
 
 #TODO
 # * implement proper logging facility
-# * Setup proper configuration options (for path to XML file, path to sound processing code, access to texts and TF-IDF infos, etc); this should be separate from "config.py" used by the webserver
+# * move currentProgramName and currentProcessedProgram to the config file
+# * move config file to conf directory
 
 NAMESPACES= {"JJPS": "http://journalofjournalperformancestudies.org/ns/1.0/#"}
 
