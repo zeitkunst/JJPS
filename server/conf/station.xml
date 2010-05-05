@@ -57,33 +57,33 @@
     </schedule>
 
     <programs>
-        <program id="ProgramOne" processed="1">
+        <program id="ProgramOne" processed="0">
             <name>Program One</name>        
             <hostedBy>
                 <person ref="PersonOne"/>            
             </hostedBy>
             <description>A basic description for Program One</description>
-            <current href=""/>
+            <current href="ProgramOne.mp3"/>
             <archives>
             </archives>
         </program>    
-        <program id="ProgramTwo" processed="0">
+        <program id="ProgramTwo" processed="1">
             <name>Program Two</name>        
             <hostedBy>
                 <person ref="PersonOne"/>            
             </hostedBy>
             <description>A basic description for Program Two</description>
-            <current href=""/>
+            <current href="ProgramTwo.mp3"/>
             <archives>
             </archives>
         </program>    
-        <program id="ProgramThree" processed="1">
+        <program id="ProgramThree" processed="0">
             <name>Program Three</name>        
             <hostedBy>
                 <person ref="PersonOne"/>            
             </hostedBy>
             <description>A basic description for Program Three</description>
-            <current href=""/>
+            <current href="ProgramThree.mp3"/>
             <archives>
             </archives>
         </program>    
@@ -93,7 +93,7 @@
                 <person ref="PersonOne"/>            
             </hostedBy>
             <description>A basic description for Program Four</description>
-            <current href=""/>
+            <current href="ProgramFour.mp3"/>
             <archives>
             </archives>
         </program>    
@@ -103,11 +103,11 @@
                 <person ref="PersonTwo"/>            
             </hostedBy>
             <description>A basic description for Program Five</description>
-            <current href=""/>
+            <current href="ProgramFive.mp3"/>
             <archives>
             </archives>
         </program>    
-        <program id="NewsProgram" processed="0">
+        <program id="NewsProgram" processed="1">
             <name>News</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            

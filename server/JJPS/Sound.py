@@ -66,7 +66,6 @@ class Process(object):
         self.config = config
 
     def processUpcomingShows(self, nextProgram):
-        print "here"
         if not nextProgram['programProcessed']:
             try:
                 process = getattr(self, nextProgram['programRef'])
@@ -78,7 +77,7 @@ class Process(object):
 
     # The default action
     def Default(self):
-        print "foo"
+        pass
    
     # Processing the news
     def NewsProgram(self):
@@ -126,6 +125,7 @@ class Process(object):
         text2wavePath = self.config.get("Sound", "text2wavePath")
         ffmpegPath = self.config.get("Sound", "ffmpegPath")
         outputPath = self.config.get("Sound", "outputPath")
+        id3tagPath = self.config.get("Sound", "id3tagPath")
        
         # TODO
         # make voice a configuration variable
@@ -140,6 +140,58 @@ class Process(object):
 
         # Pass the TTS output to the communicate input
         processConversion.communicate(processTTS.communicate()[0])
+
+        processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='News'", "--year=2010", outputPath + "/news.mp3"], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        # Cleanup
+        os.remove(tempFilename)
+
+    def ProgramOne(self):
+        self.DummyProgram("Program One")
+
+    def ProgramTwo(self):
+        self.DummyProgram("Program Two")
+
+    def ProgramThree(self):
+        self.DummyProgram("Program Three")
+
+    def ProgramFour(self):
+        self.DummyProgram("Program Four")
+
+    def ProgramFive(self):
+        self.DummyProgram("Program Five")
+
+    # Processing a dummy program
+    def DummyProgram(self, programText):
+        # Get Paths to programs we're going to use
+        text2wavePath = self.config.get("Sound", "text2wavePath")
+        ffmpegPath = self.config.get("Sound", "ffmpegPath")
+        outputPath = self.config.get("Sound", "outputPath")
+        id3tagPath = self.config.get("Sound", "id3tagPath")
+
+        programRef = programText.replace(" ", "")
+
+        programText = "This is %s on Journal of Journal Performance Studies Radio." % programText       
+        tempFH, tempFilename = tempfile.mkstemp(suffix = ".txt", prefix = "JJPS")
+        tempFP = os.fdopen(tempFH, "wb")
+        tempFP.write(programText.encode("ascii", "ignore"))
+        tempFP.close()
+
+
+        # TODO
+        # make voice a configuration variable
+        commandTTS = """%s -eval "(voice_cmu_us_slt_arctic_hts)" %s""" % (text2wavePath, tempFilename)
+        commandConversion = """%s -y -i - %s/news.mp3 """ % (ffmpegPath, outputPath)
+
+        # TODO
+        # Need to figure out why I can't choose a particular voice
+        processTTS = subprocess.Popen([text2wavePath, tempFilename], shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+
+        processConversion = subprocess.Popen([ffmpegPath, "-y", "-i", "-", outputPath + "/%s.mp3" % programRef], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+
+        # Pass the TTS output to the communicate input
+        processConversion.communicate(processTTS.communicate()[0])
+
+        processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='%s'" % programRef, "--year=2010", outputPath + "/%s.mp3" % programRef], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
         # Cleanup
         os.remove(tempFilename)

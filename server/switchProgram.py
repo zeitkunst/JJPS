@@ -6,11 +6,6 @@ configFile = "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/tr
 if __name__ == "__main__":
     station = Station(configFile = configFile)
 
-    # TODO
-    # make configurable
-    #fp = open("/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/trunk/server/currentProgramName", "r")
-    #currentProgramName = fp.read()
-    #fp.close()
     currentPlayingProgram = station.config.get("Stream", "currentPlayingProgram")
 
     currentProgram, nextProgram = station.getCurrentAndNextProgram()
@@ -21,6 +16,3 @@ if __name__ == "__main__":
         fp = open(configFile, "w")
         station.config.write(fp)
         fp.close()
-        #fp = open("/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/trunk/server/currentProgramName", "w")
-        #fp.write(currentProgram["programRef"])
-        #fp.close()
