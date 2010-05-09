@@ -1,5 +1,9 @@
 import csv
+import logging
+import math
 import os
+import random
+import shutil
 import subprocess
 import tempfile
 import time
@@ -8,10 +12,10 @@ import urllib
 from BeautifulSoup import BeautifulSoup
 import feedparser
 from mpd import MPDClient
+import couchdb
+import nltk
 
 # The mapping from program IDs to processing code
-# TODO
-# Implement propper logging facility
 
 # What is the sequence?
 # * Lookup upcoming programs
@@ -27,6 +31,16 @@ class Stream(object):
 
     def __init__(self, config = None):
         self.config = config
+
+        # Setup logging
+        # TODO make this more general, perhaps put in __init__ like in MSThesis?
+        self.logger = logging.getLogger('JJPS')
+        logFormatter = logging.Formatter('%(asctime)s (%(process)d) %(levelname)s: %(message)s')
+        fileHandler = logging.FileHandler(self.config.get("Station", "logPath"))
+        fileHandler.setFormatter(logFormatter)
+        level = getattr(logging, self.config.get("Station", "defaultLogLevel").upper())
+        self.logger.addHandler(fileHandler)
+        self.logger.setLevel(level)
 
         self.mpdHost = self.config.get("Sound", "mpdHost")
         self.mpdPort = self.config.getint("Sound", "mpdPort")
@@ -62,8 +76,22 @@ class Process(object):
     # TODO
     # Write some documentation
 
-    def __init__(self, config = None):
+    def __init__(self, config = None, db = None):
         self.config = config
+
+        if db is not None:
+            self.db = db
+
+        # Setup logging
+        # TODO make this more general, perhaps put in __init__ like in MSThesis?
+        self.logger = logging.getLogger('JJPS')
+        logFormatter = logging.Formatter('%(asctime)s (%(process)d) %(levelname)s: %(message)s')
+        fileHandler = logging.FileHandler(self.config.get("Station", "logPath"))
+        fileHandler.setFormatter(logFormatter)
+        level = getattr(logging, self.config.get("Station", "defaultLogLevel").upper())
+        self.logger.addHandler(fileHandler)
+        self.logger.setLevel(level)
+
 
     def processUpcomingShows(self, nextProgram):
         if not nextProgram['programProcessed']:
@@ -160,6 +188,12 @@ class Process(object):
     def ProgramFive(self):
         self.DummyProgram("Program Five")
 
+    def RandomVocalPlayback(self):
+        # Get list of documents
+        docIDs = [item for item in self.db if item.find("_design") == -1]
+        docID = random.choice(docIDs)
+        self._makeTTSFileChunks(voice = None, text = self.db[docID]["text"], title = "Random Vocal Playback")
+
     # Processing a dummy program
     def DummyProgram(self, programText):
         # Get Paths to programs we're going to use
@@ -195,3 +229,83 @@ class Process(object):
 
         # Cleanup
         os.remove(tempFilename)
+
+    def _makeTTSFileChunks(self, voice = None, text = "JJPS Radio", title = "Show"):
+        # TODO
+        # Make platform-agnostic with os.path.join
+
+        # Get Paths to programs we're going to use
+        text2wavePath = self.config.get("Sound", "text2wavePath")
+        ffmpegPath = self.config.get("Sound", "ffmpegPath")
+        outputPath = self.config.get("Sound", "outputPath")
+        id3tagPath = self.config.get("Sound", "id3tagPath")
+        mp3wrapPath = self.config.get("Sound", "mp3wrapPath")
+        chunkSize = self.config.getint("Sound", "chunkSize")
+
+        # Tokenize input so that we can do this in chunks
+        self.logger.debug("Tokenizing input")
+        sentences = nltk.sent_tokenize(text)
+
+        if (len(sentences) > chunkSize):
+            numSentences = len(sentences)
+
+            startSentence = 0
+            endSentence = chunkSize - 1
+            
+            # Get the total number of times we should run this chunk process
+            numChunks = math.ceil(float(numSentences)/float(chunkSize))
+
+            mp3Filenames = []
+            for index in xrange(numChunks):
+                startSentence = index*chunkSize
+                endSentence = min((index + 1)*chunkSize - 1, numSentences)
+
+                currentSentences = sentences[startSentence:endSentence]
+                chunkedText = "  ".join(currentSentences)
+
+                # Create temp file to hold text
+                tempFH, tempFilename = tempfile.mkstemp(suffix = ".txt", prefix = "JJPS")
+                tempFP = os.fdopen(tempFH, "wb")
+                tempFP.write(chunkedText.encode("ascii", "ignore"))
+                tempFP.close()
+
+                # Create no spaces version of show name with trailing zeros
+                titleNospaces = title.replace(" ", "")
+                titleNospacesChunk = "%s%03d" % (titleNospaces, index)
+                
+
+                # TODO
+                # Need to figure out why I can't choose a particular voice
+                self.logger.debug("Starting TTS and MP3 encoding processes for show %s and chunk %03d of %03d" % (title, index, numChunks-1))
+                processTTS = subprocess.Popen([text2wavePath, tempFilename], shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        
+                processConversion = subprocess.Popen([ffmpegPath, "-y", "-i", "-", tempfile.tempdir + "/%s.mp3" % titleNospacesChunk], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        
+                # Pass the TTS output to the communicate input
+                processConversion.communicate(processTTS.communicate()[0])
+
+                # Cleanup
+                os.remove(tempFilename)
+
+                mp3Filenames.append(tempfile.tempdir + "/%s.mp3" % titleNospacesChunk)
+            
+            # Wrap MP3 files
+            self.logger.debug("Wrapping files")
+            processCall = [mp3wrapPath, outputPath + "/%s.mp3" % titleNospaces]
+            processCall.extend(mp3Filenames)
+            print processCall
+            # Use call so that we don't immediately go to move command below
+            processMP3Wrap = subprocess.call(processCall, shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+
+            # Unfortunately mp3wrap adds an annoying suffix to every file
+            # We need to move the file to get rid of it
+            shutil.move(outputPath + "/%s_MP3WRAP.mp3" % titleNospaces, outputPath + "/%s.mp3" % titleNospaces)
+
+            # Tag files
+            self.logger.debug("Tagging file")
+            processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='%s'" % title, "--year=2010", outputPath + "/%s.mp3" % titleNospaces], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+
+            # Cleaning up
+            self.logger.debug("Cleaning up")
+            for file in mp3Filenames:
+                os.remove(file)

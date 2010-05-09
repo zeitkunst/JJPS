@@ -1,10 +1,12 @@
 import ConfigParser
 import datetime, time
+import logging
 
 import lxml
 from lxml.html import builder as E
 from lxml import etree
 import mpd
+import couchdb
 
 import Sound
 
@@ -23,9 +25,28 @@ class Station(object):
         self.config = ConfigParser.RawConfigParser()
         self.config.read(configFile)
 
+        # Setup logging
+        # TODO make this more general, perhaps put in __init__ like in MSThesis?
+        self.logger = logging.getLogger('JJPS')
+        logFormatter = logging.Formatter('%(asctime)s (%(process)d) %(levelname)s: %(message)s')
+        fileHandler = logging.FileHandler(self.config.get("Station", "logPath"))
+        fileHandler.setFormatter(logFormatter)
+        level = getattr(logging, self.config.get("Station", "defaultLogLevel").upper())
+        self.logger.addHandler(fileHandler)
+        self.logger.setLevel(level)
+
+        # Setup database
+        self.logger.debug("Setting up database connection")
+        self.dbServer = couchdb.Server(self.config.get("Database", "host"))
+        self.db = self.dbServer[self.config.get("Database", "name")]
+
+        self.logger.debug("Parsing station XML file")
         self.stationXML = self.config.get("Station", "xmlPath")
         self.stationTree = etree.parse(self.stationXML)
-        self.soundProcess = Sound.Process(config = self.config)
+
+        self.logger.debug("Setting up sound processor")
+        self.soundProcess = Sound.Process(config = self.config, db = self.db)
+        self.logger.debug("Setting up sound stream")
         self.soundStream = Sound.Stream(config = self.config)
 
     def reloadXML(self):

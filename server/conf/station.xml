@@ -3,7 +3,8 @@
         <sunday>
             <slot startTime="00:00" endTime="05:59" program="ProgramOne"/>
             <slot startTime="06:00" endTime="11:59" program="ProgramTwo"/>
-            <slot startTime="12:00" endTime="16:59" program="ProgramThree"/>
+            <slot startTime="12:00" endTime="13:59" program="RandomVocalPlayback"/>
+            <slot startTime="14:00" endTime="16:59" program="ProgramThree"/>
             <slot startTime="17:00" endTime="17:59" program="ProgramOne"/>
             <slot startTime="18:00" endTime="18:59" program="NewsProgram"/>
             <slot startTime="19:00" endTime="19:59" program="ProgramFour"/>
@@ -117,6 +118,16 @@
             <archives>
             </archives>
         </program>    
+        <program id="RandomVocalPlayback" processed="1">
+            <name>Article Reading</name>        
+            <hostedBy>
+                <person ref="PersonTwo"/>            
+            </hostedBy>
+            <description>A reading from one of the articles in our archives...</description>
+            <current href="RandomVocalPlayback.mp3"/>
+            <archives>
+            </archives>
+        </program>
 
     </programs>
 

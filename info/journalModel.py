@@ -12,7 +12,8 @@ class JournalModel(object):
     def __init__(self, pathToOntology = RDF.Uri("file:///home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/trunk/info/JJPS.owl")):
         self.ontologyPath = pathToOntology
         self.memoryStorage = RDF.MemoryStorage()
-        self.model = RDF.Model(self.memoryStorage)
+        self.hashStorage = RDF.HashStorage("JournalStorage.bdb", options="hash-type='bdb'") 
+        self.model = RDF.Model(self.hashStorage)
         self.parser = RDF.Parser()
 
     def createBaseModel(self):
@@ -25,37 +26,62 @@ class JournalModel(object):
 
     def addJournalsToModel(self, journalList):
         counter = 0
-        for key in journalList.keys():
-            address = journalList[key]["address"].lower()
+        keys = journalList.keys()
+        #keys = keys[0:5000]
+        for key in keys:
+            # Get the first big before the comma
+            journalAddress = journalList[key]["address"].split(",")[0]
+            journalISSN = journalList[key]["ISSN"]
+            journalFrequency = journalList[key]["frequency"]
+            
+            self.addJournalOwnershipToModel(journalAddress, key, journalFrequency, journalISSN)
 
-            # Do wiley
-            if (address.find("wiley") != -1):
-                # Parse owner info
-                addressSplit = journalList[key]["address"].split(",")
-                addressSpaces = addressSplit[0]
-                addressUnderscores = addressSpaces.replace(" ", "_")
-
-                # Add in journal statements
-                keyUnderscores = key.replace(" ", "_")
-                keyUnderscores = keyUnderscores.decode("ascii", "ignore")
-
-                # . Name of Journal
-                journalStatement = RDF.Statement(jjpsNS[keyUnderscores], jjpsNS["hasJournalName"], key)
-                self.model.append(journalStatement)
-                # . isa journal
-                journalStatement = RDF.Statement(jjpsNS[keyUnderscores], rdfNS["type"], jjpsNS["Journal"])
-                self.model.append(journalStatement)
-                # . isOwnedBy
-                journalStatement = RDF.Statement(jjpsNS[keyUnderscores], jjpsNS["isOwnedBy"], jjpsNS[addressUnderscores])
-                self.model.append(journalStatement)
-
-                # . Who it is owned by
-                ownedStatement = RDF.Statement(jjpsNS[addressUnderscores], rdfsNS["subClassOf"], jjpsNS["JohnWileyAndSons"])
-                self.model.append(ownedStatement)
             counter +=1
 
             if ((counter % 100) == 0):
                 print "On journal %d" % counter
+
+    def addJournalOwnershipToModel(self, companyName, journalName, frequency, ISSN):
+        companyNameLower = companyName.lower()
+        
+        journalNameUnderscores = journalName.lower().replace(" ", "_")
+        companyNameUnderscores = companyName.lower().replace(" ", "_")
+
+        # . Name of Journal
+        journalStatement = RDF.Statement(jjpsNS[str(journalNameUnderscores)], jjpsNS["hasJournalName"], str(journalName))
+        self.model.append(journalStatement)
+        # . ISSN
+        journalStatement = RDF.Statement(jjpsNS[str(journalNameUnderscores)], jjpsNS["hasISSN"], str(ISSN))
+        self.model.append(journalStatement)
+        # . frequency
+        journalStatement = RDF.Statement(jjpsNS[str(journalNameUnderscores)], jjpsNS["hasIssueFrequency"], str(frequency))
+        self.model.append(journalStatement)
+
+        # . isa journal
+        journalStatement = RDF.Statement(jjpsNS[str(journalNameUnderscores)], rdfNS["type"], jjpsNS["Journal"])
+        self.model.append(journalStatement)
+        # . isOwnedBy
+        journalStatement = RDF.Statement(jjpsNS[str(journalNameUnderscores)], jjpsNS["isOwnedBy"], jjpsNS[str(companyNameUnderscores)])
+        self.model.append(journalStatement)
+         # . company name
+        journalStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], jjpsNS["hasOrganizationName"], str(companyName))
+        self.model.append(journalStatement)
+   
+
+        if (companyNameLower.find("wiley") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["JohnWileyAndSons"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("elsevier") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["Elsevier"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("sage") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["SagePublications"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("springer") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["Springer"])
+            self.model.append(ownedStatement)
+        else:
+            pass
 
 if __name__ == "__main__":
     journalModel = JournalModel()
