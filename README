@@ -1,3 +1,13 @@
-== Journal of Journal Performance Studies ==
+= Journal of Journal Performance Studies =
 
-Things will be placed here.
+== extension/ ==
+
+Code for the Firefox extension of the project
+
+== info/ == 
+
+Journal info and RDF model
+
+== server/ ==
+
+Server that runs the front-facing site, internet radio, and API

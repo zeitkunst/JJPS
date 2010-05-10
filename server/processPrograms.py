@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from JJPS.Station import Station
-configFile = "/home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/trunk/server/JJPSConfig.ini"
+configFile = "/home/nknouf/Documents/Personal/Projects/JJPS/repository/server/JJPSConfig.ini"
 
 if __name__ == "__main__":
     station = Station(configFile = configFile)
