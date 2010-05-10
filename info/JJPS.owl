@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY JJPS "http://journalofjournalperformancestudies.org/NS/JJPS.owl#" >
+]>
+
+
+<rdf:RDF xmlns="http://journalofjournalperformancestudies.org/NS/JJPS.owl#"
+     xml:base="http://journalofjournalperformancestudies.org/NS/JJPS.owl"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:JJPS="http://journalofjournalperformancestudies.org/NS/JJPS.owl#">
+    <owl:Ontology rdf:about=""/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasCitationIndex -->
+
+    <owl:ObjectProperty rdf:about="#hasCitationIndex">
+        <rdfs:range rdf:resource="#CitationIndex"/>
+        <rdfs:domain rdf:resource="#Journal"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#isOwnedBy -->
+
+    <owl:ObjectProperty rdf:about="#isOwnedBy">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <rdfs:domain rdf:resource="#Journal"/>
+        <rdfs:domain rdf:resource="#Organization"/>
+        <rdfs:range rdf:resource="#Organization"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#ownsJournal -->
+
+    <owl:ObjectProperty rdf:about="#ownsJournal">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="#Journal"/>
+        <rdfs:domain rdf:resource="#Organization"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasCitationIndexPage -->
+
+    <owl:DatatypeProperty rdf:about="#hasCitationIndexPage">
+        <rdfs:domain rdf:resource="#CitationIndex"/>
+        <rdfs:range rdf:resource="&xsd;anyURI"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasHomepage -->
+
+    <owl:DatatypeProperty rdf:about="#hasHomepage">
+        <rdfs:domain rdf:resource="#Journal"/>
+        <rdfs:domain rdf:resource="#Organization"/>
+        <rdfs:range rdf:resource="&xsd;anyURI"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasISIImpactFactor -->
+
+    <owl:DatatypeProperty rdf:about="#hasISIImpactFactor">
+        <rdfs:domain rdf:resource="#Journal"/>
+        <rdfs:range rdf:resource="&xsd;float"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasISSN -->
+
+    <owl:DatatypeProperty rdf:about="#hasISSN">
+        <rdfs:domain rdf:resource="#Journal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasIssueFrequency -->
+
+    <owl:DatatypeProperty rdf:about="#hasIssueFrequency">
+        <rdfs:domain rdf:resource="#Journal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasJournalName -->
+
+    <owl:DatatypeProperty rdf:about="#hasJournalName">
+        <rdfs:domain rdf:resource="#Journal"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasOrganizationName -->
+
+    <owl:DatatypeProperty rdf:about="#hasOrganizationName">
+        <rdfs:domain rdf:resource="#Organization"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasSubject -->
+
+    <owl:DatatypeProperty rdf:about="#hasSubject">
+        <rdfs:domain rdf:resource="#Journal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasSubscriptionPrice -->
+
+    <owl:DatatypeProperty rdf:about="#hasSubscriptionPrice">
+        <rdfs:domain rdf:resource="#Journal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasTickerSymbol -->
+
+    <owl:DatatypeProperty rdf:about="#hasTickerSymbol">
+        <rdfs:domain rdf:resource="#Corporation"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#CitationIndex -->
+
+    <owl:Class rdf:about="#CitationIndex"/>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#Corporation -->
+
+    <owl:Class rdf:about="#Corporation">
+        <rdfs:subClassOf rdf:resource="#Organization"/>
+    </owl:Class>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#Journal -->
+
+    <owl:Class rdf:about="#Journal"/>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#NonProfitOrganization -->
+
+    <owl:Class rdf:about="#NonProfitOrganization">
+        <rdfs:subClassOf rdf:resource="#Organization"/>
+    </owl:Class>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#Organization -->
+
+    <owl:Class rdf:about="#Organization"/>
+    
+
+
+    <!-- http://www.w3.org/2002/07/owl#Thing -->
+
+    <owl:Class rdf:about="&owl;Thing"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#Elsevier -->
+
+    <owl:Thing rdf:about="#Elsevier">
+        <hasHomepage rdf:datatype="&xsd;anyURI"
+            >http://www.elsevier.com</hasHomepage>
+        <hasOrganizationName>Elsevier</hasOrganizationName>
+    </owl:Thing>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#JohnWileyAndSons -->
+
+    <owl:Thing rdf:about="#JohnWileyAndSons">
+        <rdf:type rdf:resource="#Corporation"/>
+        <hasOrganizationName
+            >John Wiley &amp; Sons</hasOrganizationName>
+    </owl:Thing>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#SagePublications -->
+
+    <Corporation rdf:about="#SagePublications">
+        <rdf:type rdf:resource="&owl;Thing"/>
+        <hasOrganizationName
+            >Sage Publications</hasOrganizationName>
+    </Corporation>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#Springer -->
+
+    <Corporation rdf:about="#Springer">
+        <rdf:type rdf:resource="&owl;Thing"/>
+        <hasOrganizationName>Springer Verlag</hasOrganizationName>
+    </Corporation>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 2.2.1.1138) http://owlapi.sourceforge.net -->
+
