@@ -189,10 +189,35 @@ class Process(object):
         self.DummyProgram("Program Five")
 
     def RandomVocalPlayback(self):
+        self.logger.info("Random Vocal Playback: starting processing...")
         # Get list of documents
         docIDs = [item for item in self.db if item.find("_design") == -1]
         docID = random.choice(docIDs)
+        self.logger.debug("Random Vocal Playback: TTS")
         self._makeTTSFileChunks(voice = None, text = self.db[docID]["text"], title = "Random Vocal Playback")
+
+        self.logger.info("Random Vocal Playback: done")
+
+    def CutupHour(self):
+        self.logger.info("Cutup Hour: starting processing...")
+
+        docIDs = [item for item in self.db if item.find("_design") == -1]
+        totalNumSentences = 350
+        numSentencesToGet = int(totalNumSentences)/int(len(docIDs))
+        
+        self.logger.debug("Cutup Hour: getting fragments")
+        cutupSentences = []
+        for docID in docIDs:
+            sentences = nltk.sent_tokenize(self.db[docID]["text"])
+            cutupSentences.extend(random.sample(sentences, numSentencesToGet))
+
+        text = "This is the Cutup Hour, where we select random fragments from our archives and reassemble them into something new.  Enjoy.  "
+        text += "  ".join(cutupSentences)
+        
+        self.logger.debug("Cutup Hour: TTS")
+        self._makeTTSFileChunks(voice = None, text = text, title = "Cutup Hour")
+
+        self.logger.info("Cutup Hour: done")
 
     # Processing a dummy program
     def DummyProgram(self, programText):
@@ -243,9 +268,9 @@ class Process(object):
         chunkSize = self.config.getint("Sound", "chunkSize")
 
         # Tokenize input so that we can do this in chunks
-        self.logger.debug("Tokenizing input")
+        self.logger.debug("TTS Chunks: Tokenizing input")
         sentences = nltk.sent_tokenize(text)
-
+        
         if (len(sentences) > chunkSize):
             numSentences = len(sentences)
 
@@ -276,7 +301,7 @@ class Process(object):
 
                 # TODO
                 # Need to figure out why I can't choose a particular voice
-                self.logger.debug("Starting TTS and MP3 encoding processes for show %s and chunk %03d of %03d" % (title, index, numChunks-1))
+                self.logger.debug("TTS Chunks: Starting TTS and MP3 encoding processes for show %s and chunk %03d of %03d" % (title, index, numChunks-1))
                 processTTS = subprocess.Popen([text2wavePath, tempFilename], shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
         
                 processConversion = subprocess.Popen([ffmpegPath, "-y", "-i", "-", tempfile.tempdir + "/%s.mp3" % titleNospacesChunk], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
@@ -290,10 +315,10 @@ class Process(object):
                 mp3Filenames.append(tempfile.tempdir + "/%s.mp3" % titleNospacesChunk)
             
             # Wrap MP3 files
-            self.logger.debug("Wrapping files")
+            self.logger.debug("TTS Chunks: Wrapping files")
             processCall = [mp3wrapPath, outputPath + "/%s.mp3" % titleNospaces]
             processCall.extend(mp3Filenames)
-            print processCall
+            
             # Use call so that we don't immediately go to move command below
             processMP3Wrap = subprocess.call(processCall, shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
@@ -302,7 +327,7 @@ class Process(object):
             shutil.move(outputPath + "/%s_MP3WRAP.mp3" % titleNospaces, outputPath + "/%s.mp3" % titleNospaces)
 
             # Tag files
-            self.logger.debug("Tagging file")
+            self.logger.debug("TTS Chunks: Tagging file")
             processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='%s'" % title, "--year=2010", outputPath + "/%s.mp3" % titleNospaces], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
             # Cleaning up

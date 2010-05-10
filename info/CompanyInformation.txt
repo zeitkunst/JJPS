@@ -6,4 +6,6 @@ http://finance.yahoo.com/q/pr?s=enl
 rss: http://finance.yahoo.com/rss/headline?s=ENL
 http://finance.yahoo.com/q/pr?s=ruk
 
+List of big publishers: http://www.cdlib.org/services/collections/publisher_info/
+
 Master Journal List: http://scientific.thomsonreuters.com/cgi-bin/jrnlst/jlresults.cgi
