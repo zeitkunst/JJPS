@@ -127,10 +127,19 @@
                             <attribute name="href">
                                 <text />
                             </attribute>
+                            <optional>
+                                <ref name="playlist" />
+                            </optional>
                         </element>                    
                     </zeroOrMore>                
                 </element>
             </interleave>        
+        </element>    
+    </define>
+
+    <define name="playlist">
+        <element name="JJPS:playlist">
+            <text />
         </element>    
     </define>
 

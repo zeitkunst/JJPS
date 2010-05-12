@@ -71,10 +71,19 @@ class Stream(object):
             self.mpdClient.repeat(1)
             self.mpdClient.play()
 
-
+"""Counting syllables
+from nltk_contrib.readability import syllables_en
+syllableCount = []
+for word in tokens:
+    syllableCount.append(syllables_en.count(word))
+                        
+foo = zip(tokens, syllableCount)
+"""
 class Process(object):
     # TODO
     # Write some documentation
+    # Setup pre- and post-processing hooks, especially for the text
+    # Add "playlist" attribute to station.xml file
 
     def __init__(self, config = None, db = None):
         self.config = config
@@ -210,7 +219,8 @@ class Process(object):
         for docID in docIDs:
             sentences = nltk.sent_tokenize(self.db[docID]["text"])
             cutupSentences.extend(random.sample(sentences, numSentencesToGet))
-
+        
+        random.shuffle(cutupSentences)
         text = "This is the Cutup Hour, where we select random fragments from our archives and reassemble them into something new.  Enjoy.  "
         text += "  ".join(cutupSentences)
         
