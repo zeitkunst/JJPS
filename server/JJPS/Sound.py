@@ -1,6 +1,7 @@
 import csv
 import logging
 import math
+from operator import itemgetter
 import os
 import random
 import shutil
@@ -228,6 +229,33 @@ class Process(object):
         self._makeTTSFileChunks(voice = None, text = text, title = "Cutup Hour")
 
         self.logger.info("Cutup Hour: done")
+
+    def WhatsTheFrequencyKenneth(self):
+        self.logger.info("What's the Frequency Kenneth: starting processing...")
+        
+        docIDs = [item for item in self.db if item.find("_design") == -1]
+        
+        docID = random.choice(docIDs)
+        self.logger.debug("What's the Frequency Kenneth: calculating the number of words")
+        data = self.db[docID]
+        numWords = [(word, round(data["numTokens"] * tf)) for word, tf in data["tf"].items()]
+        numWords = sorted(numWords, key=itemgetter(1), reverse = True)
+
+        output = ""
+        for key, value in numWords:
+            if (int(value) == 1):
+                output += "The word %s occurred %d time in the text.  " % (key, int(value)) 
+            else:                
+                output += "The word %s occurred %d times in the text.  " % (key, int(value)) 
+
+        text = "Now on the air: What's the Frequency Kenneth.  A program where we recite the number of words in a particular text.  See if you can guess which text it is!  "
+        text += output
+        
+        self.logger.debug("What's the Frequency Kenneth: TTS")
+        self._makeTTSFileChunks(voice = None, text = text, title = "What's the Frequency Kenneth")
+
+        self.logger.info("What's the Frequency Kenneth: done")
+
 
     # Processing a dummy program
     def DummyProgram(self, programText):
