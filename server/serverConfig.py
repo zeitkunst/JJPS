@@ -19,5 +19,8 @@ log_backups = 4
 # Are we in fastcgi mode?
 fastcgi = True
 
+# Base URI -- used for redirects and admin pages
+baseURI = "http://localhost:8080/"
+
 # Path to the most up-to-date extension
 currentExtensionPath = ""

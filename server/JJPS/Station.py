@@ -286,6 +286,19 @@ class Station(object):
 
         return lxml.html.tostring(programDiv)
 
+    def getProgramIDsAndNames(self):
+        """Return a list of program IDs and names for construction of a select box on the station website."""
+        xpath = "//JJPS:program"
+        nodes = self.stationTree.xpath(xpath, namespaces = NAMESPACES)
+        programList = []
+        
+        for node in nodes:
+            id = node.get("id")
+            name = node.xpath("JJPS:name/text()", namespaces = NAMESPACES)[0]
+            programList.append((id, name))
+
+        return sorted(programList)
+
     def getCurrentAndNextProgram(self):
         currentDay = time.strftime("%A").lower()
         currentHour = time.strftime("%H")

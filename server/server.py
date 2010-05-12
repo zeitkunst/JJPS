@@ -24,10 +24,12 @@ from BeautifulSoup import BeautifulSoup
 from lxml import etree
 import web
 from wsgilog import WsgiLog, LogIO
+from webob.acceptparse import Accept
 import textile
 
 # My own library imports
 from JJPS.Station import Station
+from JJPS.Model import Model 
 
 import serverConfig
 
@@ -36,11 +38,18 @@ version = "0.01"
 urls = (
     '/', 'index',
     '/schedule', 'schedule',
-    '/programs/(.*?)', 'ViewProgram'
+    '/API', 'APIInfo',
+    '/API/journals/(.*?)', 'APIJournals',
+    '/API/test/(.*?)', 'APITest',
+    '/programs/(.*?)', 'ViewProgram',
+    '/admin', 'adminIndex',
+    '/admin/', 'adminIndex',
+    '/admin/logout', 'adminLogout',
+    '/admin/shows', 'adminShows'
 )
 
 app = web.application(urls, globals())
-#webDB = web.database(dbn='mysql', db='MAICgregator', user='MAICgregator', pw='violas')
+webDB = web.database(dbn='mysql', db='JJPS', user='JJPS', pw='jjps314')
 if web.config.get('_session') is None:
     session = web.session.Session(app, web.session.DiskStore('sessions'),  initializer = {'loggedIn': False})
     web.config._session = session
@@ -48,6 +57,7 @@ else:
     session = web.config._session
 
 render = web.template.render('templates/', base = 'layout', cache = serverConfig.cache)
+renderAdmin = web.template.render('templates/', base = 'layoutAdmin', cache = serverConfig.cache)
 #renderAdmin = web.template.render('templates/', base = 'layoutAdmin', cache = config.cache)
 
 class Log(WsgiLog):
@@ -89,23 +99,98 @@ class schedule:
         scheduleHTML = station.getScheduleHTML()
         return render.schedule(scheduleHTML)
 
+class APIInfo:
+    def GET(self):
+        return render.API()
+
+class APIJournals:
+    def GET(self, arg):
+        bestMimetype = checkMimetype(web.ctx.env.get("HTTP_ACCEPT", "application/xml"))
+        station = StationSingleton.getStation()
+
+        if ((bestMimetype == "application/xhtml+xml") or (bestMimetype == "application/xml") or (bestMimetype == "text/xml")):
+            journalsXML = station.journalModel.getJournalsOwnedBy(arg)
+            web.header("Content-Type", "text/xml; charset=utf-8")
+            web.header('Content-Encoding', 'utf-8')
+            return journalsXML
+        elif ((bestMimetype == "application/rdf") or (bestMimetype == "application/rdf+xml")):
+            journalsRDF = station.journalModel.getJournalsOwnedByRDF(arg)
+            web.header("Content-Type", "application/rdf+xml; charset=utf-8")
+            web.header('Content-Encoding', 'utf-8')
+            return journalsRDF
+        elif (bestMimetype == "application/json"):
+            journalsJSON = station.journalModel.getJournalsOwnedBy(arg, returnFormat = "json")
+            web.header("Content-Type", "application/json; charset=utf-8")
+            web.header('Content-Encoding', 'utf-8')
+            return journalsJSON
+
+        else:
+            return "Don't know how to respond to that mimetype, sorry."
+
+class APITest:
+    def GET(self, arg):
+        bestMimetype = checkMimetype(web.ctx.env.get("HTTP_ACCEPT", "application/xml"))
+        return bestMimetype
+
 class ViewProgram:
     def GET(self, programRef):
+        # Get the flavor of a potential response
+        HTTP_ACCEPT = web.ctx.env.get("HTTP_ACCEPT")
+
         station = StationSingleton.getStation()
         station.reloadXML()
         programHTML = station.getProgramInfoHTML(programRef)
         return render.schedule(programHTML)
 
+# Our admin pages
+class adminIndex:
+    def GET(self):
+        return render.adminIndex(session)
 
+    def POST(self):
+        form = web.input()
+        result = webDB.query( "select * from users where username = '%s' and    password = '%s'" % (form['username'], hashlib.sha256(form['password']).         hexdigest()))
+        if len(result)>0:
+            session.loggedIn = True
+            session.username = form['username']
+        return renderAdmin.adminIndex(session)
+
+class adminLogout:
+    def GET(self):
+        session.kill()
+        web.redirect(serverConfig.baseURI + "admin")
+
+class adminShows:
+    def GET(self):
+        if (session.loggedIn == False):
+            web.redirect(serverConfig.baseURI + "admin")
+        station = StationSingleton.getStation()
+        programList = station.getProgramIDsAndNames()
+        menu = "<select id='viewShowInfo'>"
+        for program in programList:
+            menu += "<option value='%s'>%s</option>" % (program[0], program[1])
+        menu += "</select>"
+        return renderAdmin.adminShows(menu)
+
+
+# The singleton object for our station, so that we're not opening a million of them for each request
 class StationSingleton(object):
     station = None
 
     def getStation():
         if StationSingleton.station == None:
             StationSingleton.station = Station(configFile = "JJPSConfig.ini")
+            StationSingleton.station.journalModel = Model(config = StationSingleton.station.config)
         return StationSingleton.station
     getStation = staticmethod(getStation)
 
+# A helper function that gives us a decent chance of guessing the correct mimetype
+def checkMimetype(acceptHeader):
+    accept = Accept('Accept', acceptHeader)
+    best = accept.best_match(['application/rdf', 'application/rdf+xml', 'text/n3', 'application/json', 'text/xml', 'application/xhtml+xml'])
+    if best is None:
+        best = "text/html"
+    return best
 # Finally, setup our web application
 #if (config.fastcgi):
 #    web.wsgi.runwsgi = lambda func, addr=None: web.wsgi.runfcgi(func, addr)

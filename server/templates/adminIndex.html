@@ -1,0 +1,15 @@
+$def with (session)
+$var title: JJPS Admin login 
+<h1>JJPS Admin Login</h1>
+$if session.loggedIn:
+    <p>Congrats, you're logged in!</p>
+    <p><a href="/admin/shows">View a list of shows</a></p>
+$else:
+    <form action="/admin/" method="post">
+        <label>Username:</label>
+        <input type="text" name="username" id="username" />
+        <label>Password:</label>
+        <input type="password" name="password" id="password" />
+        <input type="submit" name="submitButton" id="submitButton" />
+    </form>    
+

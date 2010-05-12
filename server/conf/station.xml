@@ -73,7 +73,7 @@
             <archives>
             </archives>
         </program>    
-        <program id="ProgramTwo" processed="1">
+        <program id="ProgramTwo" processed="0">
             <name>Program Two</name>        
             <hostedBy>
                 <person ref="PersonOne"/>            
@@ -133,7 +133,7 @@
             <archives>
             </archives>
         </program>
-        <program id="CutupHour" processed="0">
+        <program id="CutupHour" processed="1">
             <name>Cut-up Hour</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
