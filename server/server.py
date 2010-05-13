@@ -8,24 +8,15 @@
 
 import sys
 
-import urllib
-import urllib2
-import datetime
-import threading
-import operator
 import logging
 import hashlib
-from xml.sax.saxutils import escape, quoteattr
 
 
-import feedparser
-import PyRSS2Gen
-from BeautifulSoup import BeautifulSoup
-from lxml import etree
+import simplejson as json
 import web
 from wsgilog import WsgiLog, LogIO
 from webob.acceptparse import Accept
-import textile
+from lxml import etree
 
 # My own library imports
 from JJPS.Station import Station
@@ -36,12 +27,16 @@ import serverConfig
 version = "0.01"
 
 urls = (
+    # Front-end URIs
     '/', 'index',
     '/schedule', 'schedule',
+    '/programs/(.*?)', 'ViewProgram',
+    # API URIs
     '/API', 'APIInfo',
     '/API/journals/(.*?)', 'APIJournals',
     '/API/test/(.*?)', 'APITest',
-    '/programs/(.*?)', 'ViewProgram',
+    '/API/programs', 'APIPrograms',
+    # Admin URIs
     '/admin', 'adminIndex',
     '/admin/', 'adminIndex',
     '/admin/logout', 'adminLogout',
@@ -99,6 +94,7 @@ class schedule:
         scheduleHTML = station.getScheduleHTML()
         return render.schedule(scheduleHTML)
 
+# API Handlers
 class APIInfo:
     def GET(self):
         return render.API()
@@ -130,6 +126,37 @@ class APITest:
     def GET(self, arg):
         bestMimetype = checkMimetype(web.ctx.env.get("HTTP_ACCEPT", "application/xml"))
         return bestMimetype
+
+class APIPrograms:
+    def GET(self):
+        bestMimetype = checkMimetype(web.ctx.env.get("HTTP_ACCEPT", "application/xml"))
+        
+        station = StationSingleton.getStation()
+        station.reloadXML()
+        currentProgram, nextProgram = station.getCurrentAndNextProgram()
+
+        currentProgramName = currentProgram["programName"]
+        currentProgramRef = currentProgram["programRef"]
+
+        nextProgramName = nextProgram["programName"]
+        nextProgramRef = nextProgram["programRef"]
+        
+        if (bestMimetype == "application/json"):
+            programs = {'currentProgram': currentProgramName, 'nextProgram': nextProgramName}
+            return json.dumps(programs)
+        elif ((bestMimetype == "application/xml") or (bestMimetype == "application/xhtml+xml")):
+            responses = etree.Element("results")
+            current = etree.Element("current")
+            current.text = currentProgramName
+            current.set("playing", "1")
+            next = etree.Element("next")
+            next.text = nextProgramName
+            responses.append(current)
+            responses.append(next)
+            web.header("Content-Type", "application/xml; charset=utf-8")
+            return etree.tostring(responses)
+        else:
+            return "Don't know how to handle that mimetype."
 
 class ViewProgram:
     def GET(self, programRef):
@@ -186,7 +213,7 @@ class StationSingleton(object):
 # A helper function that gives us a decent chance of guessing the correct mimetype
 def checkMimetype(acceptHeader):
     accept = Accept('Accept', acceptHeader)
-    best = accept.best_match(['application/rdf', 'application/rdf+xml', 'text/n3', 'application/json', 'text/xml', 'application/xhtml+xml'])
+    best = accept.best_match(['application/rdf', 'application/rdf+xml', 'text/n3', 'application/xml', 'application/json', 'text/xml', 'application/xhtml+xml'])
     if best is None:
         best = "text/html"
     return best

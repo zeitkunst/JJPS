@@ -18,7 +18,7 @@
     <vbox id="appcontent">
         <hbox id="JJPSPane" persist="savedHeight" hidden="true">
             <vbox id="JJPS-testing-pane" persist="width" flex="1">
-                <caption label="testing" />    
+                <description id="JJPSPaneCaption" value="testing" />    
             </vbox>        
         </hbox>
     </vbox>
