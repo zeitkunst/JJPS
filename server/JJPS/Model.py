@@ -55,26 +55,27 @@ class Model(object):
         self.prices = prices
 
     def getJournalsOwnedBy(self, owner, returnFormat = "xml"):
-        """Return the list of journals owned by a top-level owner, such as Elsevier."""
+        """Return the list of journals owned by a top-level owner, such as Elsevier.  `returnFormat` can be any of xml, rdf, or json."""
         # TODO
         # OPTIMIZE!!!  It's way too slow right now
 
-        queryString = """
-        PREFIX jjps: <%s> 
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
-        SELECT ?parent, ?journal
-        WHERE {
-            ?parentURI rdfs:subClassOf jjps:%s ;
-                        jjps:hasOrganizationName ?parent .
-            ?journalURI jjps:isOwnedBy ?parentURI ;
-                        jjps:hasJournalName ?journal .
-        } 
-        ORDER BY ?parent""" % (jjpsURI, owner)
-        queryString = unicode(queryString)
-        parentQuery = RDF.Query(queryString.encode("ascii"), query_language="sparql")
-        results = parentQuery.execute(self.model)
 
         if (returnFormat == "xml"):
+            queryString = """
+            PREFIX jjps: <%s> 
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+            SELECT ?parent, ?journal
+            WHERE {
+                ?parentURI rdfs:subClassOf jjps:%s ;
+                            jjps:hasOrganizationName ?parent .
+                ?journalURI jjps:isOwnedBy ?parentURI ;
+                            jjps:hasJournalName ?journal .
+            } 
+            ORDER BY ?parent""" % (jjpsURI, owner)
+            queryString = unicode(queryString)
+            parentQuery = RDF.Query(queryString.encode("ascii"), query_language="sparql")
+            results = parentQuery.execute(self.model)
+
             resultsXML = etree.Element("results")
             resultsXML.set("type", "journalOwners")
             for result in results:
@@ -96,32 +97,21 @@ class Model(object):
                     dataDict[parent] = []
                     dataDict[parent].append(journal)
             return json.dumps(dataDict)
-
-    def getJournalsOwnedByRDF(self, owner):
-        queryString = """
-        PREFIX jjps: <%s> 
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
-        CONSTRUCT { 
-            ?parent rdfs:subClassOf jjps:%s . 
-            ?journal jjps:isOwnedBy ?parent .
-        } 
-        WHERE {
-            ?parent rdfs:subClassOf jjps:%s .
-            ?journal jjps:isOwnedBy ?parent .
-        }""" % (jjpsURI, owner, owner)
-        parentQuery = RDF.Query(queryString.encode('ascii'), query_language="sparql")
-        results = parentQuery.execute(self.model)
-        return results.to_string()
-        #fp = open("foo.rdf", "w")
-        #fp.write(results.to_string())
-        #fp.close()
-        #output = results.to_string(base_uri = jjpsURI)
-        #h1 = RDF.HashStorage("owners", options="hash-type='memory'")
-        #ownersModel = RDF.Model(h1)
-        #for statement in results:
-        #    ownersModel.add_statement(statement)
-        #resultsString = results.to_string()
-
+        elif (returnFormat == "rdf"):
+            queryString = """
+            PREFIX jjps: <%s> 
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+            CONSTRUCT { 
+                ?parent rdfs:subClassOf jjps:%s . 
+                ?journal jjps:isOwnedBy ?parent .
+            } 
+            WHERE {
+                ?parent rdfs:subClassOf jjps:%s .
+                ?journal jjps:isOwnedBy ?parent .
+            }""" % (jjpsURI, owner, owner)
+            parentQuery = RDF.Query(queryString.encode('ascii'), query_language="sparql")
+            results = parentQuery.execute(self.model)
+            return results.to_string()
 
     def createBaseModel(self):
         self.parser.parse_into_model(self.model, self.ontologyPath, base_uri="http://journalofjournalperformancestudies.org/NS/JJPS.owl")

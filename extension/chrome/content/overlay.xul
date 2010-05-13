@@ -16,12 +16,18 @@
     </toolbarpalette>
 
     <vbox id="appcontent">
-    
+        <hbox id="JJPSPane" persist="savedHeight" hidden="true">
+            <vbox id="JJPS-testing-pane" persist="width" flex="1">
+                <caption label="testing" />    
+            </vbox>        
+        </hbox>
     </vbox>
 
-    <statusbar id="statusBar">
+    <!-- id has to be "status-bar" -->        
+    <statusbar id="status-bar">
+            <!-- class has to be "statusbarpanel-iconic -->
             <statusbarpanel id="JJPSStatusBarIcon" hidden="false"
-                class="JJPSStatusBar" label="JJPS" onclick="JJPS.toggleDisplay();"/>
+                class="statusbarpanel-iconic" onclick="JJPS.toggleDisplay();"/>
     </statusbar>
 
 </overlay>

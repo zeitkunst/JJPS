@@ -114,7 +114,7 @@ class APIJournals:
             web.header('Content-Encoding', 'utf-8')
             return journalsXML
         elif ((bestMimetype == "application/rdf") or (bestMimetype == "application/rdf+xml")):
-            journalsRDF = station.journalModel.getJournalsOwnedByRDF(arg)
+            journalsRDF = station.journalModel.getJournalsOwnedBy(arg, returnFormat="rdf")
             web.header("Content-Type", "application/rdf+xml; charset=utf-8")
             web.header('Content-Encoding', 'utf-8')
             return journalsRDF
@@ -123,7 +123,6 @@ class APIJournals:
             web.header("Content-Type", "application/json; charset=utf-8")
             web.header('Content-Encoding', 'utf-8')
             return journalsJSON
-
         else:
             return "Don't know how to respond to that mimetype, sorry."
 
@@ -191,6 +190,7 @@ def checkMimetype(acceptHeader):
     if best is None:
         best = "text/html"
     return best
+
 # Finally, setup our web application
 #if (config.fastcgi):
 #    web.wsgi.runwsgi = lambda func, addr=None: web.wsgi.runfcgi(func, addr)
