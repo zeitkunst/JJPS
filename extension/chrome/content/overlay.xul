@@ -9,6 +9,13 @@
     <script type="application/x-javascript" src="chrome://JJPS/content/jquery.js"/>
     <script src="chrome://JJPS/content/JJPS.js"/>
 
+    <menupopup id="menu_ToolsPopup">
+        <menuitem id="JJPSToolsMenu" class="menuitem-iconic"                label="&JJPS.menuItem;" 
+                accesskey = "J"
+                    oncommand="showJJPSPreferencesDialog();"
+                    insertafter="javascriptConsole,devToolsSeparator" />
+    </menupopup>
+
     <toolbarpalette id="BrowserToolbarPalette">
         <toolbarbutton id="JJPSToolbarButton" class=""
             label="JJPS"
@@ -16,10 +23,28 @@
     </toolbarpalette>
 
     <vbox id="appcontent">
+        <splitter id="JJPSSplitter" resizebefore="closet" resizeafter="closest" hidden="false" onmouseup="JJPS.updatePaneHeight()">
+            <grippy />
+        </splitter>
         <hbox id="JJPSPane" persist="savedHeight" hidden="true">
-            <vbox id="JJPS-testing-pane" persist="width" flex="1">
-                <description id="JJPSPaneCaption" value="testing" />    
-            </vbox>        
+            <hbox>
+                <vbox id="JJPS-testing-pane" persist="width" flex="1">
+                    <label id="JJPSRadioLabel" value="&JJPS.radio;" />
+                    <hbox>
+                        <label id="JJPSRadioCurrentLabel" value="&JJPS.current.program;"/>
+                        <label id="JJPSRadioCurrent" value="" />
+                    </hbox>
+                    <hbox>
+                        <label id="JJPSRadioNextLabel" value="&JJPS.upcoming.program;"/>
+                        <label id="JJPSRadioNext" value="" />
+                    </hbox>
+                </vbox>        
+            </hbox>
+            <hbox>
+                <vbox id="JJPSRightPane" persist="width" flex="1">
+                    <label id="JJPSRightPaneLabel" value="testing" />            
+                </vbox>
+            </hbox>
         </hbox>
     </vbox>
 

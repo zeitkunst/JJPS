@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://JJPS/skin/overlay.css" type="text/css"?>
+
+<!DOCTYPE overlay SYSTEM "chrome://JJPS/locale/JJPS.dtd">
+
+<dialog id="JJPSPreferences"
+    title="&JJPS.preferences.dialog.title;"
+    orient="vertical"
+    autostretch="always"
+    persist="screenX screenY"
+    buttons="accept,cancel"
+    ondialogaccept="JJPSPreferences.save()"
+    flex="1"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <!-- Source scripts -->
+    <script type="application/x-javascript" src="chrome://JJPS/content/JJPS.js" />
+    <script type="application/x-javascript" src="chrome://JJPS/content/preferences.js" />
+
+    <tabbox>
+        <tabs>
+            <tab label="&JJPS.preferences.standardTab;" />        
+            <tab label="&JJPS.preferences.advancedTab;" />        
+            <tab label="&JJPS.preferences.aboutTab;" />        
+        </tabs>    
+        <tabpanels>
+            <tabpanel>
+                <vbox>
+                    <label id="JJPSStandard" value="standard" />                
+                </vbox>            
+            </tabpanel>        
+            <tabpanel>
+                <groupbox id="JJPSAdvancedGroupbox">
+                    <caption label="&JJPS.preferences.serverURLGroup;"/>
+                    <hbox>
+                        <label align="center" value="&JJPS.preferences.serverURLLabel;" tooltiptext="&JJPS.preferences.serverURLTooltip;" control="JJPSServerURL"/>
+                        <textbox flex="3" id="JJPSServerURL" preference="JJPSServerURL"/>
+                
+                    </hbox>
+                </groupbox>
+            </tabpanel>
+            <tabpanel>
+                <vbox>
+                    <hbox>
+                        <label value="About" />                    
+                    </hbox>
+                    <hbox>
+                        <textbox multiline="true" rows="10" readonly="true" value="&JJPS.preferences.info;" />                    
+                    </hbox>
+                </vbox>            
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+</dialog>

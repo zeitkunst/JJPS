@@ -1,21 +1,12 @@
-<!--
-<!ENTITY razvoj.chrome      "Reload chrome">
-<!ENTITY razvoj.js          "JS konzola">
-<!ENTITY razvoj.sporocila   "....">
-
-<!ENTITY toolbar.kanvasi            "Disorganise">
-<!ENTITY toolbar.obnovi             "Restore">
-<!ENTITY toolbar.orzrgn             "About Disorganiser">
-<!ENTITY toolbar.url.bienale        "27th Biennial of Graphic Arts">
-<!ENTITY toolbar.url.jakaorg        "Jaka.org">
-
-<!ENTITY rzrgn.title        "About Disorganiser">
-<!ENTITY rzrgn.zapriinfo    "OK">
-<!ENTITY rzrgn.www          "Disorganiser's web page">
-<!ENTITY rzrgn.verzija      "Version">
-<!ENTITY rzrgn.naslov       "Disorganiser">
-<!ENTITY rzrgn.avtor        "Author">
-<!ENTITY rzrgn.opis         "In itself, the work Razorganizator (Disorganiser in Slovene) has no appearance. Its core consists of a collection of computer-executable instructions that can manipulate images on any given web page. At the same time, the essence of the work lies not in the collection of instructions but in their actualization, with all actualizations being of equal value.">
-<!ENTITY rzrgn.opisdva      "The image of any give Web page (or the visible part of the Web page if it is bigger than the computer screen) is understood as a matrix that reproduces itself. The size, height, and width of the reproduction are transformed depending on the matrix. The reproduction is placed in a selected section of the matrix and becomes part of it. The process repeats several times. The result is an unrepeatable visual structure that is based on manipulations of the particular Web page.">
-<!ENTITY rzrgn.mglc         "The project was commissioned by the 27th Biennial of Graphic Arts in Ljubljana.">
--->
+<!ENTITY JJPS.menuItem "JJPS Preferences">
+<!ENTITY JJPS.radio "JJPS Radio">
+<!ENTITY JJPS.current.program "Current Program: ">
+<!ENTITY JJPS.upcoming.program "Upcoming Program: ">
+<!ENTITY JJPS.preferences.dialog.title "JJPS Preferences">
+<!ENTITY JJPS.preferences.standardTab "Standard">
+<!ENTITY JJPS.preferences.advancedTab "Advanced">
+<!ENTITY JJPS.preferences.aboutTab "About">
+<!ENTITY JJPS.preferences.serverURLGroup "Server Information">
+<!ENTITY JJPS.preferences.serverURLLabel "Server URL">
+<!ENTITY JJPS.preferences.serverURLTooltip "URL to the server that deals with API queries; should end in 'API'.">
+<!ENTITY JJPS.preferences.info "Journal of Journal Performances is a commission of Turbulence.org.">

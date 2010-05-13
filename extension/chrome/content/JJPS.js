@@ -10,18 +10,27 @@ var JJPS = {
     logFile: null,
     logDisabled: false,
 
-    // TODO
-    // move to preferences
-    serverURL: "http://localhost:8080/API/",
-
-
     // Methods to run when we initialize
     _init: function() {
+        // Read preferences before we setup event handler
+        this._readPrefs();
+
+        // Open SQLite file
+        this._getSqlite();
+
         // Setup event listeners for page load
         var appcontent = document.getElementById("appcontent");   // browser
         if(appcontent)
             appcontent.addEventListener("DOMContentLoaded", JJPS.onPageLoad, true);
 
+    },
+
+    _getSqlite: function() {
+        var file = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("ProfD", Components.interfaces.nsIFile); 
+        file.append("JJPS.sqlite");
+        var storageService = Components.classes["@mozilla.org/storage/service;1"].getService(Components.interfaces.mozIStorageService);
+        var mDBConn = storageService.openDatabase(file); // Will also create the file if it does not exist
+        this.dbConn = mDBConn;
     },
 
     onPageLoad: function(aEvent) {
@@ -42,6 +51,7 @@ var JJPS = {
 
     toggleDisplay: function() {
         var JJPSPane = document.getElementById("JJPSPane");
+        var JJPSSplitter = document.getElementById("JJPSSplitter");
 
         if (JJPSPane.getAttribute("hidden") == "true") {
             var isHidden = true;
@@ -54,6 +64,8 @@ var JJPS = {
         if (isHidden || isCollapsed) {
             var makeVisible = true;
         }
+        
+        JJPSSplitter.setAttribute('hidden', !makeVisible);
 
         if (JJPSPane.hasAttribute('savedHeight')) {
             var savedHeight = JJPSPane.getAttribute('savedHeight');
@@ -71,13 +83,13 @@ var JJPS = {
             JJPS.request.onreadystatechange = JJPS.processProgramList;
             JJPS.request.send(null);
 
-            var max = document.getElementById('appcontent').boxObject.height;
+            var max = document.getElementById('appcontent').boxObject.height - JJPSSplitter.boxObject.height;
 
             if (isHidden) {
                 JJPSPane.setAttribute('height', Math.min(savedHeight, max));
                 JJPSPane.setAttribute('hidden', false);
             }
-            if (isCollapsed) {
+            else if (isCollapsed) {
                 JJPSPane.setAttribute('height', Math.min(savedHeight, max));
                 JJPSPane.setAttribute('collapsed', false);
             }
@@ -89,21 +101,64 @@ var JJPS = {
         }
     },
 
+    isShowing: function() {
+        var JJPSPane = document.getElementById("JJPSPane");
+        return JJPSPane.getAttribute('hidden') != 'true' && JJPSPane.getAttribute('collapsed') != 'true';
+    },
+
+    updatePaneHeight: function() {
+        var JJPSPane = document.getElementById("JJPSPane");
+        
+        if (this.isShowing()) {
+            JJPSPane.setAttribute('savedHeight', JJPSPane.boxObject.height);
+        }
+    },
+
     processProgramList: function() {
         if (JJPS.request.readyState < 4) {
             return;
         }
         var results = JJPS.request.responseXML;
         description = document.getElementById("JJPSPaneCaption");
+        currentLabel = document.getElementById("JJPSRadioCurrent");
+        nextLabel = document.getElementById("JJPSRadioNext");
         current = results.getElementsByTagName("current")[0];
         next = results.getElementsByTagName("next")[0];
         displayString = "Current Program: " + current.firstChild.nodeValue + "\r\n";
         displayString += "Next Program: " + next.firstChild.nodeValue + "\r\n";
-        description.value = displayString
+        //description.value = displayString
+        currentLabel.value = current.firstChild.nodeValue;
+        nextLabel.value = next.firstChild.nodeValue;
     },
 
+    // Preferences
+
+    // Return a preferences instance
+    _getPrefs: function() {
+        if (!this.preferences){
+            var prefSvc = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
+            this.preferences = prefSvc.getBranch("extensions.JJPS.");
+        }
+        return this.preferences;
+    },
+
+    _readPrefs: function() {
+        var prefs = this._getPrefs();
+        this.serverURL = prefs.getCharPref("serverURL");
+    },
+
+    _savePrefs: function() {
+        var prefs = this._getPrefs();
+
+        prefs.setCharPref("serverURL", this.serverURL);
+    },
 }
 
 String.prototype.trim = function() {
     return this.replace(/^\s+|\s+$/g, "");
+}
+
+// Preferences
+function showJJPSPreferencesDialog(){
+    window.open("chrome://JJPS/content/options.xul",                  "JJPSPreferences", "chrome,dialog,centerscreen,alwaysRaised");
 }
