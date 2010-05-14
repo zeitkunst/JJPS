@@ -25,6 +25,9 @@ var JJPS = {
 
     },
 
+    // Return a connection to a local SQL store
+    // TODO
+    // Do we need this?
     _getSqlite: function() {
         var file = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("ProfD", Components.interfaces.nsIFile); 
         file.append("JJPS.sqlite");
@@ -49,6 +52,8 @@ var JJPS = {
 
     },
 
+    // Toggle the display of the bottom panel
+    // Taken and modified from the similar method in zotero
     toggleDisplay: function() {
         var JJPSPane = document.getElementById("JJPSPane");
         var JJPSSplitter = document.getElementById("JJPSSplitter");
@@ -114,6 +119,7 @@ var JJPS = {
         }
     },
 
+    // Process the returned program list from our API and update the labels
     processProgramList: function() {
         if (JJPS.request.readyState < 4) {
             return;
@@ -131,7 +137,9 @@ var JJPS = {
         nextLabel.value = next.firstChild.nodeValue;
     },
 
+    //////////////////////////////////////////////////
     // Preferences
+    //////////////////////////////////////////////////
 
     // Return a preferences instance
     _getPrefs: function() {
@@ -158,7 +166,7 @@ String.prototype.trim = function() {
     return this.replace(/^\s+|\s+$/g, "");
 }
 
-// Preferences
+// Show Preferences Dialog
 function showJJPSPreferencesDialog(){
     window.open("chrome://JJPS/content/options.xul",                  "JJPSPreferences", "chrome,dialog,centerscreen,alwaysRaised");
 }

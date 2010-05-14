@@ -60,6 +60,7 @@ class Stream(object):
         if (currentProgram['programCurrentLink'] == ''):
             self.mpdClient.stop()
             self.mpdClient.clear()
+            self.mpdClient.update()
             self.mpdClient.add("stationID.mp3")
             self.mpdClient.repeat(1)
             self.mpdClient.play()
@@ -68,6 +69,7 @@ class Stream(object):
             currentProgramPath = currentProgram['programCurrentLink']
             self.mpdClient.stop()
             self.mpdClient.clear()
+            self.mpdClient.update()
             self.mpdClient.add(currentProgramPath)
             self.mpdClient.repeat(1)
             self.mpdClient.play()
