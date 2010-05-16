@@ -58,21 +58,34 @@ class Stream(object):
 
     def restart(self, currentProgram):
         if (currentProgram['programCurrentLink'] == ''):
-            self.mpdClient.stop()
-            self.mpdClient.clear()
+            #self.mpdClient.stop()
+            #self.mpdClient.clear()
             self.mpdClient.update()
             self.mpdClient.add("stationID.mp3")
+            self.mpdClient.delete(0)
             self.mpdClient.repeat(1)
             self.mpdClient.play()
         else:
             # We seem to have an actual path, so play it
             currentProgramPath = currentProgram['programCurrentLink']
-            self.mpdClient.stop()
-            self.mpdClient.clear()
+            #self.mpdClient.stop()
+            #self.mpdClient.clear()
             self.mpdClient.update()
             self.mpdClient.add(currentProgramPath)
-            self.mpdClient.repeat(1)
-            self.mpdClient.play()
+            currentPlaylist = self.mpdClient.playlistinfo()
+
+            if (len(currentPlaylist) == 1):
+                # If we're just starting, setup repeat and start playing
+                self.mpdClient.repeat(1)
+                self.mpdClient.play()
+            else:
+                # Otherwise, remove the first element in the playlist
+                firstID = currentPlaylist[0]["id"]
+                self.mpdClient.next()
+                self.mpdClient.deleteid(firstID)
+                self.mpdClient.repeat(1)
+                self.mpdClient.play()
+
 
 """Counting syllables
 from nltk_contrib.readability import syllables_en
@@ -104,8 +117,24 @@ class Process(object):
         self.logger.addHandler(fileHandler)
         self.logger.setLevel(level)
 
+    def _makeTokens(self, text):
+        """Helper function to tokenize our input text."""
+        tokens = []
+        sentences = nltk.sent_tokenize(text)
+        for sentence in sentences:
+            words = nltk.word_tokenize(sentence)
+            for word in words:
+                tokens.append(word)
+
+        clean_tokens = []
+        for token in tokens:
+            if len(token) < 2: # Only save words longer than 2 chars
+                continue
+            clean_tokens.append(token.lower()) # Always lower case
+        return clean_tokens
 
     def processUpcomingShows(self, nextProgram):
+        """Main method to process the upcoming show."""
         if not nextProgram['programProcessed']:
             try:
                 process = getattr(self, nextProgram['programRef'])
@@ -275,11 +304,10 @@ class Process(object):
         tempFP.write(programText.encode("ascii", "ignore"))
         tempFP.close()
 
-
         # TODO
         # make voice a configuration variable
-        commandTTS = """%s -eval "(voice_cmu_us_slt_arctic_hts)" %s""" % (text2wavePath, tempFilename)
-        commandConversion = """%s -y -i - %s/news.mp3 """ % (ffmpegPath, outputPath)
+        #commandTTS = """%s -eval "(voice_cmu_us_slt_arctic_hts)" %s""" % (text2wavePath, tempFilename)
+        #commandConversion = """%s -y -i - %s/news.mp3 """ % (ffmpegPath, outputPath)
 
         # TODO
         # Need to figure out why I can't choose a particular voice
@@ -374,3 +402,291 @@ class Process(object):
             self.logger.debug("Cleaning up")
             for file in mp3Filenames:
                 os.remove(file)
+
+
+    def CreepyVoice(self):
+        docIDs = [item for item in self.db if item.find("_design") == -1]
+        docID = random.choice(docIDs)
+        data = self.db[docID]
+
+        self.logger.debug("Creepy Voice: tokenizing words")
+        # Tokenize our data into an ordered list of words
+        text = data["text"]
+        tokens = self._makeTokens(text)
+        
+        # Then, get a syllable mapping
+        self.logger.debug("Creepy Voice: counting syllables")
+        from nltk_contrib.readability import syllables_en
+        words = data["tf_idf"].keys()
+        syllables = {}
+        for word in data["tf_idf"].keys():
+            syllables[word] = syllables_en.count(word)
+
+        # our instrument
+        instrumentList = ["grainSimple.instr"]
+
+        self.logger.debug("Creepy Voice: creating TTS words")
+        # Get a list of TTSed words to use
+        tempDir = tempfile.mkdtemp()
+        # Bias the words
+        numWords = [(word, round(data["numTokens"] * tf)) for word, tf in data["tf"].items()]
+        numWords = sorted(numWords, key=itemgetter(1), reverse = True)
+        wordList = [word[0] for word in numWords]
+        totalWords = 150
+        wordList = wordList[0:totalWords]
+
+        TTSWords = self.makeTTSWords(tempDir, wordList, numWords = totalWords)
+        TTSPossibleWords = [word[0] for word in TTSWords]
+
+        fTables = []
+        fTables.append("f1 0 512 10 1 ; sine wave")
+        fTables.append("f5 0 512 20 2 ; hanning window")
+
+        # Create a list of ftables that use these words
+        # Start counter (and thus these ftables) at 100
+        counter = 100
+        for word in TTSWords:
+            fTables.append("f%d 0 32768 1 \"%s\" 0 0 0" % (counter, word[1]))
+            counter += 1
+
+        # Now, create our notes using, as a default, instr 1
+        self.logger.debug("Creepy Voice: Making notes")
+        notes = []
+        from numpy import array
+        a = array(data["tf"].values())
+        a = a * 20
+       
+        # 200 words is about 5 minutes
+        chunkSize = 200
+        numChunks = 12
+        numTokens = len(tokens)
+
+        mp3Filenames = []
+        for chunkNumber in xrange(numChunks):
+            startToken = chunkNumber*chunkSize
+            endToken = min((chunkNumber+ 1)*chunkSize - 1, tokens)
+
+            currentTokens = tokens[startToken:endToken]
+
+            # Clear out time and notes before each run
+            time = 0
+            notes = []
+            for token in currentTokens:
+                try:
+                    index = data["tf"].keys().index(token)
+                    tf = a[index]
+                except ValueError:
+                    print "error on token ", token
+                    tf = 0
+    
+                try:
+                    syllableCount = syllables[token]
+                except KeyError:
+                    syllableCount = 0
+    
+                try:
+                    TTSWord = TTSPossibleWords.index(token)
+                    # i1 0 12 1000 1 5 10.1 200 200 0.1 0.1
+                    notes.append("i1 %f %f 5000 %d 5 0.1 200 200 %f %f" % (time, syllableCount * 1, TTSWord + 100, tf, tf))
+                except ValueError:
+                    notes.append("i1 %f %f 1000 %d 5 0.1 200 200 %f %f" % (time, 1 + syllableCount * 1, 1, 0.01, 0.01))
+                time += syllableCount * 1
+    
+            # Give me the csd file, please
+            csdMaker = CsoundProcessor(config = self.config)
+            instruments = csdMaker.loadInstruments(instrumentList, instrumentPrefix = csdMaker.instrumentPrefix)
+            csd = csdMaker.makeCSD(instruments, fTables, notes)
+            
+            self.logger.debug("Creepy Voice: on chunk %d of %d" % (chunkNumber, numChunks))
+            mp3File = self._makeCsoundChunks(csd, chunkNumber, tempDir = tempDir)
+            mp3Filenames.append(mp3File)
+
+        # Okay, got all of our mp3 files, let's finish wrapping them            
+        self.logger.debug("Creepy Voices: wrapping mp3")
+        self._wrapMp3Files(mp3Filenames, "Creepy Voices")
+
+    def _makeCsoundChunks(self, csd, chunkNumber, tempDir = None):
+        # Write csd file
+        csdPath = os.path.join(tempDir, "chunk.csd")
+        fp = open(csdPath, "w")
+        fp.write(csd)
+        fp.close()
+
+        # Get paths
+        ffmpegPath = self.config.get("Sound", "ffmpegPath")
+        csoundPath = self.config.get("Sound", "csoundPath")
+        outputPathWav = os.path.join(tempDir, "chunk%03d.wav" % chunkNumber)
+        outputPathMp3 = os.path.join(tempDir, "chunk%03d.mp3" % chunkNumber)
+
+        self.logger.debug("Csound chunks: calling csound and ffmpeg")
+        processCsound = subprocess.call(["csound", "-d", "-o", outputPathWav, "-W", csdPath], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        processConversion = subprocess.call([ffmpegPath, "-y", "-i", outputPathWav, outputPathMp3], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+
+        # Pass the TTS output to the communicate input
+        #processConversion.communicate(processCsound.communicate()[0])
+
+        # Cleanup
+        os.remove(csdPath)
+        os.remove(outputPathWav)
+
+        # Return path to mp3file
+        return outputPathMp3
+
+    def _wrapMp3Files(self, mp3Filenames, title):
+        titleNospaces = title.replace(" ", "")
+
+        # Get Paths to programs we're going to use
+        outputPath = self.config.get("Sound", "outputPath")
+        id3tagPath = self.config.get("Sound", "id3tagPath")
+        mp3wrapPath = self.config.get("Sound", "mp3wrapPath")
+        chunkSize = self.config.getint("Sound", "chunkSize")
+
+        # Wrap MP3 files
+        # Use call so that we don't immediately go to move command below
+        self.logger.debug("Wrap Mp3")
+        processCall = [mp3wrapPath, outputPath + "/%s.mp3" % titleNospaces]
+        processCall.extend(mp3Filenames)
+
+        processMP3Wrap = subprocess.call(processCall, shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+
+        # Unfortunately mp3wrap adds an annoying suffix to every file
+        # We need to move the file to get rid of it
+        shutil.move(outputPath + "/%s_MP3WRAP.mp3" % titleNospaces, outputPath + "/%s.mp3" % titleNospaces)
+
+        # Tag files
+        self.logger.debug("TTS Chunks: Tagging file")
+        processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='%s'" % title, "--year=2010", outputPath + "/%s.mp3" % titleNospaces], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+
+        # Cleaning up
+        self.logger.debug("Cleaning up")
+        for file in mp3Filenames:
+            os.remove(file)
+
+    def makeTTSWords(self, tempDir, wordList, numWords = 100):
+        """Make a set of TTS words saved as wave files in a temp diretory.""" 
+        
+        self.logger.debug("Make TTS Words: making a set of TTS words")
+        # Get a random sample of the input words
+        wordList = random.sample(wordList, numWords)
+
+        # Create list to hold paths to words
+        wordPaths = []
+        for word in wordList:
+            self._makeTTSWord(tempDir, word)
+            wordPaths.append((word, os.path.join(tempDir, word + ".wav")))
+        self.logger.debug("Make TTS Words: done")
+
+        return wordPaths
+
+    def _makeTTSWord(self, tempDir, word):
+        """Make wave files for a particular word."""
+
+        # TODO
+        # Make platform-agnostic with os.path.join
+
+        # Get Paths to programs we're going to use
+        text2wavePath = self.config.get("Sound", "text2wavePath")
+        ffmpegPath = self.config.get("Sound", "ffmpegPath")
+        outputPath = self.config.get("Sound", "outputPath")
+        id3tagPath = self.config.get("Sound", "id3tagPath")
+        mp3wrapPath = self.config.get("Sound", "mp3wrapPath")
+        chunkSize = self.config.getint("Sound", "chunkSize")
+
+        # TODO
+        # Sadly we need to write this single _word_ out to a file before we can run text2wave on it; there's got to be a better way!
+
+        # Create temp file to hold text
+        tempFH, tempFilename = tempfile.mkstemp(suffix = ".txt", prefix = "JJPS", dir=tempDir)
+        tempFP = os.fdopen(tempFH, "wb")
+        tempFP.write(word.encode("ascii", "ignore"))
+        tempFP.close()
+
+        # TODO
+        # Need to figure out why I can't choose a particular voice
+        processTTS = subprocess.call([text2wavePath, tempFilename, "-o", os.path.join(tempDir, word + ".wav")], shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+
+        os.remove(tempFilename)
+
+class CsoundProcessor(object):
+    FTABLES = """
+; Initial condition
+;f1 0 128 7 0 64 1 64 0
+f1 0 128 7 0 32 2 0 -1 32 0 32 2 32 0
+; Masses
+f2 0 128 -7 1 128 1
+; Spring matrices
+f3 0 16384 -23 "circularstring-128"
+; Centering force
+f4  0 128 -7 0 128 2
+; Damping
+f5 0 128 -7 1 128 1
+; Initial velocity
+f6 0 128 -7 0 128 0
+; Trajectories
+f7 0 128 -6 .001 128 64 64
+; Sine
+f8 0 512 7 0 6 1 5 1 6 0
+"""
+
+    def __init__(self, config = None, orcOptions = {'sr': 44100, 'kr': 4410, 'ksmps': 10, 'nchnls': 2}, commandOptions = None):
+        self.config = config
+        # TODO
+        self.instrumentPrefix = self.config.get("Sound", "instrumentPrefix")
+
+        self.orcOptions = orcOptions
+        self.commandOptions = commandOptions
+
+    def loadInstruments(self, instrumentList, instrumentPrefix = None):
+        instruments = []
+        for instrumentPath in instrumentList:
+            # Add our prefix if necessary
+            if (instrumentPrefix is not None):
+                instrumentPath = os.path.join(instrumentPrefix, instrumentPath)
+            fp = open(instrumentPath)
+            instruments.append(fp.read())
+            fp.close()
+
+        return instruments
+
+    def makeCSD(self, instruments, fTables, notes):
+        csd = "<CsoundSynthesizer>\n"
+
+        # Setup options
+        csd += "<CsOptions>\n"
+        if (self.commandOptions is not None):
+            csd += "\n" + self.commandOptions + "\n"
+        else:
+            csd += "\n"
+        csd += "</CsOptions>\n"
+       
+        # Setup the orc options
+        csd += "<CsInstruments>\n"
+        csd += """sr = %d
+kr = %d
+ksmps = %d
+nchnls = %d\n\n""" % (self.orcOptions['sr'], self.orcOptions['kr'], self.orcOptions['ksmps'], self.orcOptions['nchnls'])
+
+        count = 1
+        for instrument in instruments:
+            csd += instrument % count
+            count += 1
+
+        csd += "</CsInstruments>\n"
+
+        csd += "<CsScore>\n"
+
+        # Write ftables
+        for fTable in fTables:
+            csd += fTable + "\n"
+        csd += "\n"
+
+        # Write notes
+        for note in notes:
+            csd += note + "\n"
+        csd += "\n"
+
+        csd += "</CsScore>\n"
+
+        csd += "</CsoundSynthesizer>\n"
+
+        return csd

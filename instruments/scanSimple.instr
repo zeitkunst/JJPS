@@ -1,0 +1,43 @@
+	instr	%d
+a0	=		0
+iinit       =   1 ; function table to use for initial mass displacements
+irate       =   0.09 ; rate at which to update the system
+ifnvel      =   6 ; fn table with initial mass velocities
+ifnmass     =   2 ; fn table with initial masses
+ifnstif     =   3 ; fn table with mass connections; square of intended mass #
+ifncentr    =   4 ; fn table with centering force of each mass
+ifndamp     =   5 ; fn table with damping factor of each mass
+kmass       =   6 ; scaling of the masses
+kstiff      =   0.1 ; scaling of spring stiffness
+kcentr      =   0.1 ; scaling of centering force
+kdamp       =   -0.01 ; scaling of damping factors
+ileft       =   0.1 ; position of the left hammer (what does this do?)
+iright      =   0.5 ; position of the right hammer (what does this do?)
+kpos        =   0 ; position of an active hammer along the string (how does this differ from ileft and iright?)
+kstrength   =   0 ; power of the active hammer
+idisp       =   1 ; display the masses (turn off for real-time performances)
+id          =   2 ; id of this scanning opcode
+
+
+idur        = p3
+kamp        = ampdb(p4)
+kfreq       = cpspch(p5)
+iscanpath   = 7
+iscanid     = 2
+
+;kmass       = kmass + 1
+;kmass       = 6
+
+; simple envelope
+; TODO: work out something better in the future
+kenv linseg 0, idur*.05, 1, idur*.9, .5, idur*.05, 0 
+
+; setup the scanning system
+	scanu	iinit, irate, ifnvel, ifnmass, ifnstif, ifncentr, ifndamp, kmass, kstiff, kcentr, kdamp, ileft, iright, kpos, kstrength, a0, idisp, id
+
+; scan it!
+ascan scans	kamp, kfreq, iscanpath, iscanid
+
+	outs    ascan * kenv, ascan * kenv
+	endin
+

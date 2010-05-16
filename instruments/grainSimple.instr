@@ -1,0 +1,33 @@
+instr %d
+    kamp   = p4
+    iWaveTable  = p5
+    iWindowFn   =  p6
+    iBaseFrq    =  p7
+    iDensStart  = p8
+    iDensEnd    = p9
+    iGrainDurStart   = p10
+    iGrainDurEnd    = p11
+    
+    insnd = iWaveTable
+    ibasfrq = 44100 / ftlen(insnd)   ; Use original sample rate of insnd file
+    ibasfrq = iBaseFrq
+; p fields
+; amp, waveTable, windowTable, basFrq, densStart, densEnd, grainDurStart, grainDurEnd
+    ;kamp   expseg 220, p3/2, 600, p3/2, 220
+    kpitch line ibasfrq, p3, ibasfrq * .8
+    kdens  line iDensStart, p3, iDensEnd
+    ;kaoff  line 0, p3, 5000
+    kaoff  = 0
+    kpoff  line iBaseFrq, p3, iBaseFrq* .5
+    kgdur  line iGrainDurStart, p3, iGrainDurEnd
+    imaxgdur =  .5
+
+ar  grain kamp, kpitch, kdens, kaoff, kpoff, kgdur, insnd, iWindowFn, imaxgdur
+
+; Basic envelope
+aenv linseg 0, 0.01, 1, p3 - 0.05, 1, 0.04, 0, 1, 0    
+
+; Output, no reverb
+    outs aenv*ar, aenv*ar
+endin
+

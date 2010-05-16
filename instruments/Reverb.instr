@@ -1,0 +1,13 @@
+;===================
+; GLOBAL REVERB
+;===================
+
+          instr 199
+
+a1        reverb2   garvbsig, p4, p5
+          outs      a1,a1
+
+garvbsig  =         0
+
+          endin
+

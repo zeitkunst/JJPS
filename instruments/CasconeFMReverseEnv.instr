@@ -1,0 +1,50 @@
+; from Kim Cascone's "bluecube" on the first CD that comes with the csound manual
+;======================================================
+;   INSTRUMENT 5 - FM w/reverse env
+;
+;======================================================
+;    CHANGES TO INSTR 5
+;____________________________________
+;make A arg in foscili = 10
+;put foscili out into osc w/f18
+;the effect I want is a cascade of short b'wards FM sounds that go from
+;right to left...subtle yet present...like a flock of metal birds
+;========================================================================
+
+          instr %d
+
+kcps      =         p4
+kcar      =         p5
+kmod      =         p6
+kpan      =         p7                       ; SCORE DETERMINES PAN POSITION
+kndx      =         p8                      
+kamp      =         p9
+krvb      =         p10
+
+;kcar     line      2,p3*.9,0
+;kenv     oscil     3,1/p3,10
+
+afm       foscili   kamp,kcps,kcar,kmod,kndx,11 ; f11 = HIRES SINE WAVE
+afm1      oscil     afm,1/p3,18
+
+afm2      =         afm1*400                 ; THIS INCERASES THE GAIN OF THE FOSCILI OUTx400
+
+;krtl     =         sqrt(kpan)               ; SQRT PANNING TECHNIQUE
+;krtr     =         sqrt(1-kpan)             ; pg 247,FIG.7.20 DODGE/JERSE BOOK
+
+
+krtl      =         sqrt(2)/2*cos(kpan)+sin(kpan) ; CONSTANT POWER PANNING
+krtr      =         sqrt(2)/2*cos(kpan)-sin(kpan) ; FROM C.ROADS "CM TUTORIAL" pp460
+
+al        =         afm2*krtl
+ar        =         afm2*krtr
+     
+          outs      al,ar
+
+
+          ;outs     afm2*kpan,afm2*(1-kpan)
+
+garvbsig  =         garvbsig+(afm2*krvb)     ; SEND AMOUNT WAS .2
+
+          endin
+
