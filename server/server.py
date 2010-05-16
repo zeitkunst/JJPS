@@ -149,10 +149,10 @@ class APIPrograms:
             current = etree.Element("current")
             current.text = currentProgramName
             current.set("playing", "1")
-            next = etree.Element("next")
-            next.text = nextProgramName
+            nextProgram = etree.Element("next")
+            nextProgram.text = nextProgramName
             responses.append(current)
-            responses.append(next)
+            responses.append(nextProgram)
             web.header("Content-Type", "application/xml; charset=utf-8")
             return etree.tostring(responses)
         else:
