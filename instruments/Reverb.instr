@@ -2,7 +2,7 @@
 ; GLOBAL REVERB
 ;===================
 
-          instr 199
+          instr %d
 
 a1        reverb2   garvbsig, p4, p5
           outs      a1,a1

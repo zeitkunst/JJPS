@@ -28,6 +28,7 @@ ar  grain kamp, kpitch, kdens, kaoff, kpoff, kgdur, insnd, iWindowFn, imaxgdur
 aenv linseg 0, 0.01, 1, p3 - 0.05, 1, 0.04, 0, 1, 0    
 
 ; Output, no reverb
+; TODO: add panning :-)
     outs aenv*ar, aenv*ar
 endin
 

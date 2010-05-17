@@ -1,9 +1,11 @@
+import binascii
 import csv
 import logging
 import math
 from operator import itemgetter
 import os
 import random
+import re
 import shutil
 import subprocess
 import tempfile
@@ -25,6 +27,12 @@ import nltk
 # ** This shouldn't be necessary; the path to each should should be the same no matter what, we just overwrite that MP3 as necessary
 # ** After shows (or after we have created the show MP3), we upload it to some sort of file sharing service, saving the created URL in the XML file
 # * We need to see if we can use mpd to create a set of playlists that switch at various times; the playlists can be made based on the present list of programs
+
+# Dictionary for our hex to binary mapping
+hexDict = {
+        '0':'0000', '1':'0001', '2':'0010', '3':'0011', '4':'0100', '5':'0101',
+        '6':'0110', '7':'0111', '8':'1000', '9':'1001', 'a':'1010', 'b':'1011',
+        'c':'1100', 'd':'1101', 'e':'1110', 'f':'1111', 'L':''}
 
 class Stream(object):
     # TODO
@@ -117,7 +125,7 @@ class Process(object):
         self.logger.addHandler(fileHandler)
         self.logger.setLevel(level)
 
-    def _makeTokens(self, text):
+    def _makeTokens(self, text, clean = True):
         """Helper function to tokenize our input text."""
         tokens = []
         sentences = nltk.sent_tokenize(text)
@@ -126,12 +134,21 @@ class Process(object):
             for word in words:
                 tokens.append(word)
 
-        clean_tokens = []
-        for token in tokens:
-            if len(token) < 2: # Only save words longer than 2 chars
-                continue
-            clean_tokens.append(token.lower()) # Always lower case
-        return clean_tokens
+        # If we want to get rid of punctuation...
+        if (clean):
+            clean_tokens = []
+            for token in tokens:
+                if len(token) < 2: # Only save words longer than 2 chars
+                    continue
+                clean_tokens.append(token.lower()) # Always lower case
+            return clean_tokens
+
+        else:
+            # Or just get everything, in lowercase of course
+            clean_tokens = []
+            for token in tokens:
+                clean_tokens.append(token.lower())
+            return clean_tokens
 
     def processUpcomingShows(self, nextProgram):
         """Main method to process the upcoming show."""
@@ -403,19 +420,85 @@ class Process(object):
             for file in mp3Filenames:
                 os.remove(file)
 
+    def Telegraph(self):
+        # Get Paths to programs we're going to use
+        ffmpegPath = self.config.get("Sound", "ffmpegPath")
+        outputPath = self.config.get("Sound", "outputPath")
+        id3tagPath = self.config.get("Sound", "id3tagPath")
+        mp3wrapPath = self.config.get("Sound", "mp3wrapPath")
+        csoundPath = self.config.get("Sound", "csoundPath")
+        # TODO
+        # Probably get this from couchdb later
+        pdfPath = self.config.get("Sound", "pdfPath")
 
-    def CreepyVoice(self):
+        pdfFP = open(os.path.join(pdfPath, "Land1993.pdf"), "r")
+
+        instrumentList = ["morseSimple.instr"]
+
+
+        fTables = []
+        fTables.append("f1 0 512 10 1 ; sine wave")
+        fTables.append("f2  0 4096 10   1  .5 .333 .25 .2 .166 .142 .125 .111 .1 .09 .083 .076 .071 .  066 .062 ; sawtooth wave")
+       
+        # 1000 bits is about 15 min
+        chunkSize = 1000
+        numChunks = 7
+        mp3Filenames = []
+        oneDuration = 0.1
+        zeroDuration = 0.05
+        offset = 0.03
+        amp = 4000
+        freq = 440
+        fTableToUse = 1
+        for chunkNumber in xrange(numChunks):
+            # We don't have to figure out the start and end chunks...we just continue reading!
+
+        
+            # Create our binary string
+            binaryString = ""
+            for x in xrange(chunkSize):
+                data = binascii.b2a_hex(pdfFP.read(1))
+                binaryString += hexDict[data[0]]
+                binaryString += hexDict[data[1]]
+
+            # Clear out the notes
+            notes = []
+            time = 0
+            for value in binaryString:
+                if (value == "0"):
+                    notes.append("i1 %f %f %f %f %d" % (time, zeroDuration, amp, freq, fTableToUse))
+                    time += offset + zeroDuration
+                elif (value == "1"):
+                    notes.append("i1 %f %f %f %f %d" % (time, oneDuration, amp, freq, fTableToUse))
+                    time += offset + oneDuration
+            
+            csdMaker = CsoundProcessor(config = self.config)
+            instruments = csdMaker.loadInstruments(instrumentList, instrumentPrefix = csdMaker.instrumentPrefix)
+            csd = csdMaker.makeCSD(instruments, fTables, notes)
+            
+            self.logger.debug("Telegraph: on chunk %d of %d" % (chunkNumber, numChunks))
+            mp3File = self._makeCsoundChunks(csd, chunkNumber)
+            mp3Filenames.append(mp3File)
+
+        # Okay, got all of our mp3 files, let's finish wrapping them            
+        self.logger.debug("Telegraph: wrapping mp3")
+        self._wrapMp3Files(mp3Filenames, "Telegraph")
+
+        # Close our PDF file
+        pdfFP.close()
+
+    def GrainCombine(self):
         docIDs = [item for item in self.db if item.find("_design") == -1]
         docID = random.choice(docIDs)
         data = self.db[docID]
 
-        self.logger.debug("Creepy Voice: tokenizing words")
+        self.logger.debug("Grain Combine: tokenizing words")
         # Tokenize our data into an ordered list of words
         text = data["text"]
         tokens = self._makeTokens(text)
         
         # Then, get a syllable mapping
-        self.logger.debug("Creepy Voice: counting syllables")
+        self.logger.debug("Grain Combine: counting syllables")
         from nltk_contrib.readability import syllables_en
         words = data["tf_idf"].keys()
         syllables = {}
@@ -425,7 +508,7 @@ class Process(object):
         # our instrument
         instrumentList = ["grainSimple.instr"]
 
-        self.logger.debug("Creepy Voice: creating TTS words")
+        self.logger.debug("Grain Combine: creating TTS words")
         # Get a list of TTSed words to use
         tempDir = tempfile.mkdtemp()
         # Bias the words
@@ -450,7 +533,7 @@ class Process(object):
             counter += 1
 
         # Now, create our notes using, as a default, instr 1
-        self.logger.debug("Creepy Voice: Making notes")
+        self.logger.debug("Grain Combine: Making notes")
         notes = []
         from numpy import array
         a = array(data["tf"].values())
@@ -489,7 +572,7 @@ class Process(object):
                     # i1 0 12 1000 1 5 10.1 200 200 0.1 0.1
                     notes.append("i1 %f %f 5000 %d 5 0.1 200 200 %f %f" % (time, syllableCount * 1, TTSWord + 100, tf, tf))
                 except ValueError:
-                    notes.append("i1 %f %f 1000 %d 5 0.1 200 200 %f %f" % (time, 1 + syllableCount * 1, 1, 0.01, 0.01))
+                    notes.append("i1 %f %f 2500 %d 5 0.1 200 200 %f %f" % (time, 1 + syllableCount * 1, 1, 0.01, 0.01))
                 time += syllableCount * 1
     
             # Give me the csd file, please
@@ -497,16 +580,78 @@ class Process(object):
             instruments = csdMaker.loadInstruments(instrumentList, instrumentPrefix = csdMaker.instrumentPrefix)
             csd = csdMaker.makeCSD(instruments, fTables, notes)
             
-            self.logger.debug("Creepy Voice: on chunk %d of %d" % (chunkNumber, numChunks))
+            self.logger.debug("Grain Combine: on chunk %d of %d" % (chunkNumber, numChunks))
             mp3File = self._makeCsoundChunks(csd, chunkNumber, tempDir = tempDir)
             mp3Filenames.append(mp3File)
 
         # Okay, got all of our mp3 files, let's finish wrapping them            
-        self.logger.debug("Creepy Voices: wrapping mp3")
-        self._wrapMp3Files(mp3Filenames, "Creepy Voices")
+        self.logger.debug("Grain Combine: wrapping mp3")
+        self._wrapMp3Files(mp3Filenames, "Grain Combine")
 
-    def _makeCsoundChunks(self, csd, chunkNumber, tempDir = None):
+    def Feldman(self):
+        """In the sparse style of Morton Feldman"""
+
+        # Get random text from database
+        docIDs = [item for item in self.db if item.find("_design") == -1]
+        docID = random.choice(docIDs)
+        data = self.db[docID]
+
+        tokens = self._makeTokens(data["text"], clean = False)
+
+        # Make regex for matching letters
+        allLetters = re.compile("[a-zA-Z0-9]+")
+
+        # Go through and count up the number of letters or numbers before a punctionation; save it and the punctuation
+        numCharacters = 0
+        numbersPunct = []
+        for token in tokens:
+            if (allLetters.match(token) is not None):
+                numCharacters += len(token)
+            else:
+                numbersPunct.append((numCharacters, token))
+                numCharacters = 0
+
+        instrumentList = ["CasconeFMReverseEnv.instr", "Reverb.instr"]
+
+        fTables = []
+        fTables.append("f11 0 2048 10 1 ;SINE WAVE hi-res")
+        fTables.append("f18 0 512   5 1 512 256 ;reverse exp env")
+
+        # Temporary mapping based on durations
+        durationDict = {",": 0.2, ";": 0.4, ":": 0.8, ".": 1.6, "(": 3.2, ")":3.2, "[": 6.4, "]": 6.4, "\"": 6.4}
+
+        time = 0
+        notes = []
+        for numberPunct in numbersPunct:
+            """;;instr    strt dur  frq  car  mod  kpan kndx kamp rvbsnd
+            ;i5   0   1   4500 3.25 1.10 0    9.7  4    .09"""
+            try:
+                freq = 10.0 * numberPunct[0] + 80
+                notes.append("i1 %f %f %f 3.25 1.10 0.2 9.7 4 0.09" % (time, durationDict[numberPunct[1]], freq))
+                time += durationDict[numberPunct[1]] + (numberPunct[0] * 0.1)
+            except KeyError, e:
+                print "Key error", e
+
+        # Add reverb
+        notes.append("i2 0 %f 2 0.2" % time)
+
+        # Give me the csd file, please
+        globalInits = []
+        globalInits.append("garvbsig  init      0")
+        csdMaker = CsoundProcessor(config = self.config)
+        instruments = csdMaker.loadInstruments(instrumentList, instrumentPrefix = csdMaker.instrumentPrefix)
+        csd = csdMaker.makeCSD(instruments, fTables, notes, globalInits = globalInits)
+
+        return csd
+
+
+    def _makeCsoundChunks(self, csd, chunkNumber, tempDir = None, useStdout = False):
         # Write csd file
+        if (tempDir is None):
+            # TODO
+            # make cross-platform
+            tempDir = "/tmp"
+        
         csdPath = os.path.join(tempDir, "chunk.csd")
         fp = open(csdPath, "w")
         fp.write(csd)
@@ -519,15 +664,22 @@ class Process(object):
         outputPathMp3 = os.path.join(tempDir, "chunk%03d.mp3" % chunkNumber)
 
         self.logger.debug("Csound chunks: calling csound and ffmpeg")
-        processCsound = subprocess.call(["csound", "-d", "-o", outputPathWav, "-W", csdPath], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-        processConversion = subprocess.call([ffmpegPath, "-y", "-i", outputPathWav, outputPathMp3], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        if (useStdout):
+            processCsound = subprocess.call(["csound", "-d", "-o", "\"stdout\"", "-W", csdPath, ">", outputPathWav], shell=True, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+            processConversion = subprocess.call([ffmpegPath, "-y", "-i", outputPathWav, outputPathMp3], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
-        # Pass the TTS output to the communicate input
-        #processConversion.communicate(processCsound.communicate()[0])
+            #processConversion.communicate(processCsound.communicate()[0])
+        else:
+            # TODO
+            # Getting rid of the stdout redirect makes the command work...why?
+            processCsound = subprocess.call(["csound", "-d", "-o", outputPathWav, "-W", csdPath], shell=False, stdin = subprocess.PIPE)
+            processConversion = subprocess.call([ffmpegPath, "-y", "-i", outputPathWav, outputPathMp3], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+            
+            # Cleanup
+            os.remove(outputPathWav)
 
         # Cleanup
         os.remove(csdPath)
-        os.remove(outputPathWav)
 
         # Return path to mp3file
         return outputPathMp3
@@ -648,7 +800,7 @@ f8 0 512 7 0 6 1 5 1 6 0
 
         return instruments
 
-    def makeCSD(self, instruments, fTables, notes):
+    def makeCSD(self, instruments, fTables, notes, globalInits = None):
         csd = "<CsoundSynthesizer>\n"
 
         # Setup options
@@ -665,6 +817,10 @@ f8 0 512 7 0 6 1 5 1 6 0
 kr = %d
 ksmps = %d
 nchnls = %d\n\n""" % (self.orcOptions['sr'], self.orcOptions['kr'], self.orcOptions['ksmps'], self.orcOptions['nchnls'])
+
+        if (globalInits is not None):
+            for globalInit in globalInits:
+                csd += globalInit + "\n"
 
         count = 1
         for instrument in instruments:
