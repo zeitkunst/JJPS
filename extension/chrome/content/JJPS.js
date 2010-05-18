@@ -198,7 +198,7 @@ var JJPS = {
         pageTitle = JJPS.doc.getElementsByTagName("title")[0].innerHTML;
         
         if ((pageTitle.match(/^Browse/) != null) || (pageTitle.match(/^SAGE/) != null) || (pageTitle.match(/^My Marked/) != null)) {
-            return
+            return;
         }         
 
         if (pageTitle != "") {
@@ -245,9 +245,6 @@ var JJPS = {
         var journalH1 = journalProductNode.getElementsByTagName("h1")[0];
 
         journalTitle = journalH1.innerHTML;
-        if ((journalTitle.match(/^Browse/) != null) || (journalTitle.match(/^SAGE/) != null) || (journalTitle.match(/^My Marked/) != null)) {
-            return
-        }         
 
         if (journalTitle != "") {
             journalTitle = journalTitle.replace(/<.*?>/g, '').trim();
@@ -401,7 +398,7 @@ String.prototype.trim = function() {
 
 // Show Preferences Dialog
 function showJJPSPreferencesDialog(){
-    window.open("chrome://JJPS/content/options.xul",                  "JJPSPreferences", "chrome,dialog,centerscreen,alwaysRaised");
+    window.open("chrome://JJPS/content/options.xul", "JJPSPreferences", "chrome,dialog,centerscreen,alwaysRaised");
 }
 
 function getElementsByClassName(domElement, className) {
