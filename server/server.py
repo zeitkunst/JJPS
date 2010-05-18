@@ -33,7 +33,8 @@ urls = (
     '/programs/(.*?)', 'ViewProgram',
     # API URIs
     '/API', 'APIInfo',
-    '/API/journals/(.*?)', 'APIJournals',
+    '/API/ownership/(.*?)', 'APIOwnership',
+    '/API/journal/(.*?)', 'APIJournal',
     '/API/test/(.*?)', 'APITest',
     '/API/programs', 'APIPrograms',
     # Admin URIs
@@ -99,7 +100,7 @@ class APIInfo:
     def GET(self):
         return render.API()
 
-class APIJournals:
+class APIOwnership:
     def GET(self, arg):
         bestMimetype = checkMimetype(web.ctx.env.get("HTTP_ACCEPT", "application/xml"))
         station = StationSingleton.getStation()
@@ -121,6 +122,30 @@ class APIJournals:
             return journalsJSON
         else:
             return "Don't know how to respond to that mimetype, sorry."
+
+class APIJournal:
+    def GET(self, journalName):
+        bestMimetype = checkMimetype(web.ctx.env.get("HTTP_ACCEPT", "application/xml"))
+        station = StationSingleton.getStation()
+
+        if ((bestMimetype == "application/xhtml+xml") or (bestMimetype == "application/xml") or (bestMimetype == "text/xml")):
+            journalsXML = station.journalModel.getJournalInfo(journalName)
+            web.header("Content-Type", "text/xml; charset=utf-8")
+            web.header('Content-Encoding', 'utf-8')
+            return journalsXML
+        elif ((bestMimetype == "application/rdf") or (bestMimetype == "application/rdf+xml")):
+            journalsRDF = station.journalModel.getJournalInfo(journalName, returnFormat="rdf")
+            web.header("Content-Type", "application/rdf+xml; charset=utf-8")
+            web.header('Content-Encoding', 'utf-8')
+            return journalsRDF
+        elif (bestMimetype == "application/json"):
+            journalsJSON = station.journalModel.getJournalInfo(journalName, returnFormat = "json")
+            web.header("Content-Type", "application/json; charset=utf-8")
+            web.header('Content-Encoding', 'utf-8')
+            return journalsJSON
+        else:
+            return "Don't know how to respond to that mimetype, sorry."
+
 
 class APITest:
     def GET(self, arg):

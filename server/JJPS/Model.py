@@ -54,6 +54,51 @@ class Model(object):
 
         self.prices = prices
 
+    def getJournalInfo(self, journalName, returnFormat = "xml"):
+        """Return the information about a particular journal."""
+
+        # Format the journal name so that we can find it in our model
+        journalNameFormatted = journalName.lower().replace("&amp;", "and").replace(" ", "_")
+
+        if (returnFormat == "xml"):
+            queryString = """
+            PREFIX jjps: <%s> 
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+            SELECT ?price, ?ownerURI, ?ownerName, ?parentURI, ?parentName
+            WHERE {
+                jjps:%s jjps:hasSubscriptionPrice ?price ;
+                    jjps:isOwnedBy ?ownerURI .
+                ?ownerURI jjps:hasOrganizationName ?ownerName .
+                ?ownerURI rdfs:subClassOf ?parentURI .
+                ?parentURI jjps:hasOrganizationName ?parentName .
+            } 
+            """ % (jjpsURI, journalNameFormatted)
+            print queryString
+            queryString = unicode(queryString)
+            parentQuery = RDF.Query(queryString.encode("ascii"), query_language="sparql")
+            results = parentQuery.execute(self.model)
+
+            resultsXML = etree.Element("results")
+            resultsXML.set("type", "journalInfo")
+            for result in results:
+                resultXML = etree.Element("result")
+                price = result["price"].literal_value["string"]
+                ownerURI = str(result["ownerURI"].uri)
+                ownerName = result["ownerName"].literal_value["string"]
+                parentURI = str(result["parentURI"].uri)
+                parentName = result["parentName"].literal_value["string"]
+                resultXML.set("price", price)
+                resultXML.set("ownerURI", ownerURI)
+                resultXML.set("ownerName", ownerName)
+                resultXML.set("parentURI", parentURI)
+                resultXML.set("parentName", parentName)
+                resultsXML.append(resultXML)
+            return etree.tostring(resultsXML)
+        elif (returnFormat == "json"):
+            pass
+        elif (returnFormat == "rdf"):
+            pass
+
     def getJournalsOwnedBy(self, owner, returnFormat = "xml"):
         """Return the list of journals owned by a top-level owner, such as Elsevier.  `returnFormat` can be any of xml, rdf, or json."""
         # TODO

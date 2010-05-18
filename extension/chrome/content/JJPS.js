@@ -9,6 +9,7 @@ var JJPS = {
     logStream: null,
     logFile: null,
     logDisabled: false,
+    regExps: null,
 
     // Methods to run when we initialize
     _init: function() {
@@ -18,11 +19,33 @@ var JJPS = {
         // Open SQLite file
         this._getSqlite();
 
+        // Create regexps and their corresponding methods
+        this._setupRegexps();
+
         // Setup event listeners for page load
         var appcontent = document.getElementById("appcontent");   // browser
         if(appcontent)
             appcontent.addEventListener("DOMContentLoaded", JJPS.onPageLoad, true);
 
+    },
+
+    // Setup our regular expressions
+    _setupRegexps: function() {
+        JJPS.regExps = new Array();
+
+        wileyArray = new Array();
+        wileyArray.push("Wiley Interscience");
+        wileyArray.push(new RegExp("http://(.+?).interscience.wiley.com"));        
+        wileyArray.push(JJPS._processWiley);        
+
+        scienceDirectArray = new Array();
+        scienceDirectArray.push("Science Direct");
+        scienceDirectArray.push(new RegExp("http://(.+?).sciencedirect.com"));        
+        scienceDirectArray.push(JJPS._processScienceDirect);        
+
+
+        JJPS.regExps.push(wileyArray);
+        JJPS.regExps.push(scienceDirectArray);
     },
 
     // Return a connection to a local SQL store
@@ -36,9 +59,26 @@ var JJPS = {
         this.dbConn = mDBConn;
     },
 
+    // Get a particular request object
+    // TODO
+    // Do we need this?  Probably, because we have a few different types of requests possibly going on...
+    _getRequest: function() {
+        var newRequest = null;
+        newRequest = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance(Components.interfaces.nsIXMLHttpRequest);
+
+        if (newRequest.channel instanceof Components.interfaces.nsISupportsPriority) {
+            newRequest.channel.priority = Components.interfaces.nsISupportsPriority.PRIORITY_LOWEST;
+        }
+        
+        return newRequest;
+    },
+
     onPageLoad: function(aEvent) {
         // Load jquery into the page
         $jq = jQuery.noConflict();
+
+        // Get our doc element
+        JJPS.doc = aEvent.originalTarget;
 
         var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
         var enumerator = wm.getEnumerator("navigator:browser");
@@ -49,7 +89,111 @@ var JJPS = {
             JJPS.request.channel.priority = Components.interfaces.nsISupportsPriority.PRIORITY_LOWEST;
         }
 
+        // Get current location
+        var loc = JJPS.doc.location.href;
 
+        // Save the site index (if we get it)
+        var siteIndex = -1;
+
+        for (regExIndex in JJPS.regExps) {
+            currentRegExp = JJPS.regExps[regExIndex];
+            regExpResult = currentRegExp[1].exec(loc);
+
+            if (loc != null && regExpResult != null) {
+                // Okay, this is the one
+                siteIndex = regExIndex;
+                break;
+            }
+        }
+
+        // Not on a site that we can do anything with, so return
+        if (siteIndex == -1) {
+            return;
+        }
+
+        // Okay, start the scraping!
+        siteName = JJPS.regExps[siteIndex][0];
+        siteMethod = JJPS.regExps[siteIndex][2];
+        siteMethod(JJPS.doc);
+       
+    },
+
+    // Process Wiley Interscience
+    _processWiley: function(doc) {
+        journalTitleDiv = doc.getElementById("titleHeaderLeft");
+
+        if (journalTitleDiv != null) {
+            // 2nd div -> 1st h2 -> 1st a -> text
+            journalTitle = journalTitleDiv.childNodes[1].childNodes[0].childNodes[0].innerHTML;
+            alert(journalTitle);
+        }
+    },
+
+    // Process Science Direct
+    _processScienceDirect: function(doc) {
+        journalTitle = "";
+
+        journalTitleElements = getElementsByClassName(doc, "pubTitle");
+        if (journalTitleElements != "") {
+            journalTitle = journalTitleElements[0].innerHTML;
+
+        }
+
+        journalTitleArticleId = JJPS.doc.getElementById("artiHead");
+        if (journalTitleArticleId != null) {
+            journalTitle = journalTitleArticleId.childNodes[1].innerHTML;
+        }
+
+        // If we actually have something, do the request
+        if (journalTitle != "") {
+            journalTitle = journalTitle.replace(/<.*?>/g, '').trim();
+
+            JJPS.journalRequest = JJPS._getRequest();
+            JJPS.journalRequest.open("GET", JJPS.serverURL + "journal/" + journalTitle, true);
+            JJPS.journalRequest.setRequestHeader('Accept', 'application/xml');
+            JJPS.journalRequest.onreadystatechange = JJPS.processJournalResult;
+            JJPS.journalRequest.send(null);
+        }
+
+        // Replacing ads            
+        leaderboard = JJPS.doc.getElementById("leaderboard");
+        if (leaderboard != null) {
+            leaderboard.innerHTML = "<p style='font-size: 4em;'><blink>BUY ME!!!</blink><p>";        
+        }
+
+        skyscraper = JJPS.doc.getElementById("skyscraper");
+        if (skyscraper != null) {
+            skyscraper.innerHTML = "<p style='font-size: 4em;'><blink>BUY ME!!!</blink><p>";        
+        }
+
+        boombox = JJPS.doc.getElementById("boombox");
+        if (boombox != null) {
+            boombox.innerHTML = "<p style='font-size: 4em;'><blink>BUY ME!!!</blink><p>";        
+        }
+    },
+
+    // Process the result info from our journal request
+    processJournalResult: function() {
+        if (JJPS.journalRequest.readyState < 4) {
+            return;
+        }
+        var results = JJPS.journalRequest.responseXML;
+        var result = results.getElementsByTagName("result")[0];
+        var price = result.getAttribute("price");
+        var ownerName = result.getAttribute("ownerName");
+        var parentName = result.getAttribute("parentName");
+        
+        overlayDiv = JJPS.doc.createElement("div");
+        overlayDiv.style.position = "fixed";
+        overlayDiv.style.bottom = "0em";
+        overlayDiv.style.left = "0em";
+        overlayDiv.style.width = "100%";
+        overlayDiv.style.height = "2em";
+        overlayDiv.style.backgroundColor = "#000000";
+        overlayDiv.style.color = "#ff0000";
+        overlayDiv.style.zIndex = "100";
+        overlayDiv.innerHTML = "This journal is owned by " + ownerName + ", a subsidiary of " + parentName + ", and costs universities $" + price + " per year!";
+        JJPS.doc.body.insertBefore(overlayDiv, JJPS.doc.body.childNodes[0]);
     },
 
     // Toggle the display of the bottom panel
@@ -169,4 +313,13 @@ String.prototype.trim = function() {
 // Show Preferences Dialog
 function showJJPSPreferencesDialog(){
     window.open("chrome://JJPS/content/options.xul",                  "JJPSPreferences", "chrome,dialog,centerscreen,alwaysRaised");
+}
+
+function getElementsByClassName(domElement, className) {
+    var a = [];
+    var re = new RegExp('\\b' + className + '\\b');
+    var els = domElement.getElementsByTagName("*");
+    for(var i=0,j=els.length; i<j; i++)
+        if(re.test(els[i].className))a.push(els[i]);
+    return a;
 }
