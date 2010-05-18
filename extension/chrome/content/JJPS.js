@@ -43,9 +43,27 @@ var JJPS = {
         scienceDirectArray.push(new RegExp("http://(.+?).sciencedirect.com"));        
         scienceDirectArray.push(JJPS._processScienceDirect);        
 
+        sagePublicationsArray = new Array();
+        sagePublicationsArray.push("Sage Publications");
+        sagePublicationsArray.push(new RegExp("http://(.+?).sagepub.com"));        
+        sagePublicationsArray.push(JJPS._processSagePublications);        
+
+        taylorAndFrancisArray = new Array();
+        taylorAndFrancisArray.push("Taylor & Francis");
+        taylorAndFrancisArray.push(new RegExp("http://(.+?).tandf.co.uk"));        
+        taylorAndFrancisArray.push(JJPS._processTaylorAndFrancis);        
+
+        SpringerArray = new Array();
+        SpringerArray.push("Springer");
+        SpringerArray.push(new RegExp("http://(.+?).springerlink.com"));        
+        SpringerArray.push(JJPS._processSpringer);        
+
 
         JJPS.regExps.push(wileyArray);
         JJPS.regExps.push(scienceDirectArray);
+        JJPS.regExps.push(sagePublicationsArray);
+        JJPS.regExps.push(taylorAndFrancisArray);
+        JJPS.regExps.push(SpringerArray);
     },
 
     // Return a connection to a local SQL store
@@ -119,6 +137,8 @@ var JJPS = {
     },
 
     // Process Wiley Interscience
+    // TODO
+    // get wiley pricing info
     _processWiley: function(doc) {
         journalTitleDiv = doc.getElementById("titleHeaderLeft");
 
@@ -171,6 +191,75 @@ var JJPS = {
             boombox.innerHTML = "<p style='font-size: 4em;'><blink>BUY ME!!!</blink><p>";        
         }
     },
+
+    // TODO
+    // get sage pricing info
+    _processSagePublications: function(doc) {
+        pageTitle = JJPS.doc.getElementsByTagName("title")[0].innerHTML;
+        
+        if ((pageTitle.match(/^Browse/) != null) || (pageTitle.match(/^SAGE/) != null) || (pageTitle.match(/^My Marked/) != null)) {
+            return
+        }         
+
+        if (pageTitle != "") {
+            pageTitle = pageTitle.replace(/<.*?>/g, '').trim();
+
+            JJPS.journalRequest = JJPS._getRequest();
+            JJPS.journalRequest.open("GET", JJPS.serverURL + "journal/" + pageTitle, true);
+            JJPS.journalRequest.setRequestHeader('Accept', 'application/xml');
+            JJPS.journalRequest.onreadystatechange = JJPS.processJournalResult;
+            JJPS.journalRequest.send(null);
+        }
+
+    },
+
+    // TODO
+    // get springer pricing info
+    _processSpringer: function(doc) {
+        h2Node = getElementsByClassName(doc, "MPReader_Profiles_SpringerLink_Content_PrimitiveHeadingControlName");
+        
+        if (h2Node != "") {
+            pageTitle = h2Node[0].innerHTML;
+        } else {
+            pageTitle = "";
+        }
+
+        if (pageTitle != "") {
+            pageTitle = pageTitle.replace(/<.*?>/g, '').trim();
+
+            JJPS.journalRequest = JJPS._getRequest();
+            JJPS.journalRequest.open("GET", JJPS.serverURL + "journal/" + pageTitle, true);
+            JJPS.journalRequest.setRequestHeader('Accept', 'application/xml');
+            JJPS.journalRequest.onreadystatechange = JJPS.processJournalResult;
+            JJPS.journalRequest.send(null);
+        }
+    },
+
+
+    // Taylor & Francis
+    // TODO
+    // add them as subclasses of a global taylor and francis in my model
+    // thus, I need to recreate things
+    _processTaylorAndFrancis: function(doc) {
+        var journalProductNode = JJPS.doc.getElementById("productSection");
+        var journalH1 = journalProductNode.getElementsByTagName("h1")[0];
+
+        journalTitle = journalH1.innerHTML;
+        if ((journalTitle.match(/^Browse/) != null) || (journalTitle.match(/^SAGE/) != null) || (journalTitle.match(/^My Marked/) != null)) {
+            return
+        }         
+
+        if (journalTitle != "") {
+            journalTitle = journalTitle.replace(/<.*?>/g, '').trim();
+
+            JJPS.journalRequest = JJPS._getRequest();
+            JJPS.journalRequest.open("GET", JJPS.serverURL + "journal/" + journalTitle, true);
+            JJPS.journalRequest.setRequestHeader('Accept', 'application/xml');
+            JJPS.journalRequest.onreadystatechange = JJPS.processJournalResult;
+            JJPS.journalRequest.send(null);
+        }
+    },
+
 
     // Process the result info from our journal request
     processJournalResult: function() {

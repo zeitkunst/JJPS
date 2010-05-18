@@ -66,14 +66,16 @@ class Model(object):
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
             SELECT ?price, ?ownerURI, ?ownerName, ?parentURI, ?parentName
             WHERE {
-                jjps:%s jjps:hasSubscriptionPrice ?price ;
-                    jjps:isOwnedBy ?ownerURI .
+                jjps:%s jjps:isOwnedBy ?ownerURI .
                 ?ownerURI jjps:hasOrganizationName ?ownerName .
                 ?ownerURI rdfs:subClassOf ?parentURI .
                 ?parentURI jjps:hasOrganizationName ?parentName .
+                OPTIONAL {
+                    jjps:%s jjps:hasSubscriptionPrice ?price .
+                } .
             } 
-            """ % (jjpsURI, journalNameFormatted)
-            print queryString
+            """ % (jjpsURI, journalNameFormatted, journalNameFormatted)
+            print queryString            
             queryString = unicode(queryString)
             parentQuery = RDF.Query(queryString.encode("ascii"), query_language="sparql")
             results = parentQuery.execute(self.model)
@@ -82,7 +84,10 @@ class Model(object):
             resultsXML.set("type", "journalInfo")
             for result in results:
                 resultXML = etree.Element("result")
-                price = result["price"].literal_value["string"]
+                if (result["price"] is not None):
+                    price = result["price"].literal_value["string"]
+                else:
+                    price = ""
                 ownerURI = str(result["ownerURI"].uri)
                 ownerName = result["ownerName"].literal_value["string"]
                 parentURI = str(result["parentURI"].uri)

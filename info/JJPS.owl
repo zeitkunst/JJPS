@@ -260,6 +260,18 @@
         <rdf:type rdf:resource="&owl;Thing"/>
         <hasOrganizationName>Springer Verlag</hasOrganizationName>
     </Corporation>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#TaylorAndFrancis -->
+
+    <owl:Thing rdf:about="#TaylorAndFrancis">
+        <rdf:type rdf:resource="#Corporation"/>
+        <hasOrganizationName
+            >Taylor &amp; Francis</hasOrganizationName>
+        <hasHomepage
+            >http://tandf.co.uk</hasHomepage>
+    </owl:Thing>
 </rdf:RDF>
 
 
