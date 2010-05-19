@@ -224,6 +224,36 @@
     
 
 
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#AmericanChemicalSociety -->
+
+    <owl:Thing rdf:about="#AmericanChemicalSociety">
+        <rdf:type rdf:resource="#NonProfitOrganization"/>
+        <hasOrganizationName
+            >American Chemical Society</hasOrganizationName>
+    </owl:Thing>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#BenthamSciencePublishers -->
+
+    <owl:Thing rdf:about="#BenthamSciencePublishers">
+        <rdf:type rdf:resource="#Corporation"/>
+        <hasOrganizationName
+            >Bentham Science Publishers</hasOrganizationName>
+    </owl:Thing>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#CambridgeUniversityPress -->
+
+    <NonProfitOrganization rdf:about="#CambridgeUniversityPress">
+        <rdf:type rdf:resource="&owl;Thing"/>
+        <hasOrganizationName
+            >Cambridge University Press</hasOrganizationName>
+    </NonProfitOrganization>
+    
+
+
     <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#Elsevier -->
 
     <owl:Thing rdf:about="#Elsevier">
@@ -231,6 +261,44 @@
             >http://www.elsevier.com</hasHomepage>
         <hasOrganizationName>Elsevier</hasOrganizationName>
     </owl:Thing>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#EmeraldGroupPublishing -->
+
+    <Corporation rdf:about="#EmeraldGroupPublishing">
+        <rdf:type rdf:resource="&owl;Thing"/>
+        <hasOrganizationName
+            >EmeraldGroupPublishing</hasOrganizationName>
+    </Corporation>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#IEEE -->
+
+    <owl:Thing rdf:about="#IEEE">
+        <rdf:type rdf:resource="#NonProfitOrganization"/>
+        <hasOrganizationName
+            >Institute for Electrical and Electronic Engineers</hasOrganizationName>
+    </owl:Thing>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#IOPPublishing -->
+
+    <NonProfitOrganization rdf:about="#IOPPublishing">
+        <rdf:type rdf:resource="&owl;Thing"/>
+        <hasOrganizationName>IOP Publishing</hasOrganizationName>
+    </NonProfitOrganization>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#Informa -->
+
+    <Corporation rdf:about="#Informa">
+        <rdf:type rdf:resource="&owl;Thing"/>
+        <hasOrganizationName>Informa</hasOrganizationName>
+    </Corporation>
     
 
 
@@ -244,12 +312,71 @@
     
 
 
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#JohnsHopkinsUniversityPress -->
+
+    <owl:Thing rdf:about="#JohnsHopkinsUniversityPress">
+        <rdf:type rdf:resource="#NonProfitOrganization"/>
+        <hasOrganizationName
+            >Johns Hopkins University Press</hasOrganizationName>
+    </owl:Thing>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#Karger -->
+
+    <Corporation rdf:about="#Karger">
+        <rdf:type rdf:resource="&owl;Thing"/>
+        <hasOrganizationName>Karger</hasOrganizationName>
+    </Corporation>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#MaryAnnLiebert -->
+
+    <owl:Thing rdf:about="#MaryAnnLiebert">
+        <rdf:type rdf:resource="#Corporation"/>
+        <hasOrganizationName
+            >Mary Ann Liebert</hasOrganizationName>
+    </owl:Thing>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#NaturePublishingGroup -->
+
+    <Corporation rdf:about="#NaturePublishingGroup">
+        <rdf:type rdf:resource="&owl;Thing"/>
+        <hasOrganizationName
+            >Nature Publishing Group</hasOrganizationName>
+    </Corporation>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#OxfordUniversityPress -->
+
+    <NonProfitOrganization rdf:about="#OxfordUniversityPress">
+        <rdf:type rdf:resource="&owl;Thing"/>
+        <hasOrganizationName
+            >Oxford University Press</hasOrganizationName>
+    </NonProfitOrganization>
+    
+
+
     <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#SagePublications -->
 
     <Corporation rdf:about="#SagePublications">
         <rdf:type rdf:resource="&owl;Thing"/>
         <hasOrganizationName
             >Sage Publications</hasOrganizationName>
+    </Corporation>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#ScienceChinaPress -->
+
+    <Corporation rdf:about="#ScienceChinaPress">
+        <rdf:type rdf:resource="&owl;Thing"/>
+        <hasOrganizationName
+            >Science China Press</hasOrganizationName>
     </Corporation>
     
 
@@ -272,6 +399,26 @@
         <hasHomepage
             >http://tandf.co.uk</hasHomepage>
     </owl:Thing>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#UniversityOfChicagoPress -->
+
+    <NonProfitOrganization rdf:about="#UniversityOfChicagoPress">
+        <rdf:type rdf:resource="&owl;Thing"/>
+        <hasOrganizationName
+            >University of Chicago Press</hasOrganizationName>
+    </NonProfitOrganization>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#WorldScientificPublishing -->
+
+    <Corporation rdf:about="#WorldScientificPublishing">
+        <rdf:type rdf:resource="&owl;Thing"/>
+        <hasOrganizationName
+            >World Scientific Publishing</hasOrganizationName>
+    </Corporation>
 </rdf:RDF>
 
 

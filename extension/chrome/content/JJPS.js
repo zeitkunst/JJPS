@@ -263,6 +263,9 @@ var JJPS = {
         if (JJPS.journalRequest.readyState < 4) {
             return;
         }
+        // Load jquery into the page
+        var $jq = jQuery.noConflict();
+
         var results = JJPS.journalRequest.responseXML;
         var result = results.getElementsByTagName("result")[0];
         var price = result.getAttribute("price");
@@ -270,6 +273,7 @@ var JJPS = {
         var parentName = result.getAttribute("parentName");
         
         overlayDiv = JJPS.doc.createElement("div");
+        overlayDiv.className = "marquee";
         overlayDiv.style.position = "fixed";
         overlayDiv.style.bottom = "0em";
         overlayDiv.style.left = "0em";
@@ -278,8 +282,12 @@ var JJPS = {
         overlayDiv.style.backgroundColor = "#000000";
         overlayDiv.style.color = "#ff0000";
         overlayDiv.style.zIndex = "100";
-        overlayDiv.innerHTML = "This journal is owned by " + ownerName + ", a subsidiary of " + parentName + ", and costs universities $" + price + " per year!";
+        overlayDiv.innerHTML = "<marquee>This journal is owned by " + ownerName + ", a subsidiary of " + parentName + ", and costs universities $" + price + " per year!</marquee>";
         JJPS.doc.body.insertBefore(overlayDiv, JJPS.doc.body.childNodes[0]);
+
+
+        $jq = jQuery.noConflict();
+        $jq("marquee", JJPS.doc).marquee();
     },
 
     // Toggle the display of the bottom panel

@@ -107,8 +107,7 @@ class Model(object):
     def getJournalsOwnedBy(self, owner, returnFormat = "xml"):
         """Return the list of journals owned by a top-level owner, such as Elsevier.  `returnFormat` can be any of xml, rdf, or json."""
         # TODO
-        # OPTIMIZE!!!  It's way too slow right now
-
+        # OPTIMIZE!!!  It's way too slow right now, at least for XML on the big publishers
 
         if (returnFormat == "xml"):
             queryString = """
@@ -188,6 +187,38 @@ class Model(object):
             if ((counter % 100) == 0):
                 print "On journal %d" % counter
 
+    def getOwnerCounts(self):
+        """Go through each owner (as object of "isOwnedBy"), and count up how many journals they have."""
+        getOwnersQuery =  """PREFIX jjps: <%s> 
+SELECT DISTINCT ?ownerURI 
+WHERE {
+    ?x jjps:isOwnedBy ?ownerURI . 
+}""" % (jjpsURI)
+        print getOwnersQuery
+        print "Model: Getting all owners"
+        getOwners = RDF.Query(getOwnersQuery.encode("ascii"), query_language="sparql")
+        ownerURIs = []
+        results = getOwners.execute(self.model)
+        for result in results:
+            ownerURI = str(result["ownerURI"])
+            ownerURI = ownerURI[1:len(ownerURI) - 1]
+
+            # Now, get all the journals owned by this owner
+            # We can't use ARQ extensions like COUNT, unfortunately
+            getOwnedQuery = """PREFIX jjps: <%s>
+SELECT ?journal
+WHERE {
+    ?journal jjps:isOwnedBy <%s> .
+}""" % (jjpsURI, ownerURI)
+            getOwned = RDF.Query(getOwnedQuery.encode("ascii"), query_language = "sparql")
+            getOwnedResults = getOwned.execute(self.model)
+            
+            count = 0
+            for getOwnedResult in getOwnedResults:
+                count += 1
+            ownerURIs.append((ownerURI, count))
+
+        return ownerURIs
     def addJournalOwnershipToModel(self, companyName, journalName, frequency, ISSN):
         companyNameLower = companyName.lower()
         
@@ -233,9 +264,80 @@ class Model(object):
         elif (companyNameLower.find("springer") != -1):
             ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["Springer"])
             self.model.append(ownedStatement)
+        elif (companyNameLower.find("taylor") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["TaylorAndFrancis"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("routledge") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["TaylorAndFrancis"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("cambridge univ") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["CambridgeUniversityPress"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("oxford univ") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["OxfordUniversityPress"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("ieee") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["IEEE"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("biomed central") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["Springer"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("karger") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["Karger"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("nature publishing") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["NaturePublishingGroup"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("world scientific") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["WorldScientificPublishing"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("bentham science") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["BenthamSciencePublishers"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("mary ann liebert") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["MaryAnnLiebert"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("univ chicago") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["UniversityOfChicagoPress"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("emerald group") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["EmeraldGroupPublishing"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("iop publishing") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["IOPPublishing"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("informa healthcare") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["Informa"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("science china") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["ScienceChinaPress"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("johns hopkins") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["JohnsHopkinsUniversityPress"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("amer chemical") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["AmericanChemicalSociety"])
+            self.model.append(ownedStatement)
+        elif (companyNameLower.find("maney publishing") != -1):
+            ownedStatement = RDF.Statement(jjpsNS[str(companyNameUnderscores)], rdfsNS["subClassOf"], jjpsNS["ManeyPublishing"])
+            self.model.append(ownedStatement)
         else:
             pass
 
+    def rebuildModel(self):
+        """Rebuild the model.  Best to delete the original bdb files beforehand.  Run this from top-level directory of server (otherwise you have to change the path below to the master journal list pickled file)."""
+        self.createBaseModel()
+    
+        # Read in pickle file with journal information
+        print "Reading in journalList pickle file"
+        fp = open("data/journalList/masterJournalList.pickle", "r")
+        masterJournalList = cPickle.load(fp)
+        fp.close()
+    
+        self.getSubscriptionPrices()
+        self.addJournalsToModel(masterJournalList)
+    
+        self.writeModel()
 """Getting price information
 prices = {}
 data = csv.reader(open("ElsevierPricelist2010USD.csv"))

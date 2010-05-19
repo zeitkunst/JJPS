@@ -90,7 +90,7 @@
             <archives>
             </archives>
         </program>    
-        <program id="ProgramThree" processed="0">
+        <program id="ProgramThree" processed="1">
             <name>Program Three</name>        
             <hostedBy>
                 <person ref="PersonOne"/>            
@@ -100,7 +100,7 @@
             <archives>
             </archives>
         </program>    
-        <program id="ProgramFour" processed="1">
+        <program id="ProgramFour" processed="0">
             <name>Program Four</name>        
             <hostedBy>
                 <person ref="PersonOne"/>            
@@ -150,7 +150,7 @@
             <archives>
             </archives>
         </program>
-        <program id="WhatsTheFrequencyKenneth" processed="1">
+        <program id="WhatsTheFrequencyKenneth" processed="0">
             <name>What's the Frequency Kenneth?</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
