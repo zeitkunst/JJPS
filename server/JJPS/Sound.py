@@ -18,6 +18,9 @@ from mpd import MPDClient
 import couchdb
 import nltk
 
+# Local imports
+import Log
+
 # The mapping from program IDs to processing code
 
 # What is the sequence?
@@ -42,15 +45,9 @@ class Stream(object):
         self.config = config
 
         # Setup logging
-        # TODO make this more general, perhaps put in __init__ like in MSThesis?
-        self.logger = logging.getLogger('JJPS')
-        logFormatter = logging.Formatter('%(asctime)s (%(process)d) %(levelname)s: %(message)s')
-        fileHandler = logging.FileHandler(self.config.get("Station", "logPath"))
-        fileHandler.setFormatter(logFormatter)
-        level = getattr(logging, self.config.get("Station", "defaultLogLevel").upper())
-        self.logger.addHandler(fileHandler)
-        self.logger.setLevel(level)
+        self.logger = Log.getLogger(config = self.config)
 
+        # Setup media player daemon (mpd)
         self.mpdHost = self.config.get("Sound", "mpdHost")
         self.mpdPort = self.config.getint("Sound", "mpdPort")
         self.mpdClient = MPDClient()
@@ -116,14 +113,7 @@ class Process(object):
             self.db = db
 
         # Setup logging
-        # TODO make this more general, perhaps put in __init__ like in MSThesis?
-        self.logger = logging.getLogger('JJPS')
-        logFormatter = logging.Formatter('%(asctime)s (%(process)d) %(levelname)s: %(message)s')
-        fileHandler = logging.FileHandler(self.config.get("Station", "logPath"))
-        fileHandler.setFormatter(logFormatter)
-        level = getattr(logging, self.config.get("Station", "defaultLogLevel").upper())
-        self.logger.addHandler(fileHandler)
-        self.logger.setLevel(level)
+        self.logger = Log.getLogger(config = self.config)
 
     def _makeTokens(self, text, clean = True):
         """Helper function to tokenize our input text."""

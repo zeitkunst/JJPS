@@ -237,9 +237,6 @@ var JJPS = {
 
 
     // Taylor & Francis
-    // TODO
-    // add them as subclasses of a global taylor and francis in my model
-    // thus, I need to recreate things
     _processTaylorAndFrancis: function(doc) {
         var journalProductNode = JJPS.doc.getElementById("productSection");
         var journalH1 = journalProductNode.getElementsByTagName("h1")[0];

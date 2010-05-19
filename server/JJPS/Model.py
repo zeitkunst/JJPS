@@ -6,6 +6,9 @@ from lxml import etree
 import RDF
 import simplejson as json
 
+# Local imports
+import Log
+
 jjpsURI = u"http://journalofjournalperformancestudies.org/NS/JJPS.owl#"
 jjpsNS = RDF.NS("http://journalofjournalperformancestudies.org/NS/JJPS.owl#")
 rdfNS = RDF.NS("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
@@ -16,6 +19,10 @@ class Model(object):
     def __init__(self, config = None, ontologyPath= None):
         #RDF.Uri("file:///home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/trunk/info/JJPS.owl")
         self.config = config
+
+        # Setup logging
+        self.logger = Log.getLogger(config = self.config)
+
         if (ontologyPath is not None):
             self.ontologyPath = RDF.Uri(ontologyPath)
         else:
@@ -75,7 +82,8 @@ class Model(object):
                 } .
             } 
             """ % (jjpsURI, journalNameFormatted, journalNameFormatted)
-            print queryString            
+            
+            self.logger.debug("Looking up %s" % journalName)
             queryString = unicode(queryString)
             parentQuery = RDF.Query(queryString.encode("ascii"), query_language="sparql")
             results = parentQuery.execute(self.model)

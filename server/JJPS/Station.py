@@ -8,7 +8,9 @@ from lxml import etree
 import mpd
 import couchdb
 
+# Local imports
 import Sound
+import Log
 
 #TODO
 # * implement proper logging facility
@@ -27,13 +29,7 @@ class Station(object):
 
         # Setup logging
         # TODO make this more general, perhaps put in __init__ like in MSThesis?
-        self.logger = logging.getLogger('JJPS')
-        logFormatter = logging.Formatter('%(asctime)s (%(process)d) %(levelname)s: %(message)s')
-        fileHandler = logging.FileHandler(self.config.get("Station", "logPath"))
-        fileHandler.setFormatter(logFormatter)
-        level = getattr(logging, self.config.get("Station", "defaultLogLevel").upper())
-        self.logger.addHandler(fileHandler)
-        self.logger.setLevel(level)
+        self.logger = Log.getLogger(config = self.config)
 
         # Setup database
         self.logger.debug("Setting up database connection")
