@@ -268,13 +268,14 @@ for result in results:
     price = price.replace(",", "")
     if (price != ""):
         total += float(price)
-# Constructing graphs of ownership
-queryString = 'PREFIX jjps: <http://journalofjournalperformancestudies.org/NS/JJPS.owl#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> CONSTRUCT{?parent rdfs:subClassOf jjps:Elsevier . ?journal jjps:isOwnedBy ?parent .} WHERE { ?parent rdfs:subClassOf jjps:Elsevier . ?journal jjps:isOwnedBy ?parent .} ORDER BY ?parent'
-parentQuery = RDF.Query(queryString, query_language="sparql")
-results = parentQuery.execute(model)
-fp = open("elsevierModel.rdf", "w")
-fp.write(results.to_string())
-fp.close()
+# Making images of ownership graphs, basic version
+from networkx import *
+import matplotlib.pyplot as plt
+G = nx.drawing.read_dot("ElsevierOwnership.dot")
+pos = nx.spring_layout(G, iterations = 10)
+plt.figure(figsize = (50, 50))
+nx.draw(G,pos,node_size=0,alpha=0.4,edge_color='r',font_size=10)
+plt.savefig("test.png")
 """
 if __name__ == "__main__":
     journalModel = Model()

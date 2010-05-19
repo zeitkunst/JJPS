@@ -665,14 +665,14 @@ class Process(object):
 
         self.logger.debug("Csound chunks: calling csound and ffmpeg")
         if (useStdout):
-            processCsound = subprocess.call(["csound", "-d", "-o", "\"stdout\"", "-W", csdPath, ">", outputPathWav], shell=True, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+            processCsound = subprocess.call([csoundPath, "-d", "-o", "stdout", "-W", csdPath, ">", outputPathWav], shell=True, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
             processConversion = subprocess.call([ffmpegPath, "-y", "-i", outputPathWav, outputPathMp3], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
             #processConversion.communicate(processCsound.communicate()[0])
         else:
             # TODO
             # Getting rid of the stdout redirect makes the command work...why?
-            processCsound = subprocess.call(["csound", "-d", "-o", outputPathWav, "-W", csdPath], shell=False, stdin = subprocess.PIPE)
+            processCsound = subprocess.call([csoundPath, "-d", "-o", outputPathWav, "-W", csdPath], shell=False, stdin = subprocess.PIPE)
             processConversion = subprocess.call([ffmpegPath, "-y", "-i", outputPathWav, outputPathMp3], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
             
             # Cleanup
