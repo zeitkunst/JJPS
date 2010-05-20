@@ -58,12 +58,18 @@ var JJPS = {
         SpringerArray.push(new RegExp("http://(.+?).springerlink.com"));        
         SpringerArray.push(JJPS._processSpringer);        
 
+        CiteULikeArray = new Array();
+        CiteULikeArray.push("CiteULike");
+        CiteULikeArray.push(new RegExp("http://(.+?).citeulike.org"));        
+        CiteULikeArray.push(JJPS._processCiteULike);        
+
 
         JJPS.regExps.push(wileyArray);
         JJPS.regExps.push(scienceDirectArray);
         JJPS.regExps.push(sagePublicationsArray);
         JJPS.regExps.push(taylorAndFrancisArray);
         JJPS.regExps.push(SpringerArray);
+        JJPS.regExps.push(CiteULikeArray);
     },
 
     // Return a connection to a local SQL store
@@ -254,6 +260,34 @@ var JJPS = {
         }
     },
 
+    // TODO
+    _processCiteULike: function(doc) {
+        citationNode = JJPS.doc.getElementById("citation");
+        
+        if (citationNode != null) {
+            journalName = citationNode.childNodes[0].innerHTML;        
+            journalName = journalName.trim();
+
+            JJPS.journalRequest = JJPS._getRequest();
+            JJPS.journalRequest.open("GET", JJPS.serverURL + "journal/" + journalName, true);
+            JJPS.journalRequest.setRequestHeader('Accept', 'application/xml');
+            JJPS.journalRequest.onreadystatechange = JJPS.processJournalResult;
+            JJPS.journalRequest.send(null);
+
+        }
+        /*
+        if (pageTitle != "") {
+            pageTitle = pageTitle.replace(/<.*?>/g, '').trim();
+
+            JJPS.journalRequest = JJPS._getRequest();
+            JJPS.journalRequest.open("GET", JJPS.serverURL + "journal/" + pageTitle, true);
+            JJPS.journalRequest.setRequestHeader('Accept', 'application/xml');
+            JJPS.journalRequest.onreadystatechange = JJPS.processJournalResult;
+            JJPS.journalRequest.send(null);
+        }
+        */
+    },
+
 
     // Process the result info from our journal request
     processJournalResult: function() {
@@ -281,19 +315,31 @@ var JJPS = {
         overlayDiv.style.backgroundColor = "#000000";
         overlayDiv.style.color = "#ff0000";
         overlayDiv.style.zIndex = "100";
+
+        insertText = "This journal is owned by " + ownerName;       
+        if  (parentName != null) {
+            insertText += ", a subsidiary of " + parentName;
+        }
+
+        if (price != "") {
+            insertText += ", and costs universities $" + price + " per year";
+
+        }
+
+        insertText += ".";
+        overlayDiv.innerHTML = "<div id='marqueeDiv'>" + insertText + "</div>";
+        JJPS.doc.body.insertBefore(overlayDiv, JJPS.doc.body.childNodes[0]);
+
         if (JJPS.showMarquee) {
             // TODO
-            // work on marquee code to slow it down!
-            overlayDiv.innerHTML = "<div id='testMarquee'>This journal is owned by " + ownerName + ", a subsidiary of " + parentName + ", and costs universities $" + price + " per year!</div>";
+            // see if we can make marquee code more efficient
             
-
             // Load jquery into the page
-            JJPS.doc.body.insertBefore(overlayDiv, JJPS.doc.body.childNodes[0]);
             $jq = jQuery.noConflict();
 
             // We get the following code from http://jsbin.com/uyawi/3/edit
             // Have to fix things up to work with the version of jquery we have and the particular contexts we need
-            var marquee = $jq("#testMarquee", JJPS.doc);
+            var marquee = $jq("#marqueeDiv", JJPS.doc);
             marquee.css({"overflow": "hidden", "width": "100%"});
 
             // wrap "My Text" with a span (IE doesn't like divs inline-block)
@@ -310,13 +356,8 @@ var JJPS = {
             };
 
             reset.call(marquee.find("div"));
-            //marquee.animate({ "margin-left": "-100%" }, {queue: false, duration: 3000});
-            //reset.call(marquee.find("div"));
 
-        } else {
-            overlayDiv.innerHTML = "This journal is owned by " + ownerName + ", a subsidiary of " + parentName + ", and costs universities $" + price + " per year!";
-        }
-        JJPS.doc.body.insertBefore(overlayDiv, JJPS.doc.body.childNodes[0]);
+        } 
     },
 
     // Toggle the display of the bottom panel

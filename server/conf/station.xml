@@ -100,7 +100,7 @@
             <archives>
             </archives>
         </program>    
-        <program id="ProgramFour" processed="0">
+        <program id="ProgramFour" processed="1">
             <name>Program Four</name>        
             <hostedBy>
                 <person ref="PersonOne"/>            
@@ -120,7 +120,7 @@
             <archives>
             </archives>
         </program>    
-        <program id="NewsProgram" processed="1">
+        <program id="NewsProgram" processed="0">
             <name>News</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            

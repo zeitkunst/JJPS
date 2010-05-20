@@ -70,25 +70,27 @@ class Model(object):
         journalNameFormatted = journalName.lower().replace("&amp;", "and").replace(" ", "_")
 
         if (returnFormat == "xml"):
+            # First, get the owner and, potentially, the price of the journal
             queryString = """
             PREFIX jjps: <%s> 
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
-            SELECT ?price, ?ownerURI, ?ownerName, ?parentURI, ?parentName
+            SELECT ?price, ?ownerURI, ?ownerName
             WHERE {
                 jjps:%s jjps:isOwnedBy ?ownerURI .
                 ?ownerURI jjps:hasOrganizationName ?ownerName .
-                ?ownerURI rdfs:subClassOf ?parentURI .
-                ?parentURI jjps:hasOrganizationName ?parentName .
                 OPTIONAL {
                     jjps:%s jjps:hasSubscriptionPrice ?price .
                 } .
             } 
             """ % (jjpsURI, journalNameFormatted, journalNameFormatted)
-            
+
+            """                """
+
+
             self.logger.debug("Looking up %s" % journalName)
             queryString = unicode(queryString)
-            parentQuery = RDF.Query(queryString.encode("ascii"), query_language="sparql")
-            results = parentQuery.execute(self.model)
+            ownerQuery = RDF.Query(queryString.encode("ascii"), query_language="sparql")
+            results = ownerQuery.execute(self.model)
 
             resultsXML = etree.Element("results")
             resultsXML.set("type", "journalInfo")
@@ -100,14 +102,30 @@ class Model(object):
                     price = ""
                 ownerURI = str(result["ownerURI"].uri)
                 ownerName = result["ownerName"].literal_value["string"]
-                parentURI = str(result["parentURI"].uri)
-                parentName = result["parentName"].literal_value["string"]
                 resultXML.set("price", price)
                 resultXML.set("ownerURI", ownerURI)
                 resultXML.set("ownerName", ownerName)
+                resultsXML.append(resultXML)
+
+            # Next, try and get its parent owner
+            queryString = """
+            PREFIX jjps: <%s> 
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+            SELECT ?parentURI, ?parentName 
+            WHERE {
+                <%s> rdfs:subClassOf ?parentURI .
+                ?parentURI jjps:hasOrganizationName ?parentName .
+            } 
+            """ % (jjpsURI, ownerURI)
+            parentQuery = RDF.Query(queryString.encode("ascii"), query_language="sparql")
+            results = parentQuery.execute(self.model)
+
+            for result in results:
+                parentURI = str(result["parentURI"].uri)
+                parentName = result["parentName"].literal_value["string"]
                 resultXML.set("parentURI", parentURI)
                 resultXML.set("parentName", parentName)
-                resultsXML.append(resultXML)
+
             return etree.tostring(resultsXML)
         elif (returnFormat == "json"):
             pass
@@ -454,11 +472,12 @@ for result in results:
 # Making images of ownership graphs, basic version
 from networkx import *
 import matplotlib.pyplot as plt
-G = nx.drawing.read_dot("ElsevierOwnership.dot")
+G = m.createGraphForOwner("JohnWileyAndSons")
 pos = nx.spring_layout(G, iterations = 10)
 plt.figure(figsize = (50, 50))
-nx.draw(G,pos,node_size=0,alpha=0.4,edge_color='r',font_size=10)
-plt.savefig("test.png")
+edgeColors = [edgeInfo[2]["color"] for edgeInfo in G.edges(data = True)]
+nx.draw(G, pos, node_size = 0, alpha = 0.4, edge_color = edgeColors, font_size = 10)
+plt.savefig("foo.png")
 """
 if __name__ == "__main__":
     journalModel = Model()
