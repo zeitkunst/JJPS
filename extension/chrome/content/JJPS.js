@@ -294,8 +294,6 @@ var JJPS = {
             // We get the following code from http://jsbin.com/uyawi/3/edit
             // Have to fix things up to work with the version of jquery we have and the particular contexts we need
             var marquee = $jq("#testMarquee", JJPS.doc);
-            //$jq("#testMarquee", JJPS.doc).css({"font-weight": "bold"});
-            //$jq("#testMarquee", JJPS.doc).animate({marginLeft: "100%"}, {queue: false, duration:4000});
             marquee.css({"overflow": "hidden", "width": "100%"});
 
             // wrap "My Text" with a span (IE doesn't like divs inline-block)
@@ -308,7 +306,7 @@ var JJPS = {
 
             var reset = function() {
                 $jq(this, JJPS.doc).css("margin-left", "0%");
-                $jq(this, JJPS.doc).animate({ marginLeft: "-100%" }, 6000, 'linear', reset);
+                $jq(this, JJPS.doc).animate({ marginLeft: "-100%" }, 12000, 'linear', reset);
             };
 
             reset.call(marquee.find("div"));

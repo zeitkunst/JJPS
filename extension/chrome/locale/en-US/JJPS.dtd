@@ -1,5 +1,6 @@
 <!ENTITY JJPS.menuItem "JJPS Preferences">
 <!ENTITY JJPS.radio "JJPS Radio">
+<!ENTITY JJPS.radio.button "Open radio stream">
 <!ENTITY JJPS.current.program "Current Program: ">
 <!ENTITY JJPS.upcoming.program "Upcoming Program: ">
 <!ENTITY JJPS.preferences.dialog.title "JJPS Preferences">

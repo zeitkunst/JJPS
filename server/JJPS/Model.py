@@ -16,6 +16,7 @@ rdfNS = RDF.NS("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 rdfsNS = RDF.NS("http://www.w3.org/2000/01/rdf-schema#") 
 
 class Model(object):
+    basicColorList = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
 
     def __init__(self, config = None, ontologyPath= None):
         #RDF.Uri("file:///home/nknouf/Documents/Personal/Projects/FirefoxExtensions/JJPS/trunk/info/JJPS.owl")
@@ -372,13 +373,29 @@ WHERE {
 
         results = subClass.execute(self.model)
         subsidiaries = []
+
+        # Generate color lists
+        colorMapping = {}
+
+        count = 0
         for result in results:
             topLevelOwnerName = result["ownerName"].literal_value["string"]
             subsidiaryURI = str(result["subsidiary"])
             subsidiaryName = result["subsidiaryName"].literal_value["string"]
             subsidiaries.append((subsidiaryURI[1:len(subsidiaryURI) - 1], subsidiaryName))
-            graph.add_edge(subsidiaryName, topLevelOwnerName)
+
+            # TODO
+            # Fix for when we have too many colors
+            try:
+                colorMapping[subsidiaryName] = self.basicColorList[count]
+            except IndexError:
+                count = 0
+                colorMapping[subsidiaryName] = self.basicColorList[count]
+
+            graph.add_edge(subsidiaryName, topLevelOwnerName, color=colorMapping[subsidiaryName])
+
             #dotNetwork += "\"%s\" -> \"%s\";\n" % (subsidiaryName, topLevelOwnerName)
+            count += 1
 
         # Now, go through each subsidiary URI and pull out each of the journals attached to it
         for subsidiary in subsidiaries:
@@ -395,7 +412,7 @@ WHERE {
 
             for result in results:
                 journalName = result["journalName"].literal_value["string"]
-                graph.add_edge(journalName, subsidiary[1])
+                graph.add_edge(journalName, subsidiary[1], color = colorMapping[subsidiary[1]])
                 #dotNetwork += "\"%s\" -> \"%s\";\n" % (journalName, subsidiary[1])
 
         #dotNetwork += "}"
