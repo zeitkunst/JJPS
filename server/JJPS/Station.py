@@ -42,6 +42,7 @@ class Station(object):
 
         self.logger.debug("Setting up sound processor")
         self.soundProcess = Sound.Process(config = self.config, db = self.db)
+
         self.logger.debug("Setting up sound stream")
         self.soundStream = Sound.Stream(config = self.config)
 

@@ -217,7 +217,7 @@ class Process(object):
         # Pass the TTS output to the communicate input
         processConversion.communicate(processTTS.communicate()[0])
 
-        processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='News'", "--year=2010", outputPath + "/news.mp3"], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='News'", "--year=2010", "--comment='Visit http://journalofjournalperformancestudies.org for more information.'", outputPath + "/news.mp3"], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
         # Cleanup
         os.remove(tempFilename)
 
@@ -325,7 +325,7 @@ class Process(object):
         # Pass the TTS output to the communicate input
         processConversion.communicate(processTTS.communicate()[0])
 
-        processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='%s'" % programRef, "--year=2010", outputPath + "/%s.mp3" % programRef], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='%s'" % programRef, "--year=2010", "--comment='Visit http://journalofjournalperformancestudies.org for more information.'", outputPath + "/%s.mp3" % programRef], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
         # Cleanup
         os.remove(tempFilename)
@@ -403,7 +403,7 @@ class Process(object):
 
             # Tag files
             self.logger.debug("TTS Chunks: Tagging file")
-            processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='%s'" % title, "--year=2010", outputPath + "/%s.mp3" % titleNospaces], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+            processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='%s'" % title, "--year=2010", "--comment='Visit http://journalofjournalperformancestudies.org for more information.'", outputPath + "/%s.mp3" % titleNospaces], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
             # Cleaning up
             self.logger.debug("Cleaning up")
@@ -697,7 +697,7 @@ class Process(object):
 
         # Tag files
         self.logger.debug("TTS Chunks: Tagging file")
-        processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='%s'" % title, "--year=2010", outputPath + "/%s.mp3" % titleNospaces], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='%s'" % title, "--year=2010", "--comment='Visit http://journalofjournalperformancestudies.org for more information.'", outputPath + "/%s.mp3" % titleNospaces], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
         # Cleaning up
         self.logger.debug("Cleaning up")

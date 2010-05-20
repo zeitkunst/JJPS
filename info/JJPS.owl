@@ -331,6 +331,16 @@
     
 
 
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#ManeyPublishing -->
+
+    <Corporation rdf:about="#ManeyPublishing">
+        <rdf:type rdf:resource="&owl;Thing"/>
+        <hasOrganizationName
+            >Maney Publishing</hasOrganizationName>
+    </Corporation>
+    
+
+
     <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#MaryAnnLiebert -->
 
     <owl:Thing rdf:about="#MaryAnnLiebert">

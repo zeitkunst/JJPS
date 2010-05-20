@@ -5,6 +5,7 @@ import csv
 from lxml import etree
 import RDF
 import simplejson as json
+import networkx as nx
 
 # Local imports
 import Log
@@ -227,7 +228,12 @@ WHERE {
             ownerURIs.append((ownerURI, count))
 
         return ownerURIs
+
     def addJournalOwnershipToModel(self, companyName, journalName, frequency, ISSN):
+        """Add the journal ownership information (at the moment: journal name, owner, frequency, and ISSN) to the local triple store.
+
+        TODO: add in citation index info from Thompson/Reuters."""
+
         companyNameLower = companyName.lower()
         
         journalNameUnderscores = journalName.lower().replace("&amp;", "and").replace(" ", "_")
@@ -346,6 +352,56 @@ WHERE {
         self.addJournalsToModel(masterJournalList)
     
         self.writeModel()
+
+    def createGraphForOwner(self, topLevelOwner):
+        """Create a dot format network file for the given owner.  At the moment this only works for top-level owners already instantiated in our ontology file.
+        
+        TODO: instead of writing out a dot file, make a graph using networkx."""
+
+        graph = nx.DiGraph()
+        #dotNetwork = "digraph {\n"
+        subClassQuery = """PREFIX jjps: <%s> 
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+            SELECT ?subsidiary, ?subsidiaryName, ?ownerName
+            WHERE {
+            ?subsidiary rdfs:subClassOf jjps:%s .
+                ?subsidiary jjps:hasOrganizationName ?subsidiaryName .
+                jjps:%s jjps:hasOrganizationName ?ownerName .
+            } """ % (jjpsURI, topLevelOwner, topLevelOwner)
+        subClass = RDF.Query(subClassQuery.encode("ascii"), query_language="sparql")
+
+        results = subClass.execute(self.model)
+        subsidiaries = []
+        for result in results:
+            topLevelOwnerName = result["ownerName"].literal_value["string"]
+            subsidiaryURI = str(result["subsidiary"])
+            subsidiaryName = result["subsidiaryName"].literal_value["string"]
+            subsidiaries.append((subsidiaryURI[1:len(subsidiaryURI) - 1], subsidiaryName))
+            graph.add_edge(subsidiaryName, topLevelOwnerName)
+            #dotNetwork += "\"%s\" -> \"%s\";\n" % (subsidiaryName, topLevelOwnerName)
+
+        # Now, go through each subsidiary URI and pull out each of the journals attached to it
+        for subsidiary in subsidiaries:
+            subsidiaryQuery = """PREFIX jjps: <%s> 
+            SELECT ?journalURI, ?journalName
+            WHERE {
+                ?journalURI jjps:isOwnedBy <%s> .
+                ?journalURI jjps:hasJournalName ?journalName .
+            } """ % (jjpsURI, subsidiary[0])
+
+            subsidiaryInfo = RDF.Query(subsidiaryQuery.encode("ascii"), query_language="sparql")
+
+            results = subsidiaryInfo.execute(self.model)
+
+            for result in results:
+                journalName = result["journalName"].literal_value["string"]
+                graph.add_edge(journalName, subsidiary[1])
+                #dotNetwork += "\"%s\" -> \"%s\";\n" % (journalName, subsidiary[1])
+
+        #dotNetwork += "}"
+
+        return graph
+
 """Getting price information
 prices = {}
 data = csv.reader(open("ElsevierPricelist2010USD.csv"))
