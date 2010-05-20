@@ -9,4 +9,8 @@
 <!ENTITY JJPS.preferences.serverURLGroup "Server Information">
 <!ENTITY JJPS.preferences.serverURLLabel "Server URL">
 <!ENTITY JJPS.preferences.serverURLTooltip "URL to the server that deals with API queries; should end in 'API'.">
+<!ENTITY JJPS.preferences.advancedDisplayGroup "Advanced Display Options">
+<!ENTITY JJPS.preferences.showMarquee "Use Unnecessary Marquee">
+<!ENTITY JJPS.preferences.showMarqueeTooltip "Whether or not to display info using unnecessary marquees.">
+
 <!ENTITY JJPS.preferences.info "Journal of Journal Performances is a commission of Turbulence.org.">

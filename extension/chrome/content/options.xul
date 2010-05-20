@@ -31,6 +31,7 @@
                 </vbox>            
             </tabpanel>        
             <tabpanel>
+                <vbox>
                 <groupbox id="JJPSAdvancedGroupbox">
                     <caption label="&JJPS.preferences.serverURLGroup;"/>
                     <hbox>
@@ -39,6 +40,13 @@
                 
                     </hbox>
                 </groupbox>
+                <groupbox>
+                    <caption label="&JJPS.preferences.advancedDisplayGroup;" />                
+                    <hbox>
+                        <checkbox tooltiptext="&JJPS.preferences.showMarqueeTooltip;" label="&JJPS.preferences.showMarquee;" checked="true" id="JJPSShowMarquee" />                    
+                    </hbox>
+                </groupbox>
+            </vbox>
             </tabpanel>
             <tabpanel>
                 <vbox>

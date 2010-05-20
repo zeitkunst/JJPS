@@ -3,9 +3,13 @@ window.addEventListener("load", function() { JJPSPreferences.populate(); }, fals
 var JJPSPreferences = {
     // Go through each of the preferences and save them
     save: function() {
-        textbox = document.getElementById("JJPSServerURL");
+        var textbox = document.getElementById("JJPSServerURL");
         if (textbox != null)
             JJPS.serverURL = textbox.value;
+
+        var checkbox = document.getElementById("JJPSShowMarquee");
+        if (checkbox != null)
+            JJPS.showMarquee = checkbox.checked;
 
         JJPS._savePrefs();
     },
@@ -15,5 +19,10 @@ var JJPSPreferences = {
         textbox = document.getElementById("JJPSServerURL");
         if (textbox != null)
             textbox.setAttribute("value", JJPS.serverURL);
+
+        var checkbox = document.getElementById("JJPSShowMarquee");
+        if (checkbox != null)
+            checkbox.setAttribute("checked", JJPS.showMarquee);
+
     },
 }

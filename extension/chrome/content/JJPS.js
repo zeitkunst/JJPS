@@ -260,8 +260,9 @@ var JJPS = {
         if (JJPS.journalRequest.readyState < 4) {
             return;
         }
-        // Load jquery into the page
-        var $jq = jQuery.noConflict();
+
+        // Reread our preferences
+        JJPS._readPrefs();
 
         var results = JJPS.journalRequest.responseXML;
         var result = results.getElementsByTagName("result")[0];
@@ -270,21 +271,54 @@ var JJPS = {
         var parentName = result.getAttribute("parentName");
         
         overlayDiv = JJPS.doc.createElement("div");
-        overlayDiv.className = "marquee";
+        overlayDiv.id = "JJPSInfoDiv";
         overlayDiv.style.position = "fixed";
         overlayDiv.style.bottom = "0em";
         overlayDiv.style.left = "0em";
         overlayDiv.style.width = "100%";
         overlayDiv.style.height = "2em";
+        overlayDiv.style.fontSize = "0.8em";
         overlayDiv.style.backgroundColor = "#000000";
         overlayDiv.style.color = "#ff0000";
         overlayDiv.style.zIndex = "100";
-        overlayDiv.innerHTML = "<marquee>This journal is owned by " + ownerName + ", a subsidiary of " + parentName + ", and costs universities $" + price + " per year!</marquee>";
+        if (JJPS.showMarquee) {
+            // TODO
+            // work on marquee code to slow it down!
+            overlayDiv.innerHTML = "<div id='testMarquee'>This journal is owned by " + ownerName + ", a subsidiary of " + parentName + ", and costs universities $" + price + " per year!</div>";
+            
+
+            // Load jquery into the page
+            JJPS.doc.body.insertBefore(overlayDiv, JJPS.doc.body.childNodes[0]);
+            $jq = jQuery.noConflict();
+
+            // We get the following code from http://jsbin.com/uyawi/3/edit
+            // Have to fix things up to work with the version of jquery we have and the particular contexts we need
+            var marquee = $jq("#testMarquee", JJPS.doc);
+            //$jq("#testMarquee", JJPS.doc).css({"font-weight": "bold"});
+            //$jq("#testMarquee", JJPS.doc).animate({marginLeft: "100%"}, {queue: false, duration:4000});
+            marquee.css({"overflow": "hidden", "width": "100%"});
+
+            // wrap "My Text" with a span (IE doesn't like divs inline-block)
+            marquee.wrapInner("<span>");
+            marquee.find("span").css({ "width": "50%", "display": "inline-block", "text-align":"center" });
+            marquee.append(marquee.find("span").clone()); // now there are two spans with "My Text"
+
+            marquee.wrapInner("<div>");
+            marquee.find("div").css("width", "200%");
+
+            var reset = function() {
+                $jq(this, JJPS.doc).css("margin-left", "0%");
+                $jq(this, JJPS.doc).animate({ marginLeft: "-100%" }, 6000, 'linear', reset);
+            };
+
+            reset.call(marquee.find("div"));
+            //marquee.animate({ "margin-left": "-100%" }, {queue: false, duration: 3000});
+            //reset.call(marquee.find("div"));
+
+        } else {
+            overlayDiv.innerHTML = "This journal is owned by " + ownerName + ", a subsidiary of " + parentName + ", and costs universities $" + price + " per year!";
+        }
         JJPS.doc.body.insertBefore(overlayDiv, JJPS.doc.body.childNodes[0]);
-
-
-        $jq = jQuery.noConflict();
-        $jq("marquee", JJPS.doc).marquee();
     },
 
     // Toggle the display of the bottom panel
@@ -388,12 +422,14 @@ var JJPS = {
     _readPrefs: function() {
         var prefs = this._getPrefs();
         this.serverURL = prefs.getCharPref("serverURL");
+        this.showMarquee = prefs.getBoolPref("showMarquee");
     },
 
     _savePrefs: function() {
         var prefs = this._getPrefs();
 
         prefs.setCharPref("serverURL", this.serverURL);
+        prefs.setBoolPref("showMarquee", this.showMarquee);
     },
 }
 

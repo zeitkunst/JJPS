@@ -2,9 +2,13 @@
 * author Remy Sharp
 * url http://remysharp.com/tag/marquee
 */
+jQuery.fn.extend(
+    testHello: function() {
+        alert("hello");
+    }
+);
 
-(function ($) {
-    $.fn.marquee = function (klass) {
+jQuery.marquee = function (klass) {
         var newMarquee = [],
             last = this.length;
 
@@ -152,4 +156,4 @@
 
         return $(newMarquee);
     };
-}(jQuery));
+
