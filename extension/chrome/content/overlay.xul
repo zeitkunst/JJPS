@@ -39,7 +39,7 @@
                         <label id="JJPSRadioNextLabel" value="&JJPS.upcoming.program;"/>
                         <label id="JJPSRadioNext" value="" />
                     </hbox>
-                    <hbox>
+                    <hbox pack="center">
                         <button id="JJPSRadioButton" label="&JJPS.radio.button;" oncommand="window.open('http://localhost:8000/JJPS.m3u');" />                    
                     </hbox>
                 </vbox>        

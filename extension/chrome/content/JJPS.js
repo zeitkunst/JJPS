@@ -98,11 +98,20 @@ var JJPS = {
     },
 
     onPageLoad: function(aEvent) {
+        // reload our preferences
+        JJPS._readPrefs();
+
         // Load jquery into the page
         $jq = jQuery.noConflict();
 
         // Get our doc element
         JJPS.doc = aEvent.originalTarget;
+
+        // Load our inject stylesheet if desired
+        var sss = Components.classes["@mozilla.org/content/style-sheet-service;1"].getService(Components.interfaces.nsIStyleSheetService);
+        var ios = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
+        var uri = ios.newURI("chrome://JJPS/skin/inject.css", null, null);
+        sss.loadAndRegisterSheet(uri, sss.USER_SHEET);
 
         var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
         var enumerator = wm.getEnumerator("navigator:browser");
@@ -196,7 +205,90 @@ var JJPS = {
         if (boombox != null) {
             boombox.innerHTML = "<p style='font-size: 4em;'><blink>BUY ME!!!</blink><p>";        
         }
+
+        // Try downloading the article link
+        // IT ACTUALLY WORKS!!!
+        var featuresRow = JJPS.doc.getElementById("featuresRow");
+
+        if (featuresRow != null) {
+            // For some reason this gets me the href directly...
+            href = getElementsByClassName(featuresRow, "icon_pdf");
+
+            // open up a temporary file for our download
+            var file = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("TmpD", Components.interfaces.nsIFile);  
+            file.append("JJPSFileDownload.tmp");  
+            file.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0666); 
+            // setup a persistent listener
+            var persist = Components.classes["@mozilla.org/embedding/browser/nsWebBrowserPersist;1"].createInstance(Components.interfaces.nsIWebBrowserPersist);
+            // Setup a network IO service for our href
+            var obj_URI = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService).newURI(href, null, null);
+            // Save the URI
+            persist.saveURI(obj_URI, null, null, null, "", file);
+
+            // Try and upload it
+            alert(file.path);
+            JJPS.upload(file.leafName, JJPS.serverURL + "file/testing")
+
+        }
     },
+
+    uploadPut: function(file, url) {
+        uploadRequest = JJPS._getRequest();
+        uploadRequest.open("PUT", url);
+        uploadRequest.setRequestHeader("Content-type", "text/plain");
+        uploadRequest.setRequestHeader("Content-length", file.fileSize);
+        alert(file.fileSize);
+        uploadRequest.onload = function(event) { alert(event.target.responseText); }
+
+        var fStream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream); 
+        var bufStream = Components.classes["@mozilla.org/network/buffered-input-stream;1"].createInstance(Components.interfaces.nsIBufferedInputStream);
+        // Initialize our file stream with existing file
+        fStream.init(file, 0x01, 0, 0);
+
+        // Setup buffered stream based on this file
+        bufStream.init(fStream, 64 * 1024);
+
+        uploadRequest.send(bufStream);
+
+    },
+
+    upload: function(fileName, url) {
+        var file = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("TmpD", Components.interfaces.nsIFile);  
+        file.append(fileName);
+
+        var boundary = "--------XX" + Math.random();
+        uploadRequest = JJPS._getRequest();
+        uploadRequest.open("POST", url);
+        uploadRequest.setRequestHeader("Content-type", "multipart/form-data; boundary=" + boundary);
+        uploadRequest.setRequestHeader("Content-length", file.fileSize);
+
+        uploadRequest.onload = function(event) { alert(event.target.responseText); }
+
+        var prefix = "--" + boundary + "\r\n" +
+            "Content-Disposition: form-data; name=\"" + "myfile" + "\"\r\n\r\n";
+        var stream = Components.classes["@mozilla.org/io/multiplex-input-stream;1"].createInstance(Components.interfaces.nsIMultiplexInputStream);
+        var stringStream1 = Components.classes["@mozilla.org/io/string-input-stream;1"].createInstance(Components.interfaces.nsIStringInputStream);
+        var stringStream2 = Components.classes["@mozilla.org/io/string-input-stream;1"].createInstance(Components.interfaces.nsIStringInputStream);
+        var fStream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream); 
+        var bufStream = Components.classes["@mozilla.org/network/buffered-input-stream;1"].createInstance(Components.interfaces.nsIBufferedInputStream);
+
+        // Initialize our file stream with existing file
+        fStream.init(file, 0x01, 0, Components.interfaces.nsIFileInputStream.CLOSE_ON_EOF);
+
+        // Setup buffered stream based on this file
+        bufStream.init(fStream, 64 * 1024);
+
+        stringStream1.setData(prefix, prefix.length);
+        endStreamString = "\r\n--" + boundary + "--";
+        stringStream2.setData(endStreamString, endStreamString.length);
+        stream.appendStream(stringStream1);
+        stream.appendStream(bufStream);
+        stream.appendStream(stringStream2);
+
+        uploadRequest.send(stream);
+
+    },
+
 
     // TODO
     // get sage pricing info
@@ -358,6 +450,22 @@ var JJPS = {
             reset.call(marquee.find("div"));
 
         } 
+
+        // Add the graphics
+        imageDiv = JJPS.doc.createElement("div");
+
+        // If we're supposed to show the overlays, set the appropriate ID
+        if (JJPS.showBuyOverlays) {
+            imageDiv.id = "JJPSBuyImage001";
+        }
+
+        imageDiv.style.position = "fixed";
+        imageDiv.style.top = "1em";
+        imageDiv.style.left = "1.2em";
+        imageDiv.style.width = "300px";
+        imageDiv.innerHTML = "<br/><br/><br/><br/><br/>";
+        JJPS.doc.body.insertBefore(imageDiv, JJPS.doc.body.childNodes[0]);
+
     },
 
     // Toggle the display of the bottom panel
@@ -446,6 +554,23 @@ var JJPS = {
     },
 
     //////////////////////////////////////////////////
+    // File operations
+    //////////////////////////////////////////////////
+
+    _getFileSep: function() {
+        // Taken from add-art
+        
+        // Get the profile directory, and search for the separator within it
+        DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1","nsIProperties");
+        var JJPSFileLoc = (new DIR_SERVICE()).get("ProfD", Components.interfaces.nsIFile).page;
+        if (JJPSFileLoc.search(/\\/) != -1) {
+            return "\\";
+        } else {
+            return "/";
+        }
+    },                     
+
+    //////////////////////////////////////////////////
     // Preferences
     //////////////////////////////////////////////////
 
@@ -462,6 +587,7 @@ var JJPS = {
         var prefs = this._getPrefs();
         this.serverURL = prefs.getCharPref("serverURL");
         this.showMarquee = prefs.getBoolPref("showMarquee");
+        this.showBuyOverlays = prefs.getBoolPref("showBuyOverlays");
     },
 
     _savePrefs: function() {
@@ -469,6 +595,7 @@ var JJPS = {
 
         prefs.setCharPref("serverURL", this.serverURL);
         prefs.setBoolPref("showMarquee", this.showMarquee);
+        prefs.setBoolPref("showBuyOverlays", this.showBuyOverlays);
     },
 }
 

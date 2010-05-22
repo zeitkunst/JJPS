@@ -36,6 +36,7 @@ urls = (
     '/API/ownership/(.*?)', 'APIOwnership',
     '/API/journal/(.*?)', 'APIJournal',
     '/API/test/(.*?)', 'APITest',
+    '/API/file/(.*?)', 'APIFile',
     '/API/programs', 'APIPrograms',
     # Admin URIs
     '/admin', 'adminIndex',
@@ -151,6 +152,26 @@ class APITest:
     def GET(self, arg):
         bestMimetype = checkMimetype(web.ctx.env.get("HTTP_ACCEPT", "application/xml"))
         return bestMimetype
+
+class APIFile:
+    def GET(self, arg):
+        return arg
+
+    def POST(self, arg):
+        data = web.input(myfile={})
+        web.debug(data["myfile"].filename)
+        file = data["myfile"].file.read()
+
+        return "Got ", data["myfile"].filename
+
+    def PUT(self, arg):
+        data = web.input()
+        print data.keys()
+        #fp = open("foo", "wb")
+        #fp.write(data["myfile"])
+        #fp.close()
+
+        return "Got "
 
 class APIPrograms:
     def GET(self):

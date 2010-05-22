@@ -5,6 +5,7 @@
 <!ENTITY JJPS.upcoming.program "Upcoming Program: ">
 <!ENTITY JJPS.preferences.dialog.title "JJPS Preferences">
 <!ENTITY JJPS.preferences.standardTab "Standard">
+<!ENTITY JJPS.preferences.standardGroup "Standard Options">
 <!ENTITY JJPS.preferences.advancedTab "Advanced">
 <!ENTITY JJPS.preferences.aboutTab "About">
 <!ENTITY JJPS.preferences.serverURLGroup "Server Information">
@@ -13,5 +14,7 @@
 <!ENTITY JJPS.preferences.advancedDisplayGroup "Advanced Display Options">
 <!ENTITY JJPS.preferences.showMarquee "Use Unnecessary Marquee">
 <!ENTITY JJPS.preferences.showMarqueeTooltip "Whether or not to display info using unnecessary marquees.">
+<!ENTITY JJPS.preferences.showBuyOverlays "Show Buy Images">
+<!ENTITY JJPS.preferences.showBuyOverlaysTooltip "Whether or not show unnecessarily gaudy 'buy me' images.">
 
 <!ENTITY JJPS.preferences.info "Journal of Journal Performances is a commission of Turbulence.org.">

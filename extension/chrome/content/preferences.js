@@ -11,6 +11,10 @@ var JJPSPreferences = {
         if (checkbox != null)
             JJPS.showMarquee = checkbox.checked;
 
+        var checkbox = document.getElementById("JJPSShowBuyOverlays");
+        if (checkbox != null)
+            JJPS.showBuyOverlays = checkbox.checked;
+
         JJPS._savePrefs();
     },
 
@@ -23,6 +27,10 @@ var JJPSPreferences = {
         var checkbox = document.getElementById("JJPSShowMarquee");
         if (checkbox != null)
             checkbox.setAttribute("checked", JJPS.showMarquee);
+
+        var checkbox = document.getElementById("JJPSShowBuyOverlays");
+        if (checkbox != null)
+            checkbox.setAttribute("checked", JJPS.showBuyOverlays);
 
     },
 }

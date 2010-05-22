@@ -1,0 +1,6 @@
+#JJPSBuyImage001 {
+    background: url('chrome://JJPS/skin/buy001.png') no-repeat;
+    font-size: 5em;
+    font-weight: bold;
+    z-index: 90;
+}
