@@ -12,11 +12,6 @@ import couchdb
 import Sound
 import Log
 
-#TODO
-# * implement proper logging facility
-# * move currentProgramName and currentProcessedProgram to the config file
-# * move config file to conf directory
-
 NAMESPACES= {"JJPS": "http://journalofjournalperformancestudies.org/ns/1.0/#"}
 
 # All of the JJPS station methods
@@ -85,6 +80,12 @@ class Station(object):
         #self.scheduleHTML = self.constructScheduleHTML(self.scheduleDict, days=["sunday"])
         self.scheduleHTML = self.constructScheduleHTML(self.scheduleDict)
         return self.scheduleHTML
+
+    def archiveProgram(self, programRef):
+        """Archive the given program."""
+        # TODO
+        # Go through the archives for the given programRef and set the hidden attribute to 0 for the latest archive
+        pass
 
     def constructScheduleDict(self, days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]):
     

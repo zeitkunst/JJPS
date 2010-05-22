@@ -1,4 +1,5 @@
 import binascii
+import codecs
 import csv
 import logging
 import math
@@ -265,6 +266,9 @@ class Process(object):
         docID = random.choice(docIDs)
         self.logger.debug("Random Vocal Playback: TTS")
         self._makeTTSFileChunks(voice = None, text = self.db[docID]["text"], title = "Random Vocal Playback")
+        
+        codedText = self.createTextTransmission(self.db[docID]["text"])
+        self.archiveShow("RandomVocalPlayback", codedText)
 
         self.logger.info("Random Vocal Playback: done")
 
@@ -288,6 +292,7 @@ class Process(object):
         self.logger.debug("Cutup Hour: TTS")
         self._makeTTSFileChunks(voice = None, text = text, title = "Cutup Hour")
 
+        self.archiveShow("CutupHour", text)
         self.logger.info("Cutup Hour: done")
 
     def WhatsTheFrequencyKenneth(self):
@@ -314,6 +319,7 @@ class Process(object):
         self.logger.debug("What's the Frequency Kenneth: TTS")
         self._makeTTSFileChunks(voice = None, text = text, title = "What's the Frequency Kenneth")
 
+        self.archiveShow("CutupHour", text)
         self.logger.info("What's the Frequency Kenneth: done")
 
 
@@ -770,6 +776,31 @@ class Process(object):
         processTTS = subprocess.call([text2wavePath, tempFilename, "-o", os.path.join(tempDir, word + ".wav")], shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
         os.remove(tempFilename)
+
+    def archiveShow(self, programRef, playlist):
+        """Archive the show materials for the given show.  The writing of the archive materials to the station XML file occurs when we switch programs.  We know that we can always copy the given programRef.mp3 file to the archive directory as we always overwrite it on each process run."""
+        archivePath = self.config.get("Sound", "archivePath")
+        programArchivePath = os.path.join(archivePath, programRef)
+        outputPath = self.config.get("Sound", "outputPath")
+
+        # Try to create the directory for the archived show
+        try:
+            os.mkdir(programArchivePath)
+        except OSError:
+            # Assume that if we get an error, the path already exists
+            # TODO
+            # bad assumption :-)
+            pass
+
+        # Copy the mp3 file to the archive directory
+        shutil.copy2(os.path.join(outputPath, programRef + ".mp3"), os.path.join(programArchivePath, programRef + "Current.mp3"))
+
+        # Write the playlist to the archive directory
+        fp = codecs.open(os.path.join(programArchivePath, programRef + "CurrentPlaylist.txt"), "w", "utf-8")
+        fp.write(playlist)
+        fp.close()
+
+
 
 class CsoundProcessor(object):
     FTABLES = """

@@ -127,6 +127,14 @@
                             <attribute name="href">
                                 <text />
                             </attribute>
+                            <attribute name="hidden">
+                                <text />
+                            </attribute>
+                            <optional>
+                                <attribute name="playlistHref">
+                                    <text />                            
+                                </attribute>
+                            </optional>
                             <optional>
                                 <ref name="playlist" />
                             </optional>
