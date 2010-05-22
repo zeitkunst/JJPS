@@ -137,6 +137,17 @@
     
 
 
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasSingleArticlePrice -->
+
+    <owl:DatatypeProperty rdf:about="#hasSingleArticlePrice">
+        <rdfs:comment
+            >The price charged for a single article.</rdfs:comment>
+        <rdfs:domain rdf:resource="#Journal"/>
+        <rdfs:range rdf:resource="&xsd;float"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasSubject -->
 
     <owl:DatatypeProperty rdf:about="#hasSubject">
@@ -343,11 +354,11 @@
 
     <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#MaryAnnLiebert -->
 
-    <owl:Thing rdf:about="#MaryAnnLiebert">
-        <rdf:type rdf:resource="#Corporation"/>
+    <Corporation rdf:about="#MaryAnnLiebert">
+        <rdf:type rdf:resource="&owl;Thing"/>
         <hasOrganizationName
             >Mary Ann Liebert</hasOrganizationName>
-    </owl:Thing>
+    </Corporation>
     
 
 

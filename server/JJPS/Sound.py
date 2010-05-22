@@ -115,6 +115,28 @@ class Process(object):
         # Setup logging
         self.logger = Log.getLogger(config = self.config)
 
+    def createTextTransmission(self, text):
+        """Create a representation of the text for transmission."""
+        tokens = self._makeTokens(text, clean = False)
+        uniq = self.uniqify(tokens)
+        uniq.sort()
+        nums = [uniq.index(token) for token in tokens]
+        output = ""
+        for num in nums:
+            output += "%04x " % (num)
+
+        textTransmission = " ".join(uniq)
+        textTransmission += "\n"
+        textTransmission += output
+
+        return textTransmission
+
+    def uniqify(self, seq):
+        """Keep only the unique items in a list.  Taken from: http://www.peterbe.com/plog/uniqifiers-benchmark"""
+        seen = set()
+        seen_add = seen.add
+        return [x for x in seq if x not in seen and not seen_add(x)]
+
     def _makeTokens(self, text, clean = True):
         """Helper function to tokenize our input text."""
         tokens = []

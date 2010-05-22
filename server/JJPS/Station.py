@@ -24,7 +24,7 @@ class Station(object):
     DAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
 
     def __init__(self, configFile = "JJPSConfig.ini"):
-        self.config = ConfigParser.RawConfigParser()
+        self.config = ConfigParser.ConfigParser()
         self.config.read(configFile)
 
         # Setup logging
