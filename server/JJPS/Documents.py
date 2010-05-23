@@ -32,7 +32,8 @@ class Documents(object):
         newDataDict["articleText"] = articleText        
 
         # Title
-        newDataDict["title"] = dataDict["title"]
+        soup = BeautifulSoup.BeautifulSoup(dataDict["title"])
+        newDataDict["title"] = soup.text
 
         # Authors
         soup = BeautifulSoup.BeautifulSoup(dataDict["authors"])
@@ -56,7 +57,8 @@ class Documents(object):
         
         # Create an id based on the hash of the title and author
 
-        id = hashlib.sha256(dataDict["title"] + dataDict["authors"]).hexdigest()
+        id = hashlib.sha256(dataDict["title"].encode("ascii", "ignore") + dataDict["authors"].encode("ascii", "ignore")).hexdigest()
+        print id
         dataDict["_id"] = id
         try:
             id, rev = self.db.save(dataDict)
