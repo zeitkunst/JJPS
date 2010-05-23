@@ -6,6 +6,7 @@
 # Please see http://.org/license.
 # Just a test
 
+import os
 import sys
 
 import logging
@@ -158,11 +159,40 @@ class APIFile:
         return arg
 
     def POST(self, arg):
-        data = web.input(myfile={})
-        web.debug(data["myfile"].filename)
-        file = data["myfile"].file.read()
+        print web.ctx.environ
+        tmpfile = os.tmpfile()
+        contentLength = int(web.ctx.env['CONTENT_LENGTH'])
+        if contentLength <= 0:
+            raise AssertionError('invalid content length')
 
-        return "Got ", data["myfile"].filename
+        # BEGIN HACK HACK HACK HACK HACK HACK HACK HACK HACK
+        # I shouldn't have to do the following...but I do, for some reason, otherwise I get annoying timeout errors when posting from javascript.  See this thread for background info, even though it's a different use-case: http://groups.google.com/group/webpy/browse_thread/thread/b22d7dd17b1e477d/7f823b1aa133ac12?lnk=gst&q=timed+out#7f823b1aa133ac12.
+        # This is needed even on files of only 30 bytes or so!
+        wsgiInput = web.ctx.env['wsgi.input']
+
+        while contentLength > 0:
+            chunk = 1024
+            if contentLength < chunk:
+                chunk = contentLength
+            contentLength -= chunk
+            currentChunk = wsgiInput.read(chunk)
+            print currentChunk
+            tmpfile.write(currentChunk)
+        tmpfile.seek(0)
+
+        web.ctx.env['wsgi.input'] = tmpfile 
+
+        data = web.input(myfile = {})
+        #data = web.input()
+        tmpfile.close()
+        # END HACK HACK HACK HACK HACK HACK HACK HACK HACK
+
+        # Writing PDF files, if we get them            
+        #file = data["myfile"].file.read()
+        #fp = open("test.pdf", "wb")
+        #fp.write(file)
+        #fp.close()
+        return data["foo"]
 
     def PUT(self, arg):
         data = web.input()

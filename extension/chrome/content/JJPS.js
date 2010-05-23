@@ -215,40 +215,114 @@ var JJPS = {
             href = getElementsByClassName(featuresRow, "icon_pdf");
 
             // open up a temporary file for our download
-            var file = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("TmpD", Components.interfaces.nsIFile);  
-            file.append("JJPSFileDownload.tmp");  
-            file.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0666); 
-            // setup a persistent listener
-            var persist = Components.classes["@mozilla.org/embedding/browser/nsWebBrowserPersist;1"].createInstance(Components.interfaces.nsIWebBrowserPersist);
-            // Setup a network IO service for our href
-            var obj_URI = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService).newURI(href, null, null);
-            // Save the URI
-            persist.saveURI(obj_URI, null, null, null, "", file);
+//            var file = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("TmpD", Components.interfaces.nsIFile);  
+//            file.append("JJPSFileDownload.tmp");  
+//            file.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0666); 
+//            // setup a persistent listener
+//            var persist = Components.classes["@mozilla.org/embedding/browser/nsWebBrowserPersist;1"].createInstance(Components.interfaces.nsIWebBrowserPersist);
+//            // Setup a network IO service for our href
+//            var obj_URI = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService).newURI(href, null, null);
+//            // Save the URI
+//            persist.saveURI(obj_URI, null, null, null, "", file);
 
             // Try and upload it
-            alert(file.path);
-            JJPS.upload(file.leafName, JJPS.serverURL + "file/testing")
+            //JJPS.upload("foo.txt", JJPS.serverURL + "file/testing")
 
+            postData = new Array();
+            postData["href"] = href;
+            postData["foo"] = "bar";
+            JJPS.uploadPostData(postData, JJPS.serverURL + "file/testing");
         }
     },
 
-    uploadPut: function(file, url) {
-        uploadRequest = JJPS._getRequest();
-        uploadRequest.open("PUT", url);
-        uploadRequest.setRequestHeader("Content-type", "text/plain");
-        uploadRequest.setRequestHeader("Content-length", file.fileSize);
-        alert(file.fileSize);
-        uploadRequest.onload = function(event) { alert(event.target.responseText); }
+    uploadPostData: function(postData, url) {
+        // boundary setup
+        var boundary = "-------------" + (new Date().getTime());
 
-        var fStream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream); 
-        var bufStream = Components.classes["@mozilla.org/network/buffered-input-stream;1"].createInstance(Components.interfaces.nsIBufferedInputStream);
-        // Initialize our file stream with existing file
-        fStream.init(file, 0x01, 0, 0);
+        // boundary start stream
+        var startBoundaryStream = Components.classes["@mozilla.org/io/string-input-stream;1"].createInstance(Components.interfaces.nsIStringInputStream);
+        startBoundaryStream.setData("\r\n--" + boundary + "\r\n", -1);
+        
+        // Setup boundary end stream
+        var endBoundaryStream = Components.classes["@mozilla.org/io/string-input-stream;1"].createInstance(Components.interfaces.nsIStringInputStream);
+        endBoundaryStream.setData("\r\n--" + boundary + "--", -1);
 
-        // Setup buffered stream based on this file
-        bufStream.init(fStream, 64 * 1024);
+        // Setup a multiplex stream
+        var multiStream = Components.classes["@mozilla.org/io/multiplex-input-stream;1"].createInstance(Components.interfaces.nsIMultiplexInputStream);
 
-        uploadRequest.send(bufStream);
+        for (postIndex in postData) {
+            // Setup the mime stream, the 'part' of a multi-part mime type
+            //var mimeStream = Components.classes["@mozilla.org/network/mime-input-stream;1"].createInstance(Components.interfaces.nsIMIMEInputStream);
+            //mimeStream.addHeader("Content-Type","application/octet-stream");
+            //mimeStream.addHeader("Content-Disposition","form-data; name=\"" + postIndex + "\";");
+
+            var stringStream = Components.classes["@mozilla.org/io/string-input-stream;1"].createInstance(Components.interfaces.nsIStringInputStream);
+            var str = "\r\n--" + boundary + "\r\n";
+            str += "Content-Disposition: form-data; name=\"" + postIndex + "\"\r\n";
+            str += encodeURIComponent(postData[postIndex]) + "\r\n\r\n";
+            stringStream.setData(str, -1);
+
+            multiStream.appendStream(stringStream);
+        }
+        multiStream.appendStream(endBoundaryStream);
+
+        var uploadRequest = JJPS._getRequest();
+        uploadRequest.open("POST", url, false);
+        uploadRequest.setRequestHeader("Content-Length", multiStream.available());
+        uploadRequest.setRequestHeader("Content-Type","multipart/form-data; boundary="+boundary);
+        uploadRequest.onload = function(event) {
+            alert(event.target.responseText);
+        }
+        uploadRequest.send(multiStream);
+
+    },
+
+    uploadPostDataFormURLEncoded: function(postData, url) {
+        // Setup the boundary start stream
+        //var boundary = "--F-E-B-E--U-p-l-o-a-d-------------" + Math.random();
+        var boundary = "-------------" + (new Date().getTime());
+        var startBoundaryStream = Components.classes["@mozilla.org/io/string-input-stream;1"].createInstance(Components.interfaces.nsIStringInputStream);
+        startBoundaryStream.setData("\r\n--" + boundary + "\r\n", -1);
+
+        // Setup boundary end stream
+        var endBoundaryStream = Components.classes["@mozilla.org/io/string-input-stream;1"].createInstance(Components.interfaces.nsIStringInputStream);
+        endBoundaryStream.setData("\r\n--" + boundary + "--", -1);
+
+        // Setup a multiplex stream
+        var multiStream = Components.classes["@mozilla.org/io/multiplex-input-stream;1"].createInstance(Components.interfaces.nsIMultiplexInputStream);
+
+        //multiStream.appendStream(startBoundaryStream);
+        var dataString = "";
+        for (paramIndex in postData) {
+            dataString += paramIndex + "=" + encodeURIComponent(postData[paramIndex]) + "&";
+
+        }
+
+        var iStream = Components.classes["@mozilla.org/io/string-input-stream;1"].createInstance(Components.interfaces.nsIStringInputStream);
+        if ("data" in iStream) {
+            iStream.data = dataString;
+        } else {
+            iStream.setData(dataString, dataString.length);
+        }
+        
+        // Setup the mime stream, the 'part' of a multi-part mime type
+        var mimeStream = Components.classes["@mozilla.org/network/mime-input-stream;1"].createInstance(Components.interfaces.nsIMIMEInputStream);
+        mimeStream.addContentLength = true;
+        mimeStream.addHeader("Content-Type","application/x-www-form-urlencoded");
+        mimeStream.setData(iStream);
+
+        //mimeStream.setData(startBoundaryStream);
+        multiStream.appendStream(mimeStream);
+        //multiStream.appendStream(endBoundaryStream);
+
+        var uploadRequest = JJPS._getRequest();
+        uploadRequest.open("POST", url, false);
+        uploadRequest.setRequestHeader("Content-Length", multiStream.available());
+        uploadRequest.setRequestHeader("Content-Type","multipart/form-data; boundary="+boundary, false);
+        uploadRequest.onload = function(event) {
+            alert(event.target.responseText);
+        }
+        uploadRequest.send(multiStream);
 
     },
 
@@ -256,37 +330,42 @@ var JJPS = {
         var file = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("TmpD", Components.interfaces.nsIFile);  
         file.append(fileName);
 
-        var boundary = "--------XX" + Math.random();
-        uploadRequest = JJPS._getRequest();
-        uploadRequest.open("POST", url);
-        uploadRequest.setRequestHeader("Content-type", "multipart/form-data; boundary=" + boundary);
-        uploadRequest.setRequestHeader("Content-length", file.fileSize);
+        // Buffer the upload file
+        var inStream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
+        inStream.init(file.nsIFile, 1, 1, inStream.CLOSE_ON_EOF);
+        var bufInStream = Components.classes["@mozilla.org/network/buffered-input-stream;1"].createInstance(Components.interfaces.nsIBufferedInputStream);
+        bufInStream.init(inStream, 4096);
 
-        uploadRequest.onload = function(event) { alert(event.target.responseText); }
+        // Setup the boundary start stream
+        var boundary = "-------------" + (new Date().getTime());
+        var startBoundaryStream = Components.classes["@mozilla.org/io/string-input-stream;1"].createInstance(Components.interfaces.nsIStringInputStream);
+        startBoundaryStream.setData("\r\n--" + boundary + "\r\n", -1);
 
-        var prefix = "--" + boundary + "\r\n" +
-            "Content-Disposition: form-data; name=\"" + "myfile" + "\"\r\n\r\n";
-        var stream = Components.classes["@mozilla.org/io/multiplex-input-stream;1"].createInstance(Components.interfaces.nsIMultiplexInputStream);
-        var stringStream1 = Components.classes["@mozilla.org/io/string-input-stream;1"].createInstance(Components.interfaces.nsIStringInputStream);
-        var stringStream2 = Components.classes["@mozilla.org/io/string-input-stream;1"].createInstance(Components.interfaces.nsIStringInputStream);
-        var fStream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream); 
-        var bufStream = Components.classes["@mozilla.org/network/buffered-input-stream;1"].createInstance(Components.interfaces.nsIBufferedInputStream);
+        // Setup boundary end stream
+        var endBoundaryStream = Components.classes["@mozilla.org/io/string-input-stream;1"].createInstance(Components.interfaces.nsIStringInputStream);
+        endBoundaryStream.setData("\r\n--" + boundary + "--", -1);
 
-        // Initialize our file stream with existing file
-        fStream.init(file, 0x01, 0, Components.interfaces.nsIFileInputStream.CLOSE_ON_EOF);
+        // Setup the mime stream, the 'part' of a multi-part mime type
+        var mimeStream = Components.classes["@mozilla.org/network/mime-input-stream;1"].createInstance(Components.interfaces.nsIMIMEInputStream);
+        mimeStream.addContentLength = true;
+        mimeStream.addHeader("Content-Type","application/octet-stream");
+        mimeStream.addHeader("Content-Disposition","form-data; name=\"" + "myfile" + "\"; filename=\"" + fileName + "\"");
+        mimeStream.setData(bufInStream);
 
-        // Setup buffered stream based on this file
-        bufStream.init(fStream, 64 * 1024);
+        // Setup a multiplex stream
+        var multiStream = Components.classes["@mozilla.org/io/multiplex-input-stream;1"].createInstance(Components.interfaces.nsIMultiplexInputStream);
+        multiStream.appendStream(startBoundaryStream);
+        multiStream.appendStream(mimeStream);
+        multiStream.appendStream(endBoundaryStream);
 
-        stringStream1.setData(prefix, prefix.length);
-        endStreamString = "\r\n--" + boundary + "--";
-        stringStream2.setData(endStreamString, endStreamString.length);
-        stream.appendStream(stringStream1);
-        stream.appendStream(bufStream);
-        stream.appendStream(stringStream2);
-
-        uploadRequest.send(stream);
-
+        var uploadRequest = JJPS._getRequest();
+        uploadRequest.open("POST", url, false);
+        uploadRequest.setRequestHeader("Content-Length", multiStream.available());
+        uploadRequest.setRequestHeader("Content-Type","multipart/form-data; boundary="+boundary);
+        uploadRequest.onload = function(event) {
+            alert(event.target.responseText);
+        }
+        uploadRequest.send(multiStream);
     },
 
 
