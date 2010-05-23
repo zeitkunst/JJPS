@@ -227,14 +227,56 @@ var JJPS = {
 
             // Try and upload it
             //JJPS.upload("foo.txt", JJPS.serverURL + "file/testing")
+            
+            // Upload some post varaibles
+            //postData = new Array();
+            //postData["href"] = href;
+            //postData["foo"] = "bar";
+            //JJPS.uploadPostData(postData, JJPS.serverURL + "file/testing");
+        }
+
+        articleContent = JJPS.doc.getElementById("articleContent");
+
+        if (articleContent != null) {
+            title = getElementsByClassName(articleContent, "articleTitle")[0].innerHTML;
+            authors = articleContent.getElementsByTagName("strong")[0].innerHTML;
+
+            articleTextNodes = getElementsByClassName(articleContent, "articleText");
+
+            articleText = "";
+            
+            for (nodeIndex in articleTextNodes) {
+                articleText += articleTextNodes[nodeIndex].innerHTML;
+            }
+
+            // Strip out html
+            //title = title.replace(/<.*?>/g, '').trim();
+            //authors = authors.replace(/<.*?>/g, '').trim();
+            //articleText = articleText.replace(/<.*?>/g, '').trim();
+
+            // Get the journal title
+            journalTitleArticleId = JJPS.doc.getElementById("artiHead");
+            if (journalTitleArticleId != null) {
+                journalTitle = journalTitleArticleId.childNodes[1].innerHTML;
+            }
+
+            if (journalTitle != null) {
+                journalTitle = journalTitle.replace(/<.*?>/g, '').trim();
+            }
+
 
             postData = new Array();
-            postData["href"] = href;
-            postData["foo"] = "bar";
+            postData["title"] = title;
+            postData["authors"] = authors;
+            postData["articleText"] = articleText;
+            postData["journalTitle"] = journalTitle;
+
+            // Send it off!
             JJPS.uploadPostData(postData, JJPS.serverURL + "file/testing");
         }
     },
 
+    // UPLOAD MULTIPART HASH
     uploadPostData: function(postData, url) {
         // boundary setup
         var boundary = "-------------" + (new Date().getTime());
@@ -250,13 +292,12 @@ var JJPS = {
         // Setup a multiplex stream
         var multiStream = Components.classes["@mozilla.org/io/multiplex-input-stream;1"].createInstance(Components.interfaces.nsIMultiplexInputStream);
 
+        // Go through each element of our hash...
         for (postIndex in postData) {
-            // Setup the mime stream, the 'part' of a multi-part mime type
-            //var mimeStream = Components.classes["@mozilla.org/network/mime-input-stream;1"].createInstance(Components.interfaces.nsIMIMEInputStream);
-            //mimeStream.addHeader("Content-Type","application/octet-stream");
-            //mimeStream.addHeader("Content-Disposition","form-data; name=\"" + postIndex + "\";");
-
+            // create a new string stream
             var stringStream = Components.classes["@mozilla.org/io/string-input-stream;1"].createInstance(Components.interfaces.nsIStringInputStream);
+
+            // setup the components of the stream with the proper boundaries
             var str = "\r\n--" + boundary + "\r\n";
             str += "Content-Disposition: form-data; name=\"" + postIndex + "\"\r\n";
             str += encodeURIComponent(postData[postIndex]) + "\r\n\r\n";
@@ -266,6 +307,7 @@ var JJPS = {
         }
         multiStream.appendStream(endBoundaryStream);
 
+        // then do our request            
         var uploadRequest = JJPS._getRequest();
         uploadRequest.open("POST", url, false);
         uploadRequest.setRequestHeader("Content-Length", multiStream.available());
@@ -277,6 +319,7 @@ var JJPS = {
 
     },
 
+    // UPLOAD URLENCODED SEQUENCE
     uploadPostDataFormURLEncoded: function(postData, url) {
         // Setup the boundary start stream
         //var boundary = "--F-E-B-E--U-p-l-o-a-d-------------" + Math.random();
@@ -326,6 +369,7 @@ var JJPS = {
 
     },
 
+    // UPLOAD BINARY FILE
     upload: function(fileName, url) {
         var file = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("TmpD", Components.interfaces.nsIFile);  
         file.append(fileName);

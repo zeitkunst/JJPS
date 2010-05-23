@@ -6,9 +6,10 @@
 # Please see http://.org/license.
 # Just a test
 
+import cPickle
 import os
 import sys
-
+import urllib
 import logging
 import hashlib
 
@@ -22,6 +23,7 @@ from lxml import etree
 # My own library imports
 from JJPS.Station import Station
 from JJPS.Model import Model 
+from JJPS.Documents import Documents
 
 import serverConfig
 
@@ -159,15 +161,16 @@ class APIFile:
         return arg
 
     def POST(self, arg):
-        print web.ctx.environ
+        station = StationSingleton.getStation()
+
+        # BEGIN HACK HACK HACK HACK HACK HACK HACK HACK HACK
+        # I shouldn't have to do the following...but I do, for some reason, otherwise I get annoying timeout errors when posting from javascript.  See this thread for background info, even though it's a different use-case: http://groups.google.com/group/webpy/browse_thread/thread/b22d7dd17b1e477d/7f823b1aa133ac12?lnk=gst&q=timed+out#7f823b1aa133ac12.
+        # This is needed even on files of only 30 bytes or so!
         tmpfile = os.tmpfile()
         contentLength = int(web.ctx.env['CONTENT_LENGTH'])
         if contentLength <= 0:
             raise AssertionError('invalid content length')
 
-        # BEGIN HACK HACK HACK HACK HACK HACK HACK HACK HACK
-        # I shouldn't have to do the following...but I do, for some reason, otherwise I get annoying timeout errors when posting from javascript.  See this thread for background info, even though it's a different use-case: http://groups.google.com/group/webpy/browse_thread/thread/b22d7dd17b1e477d/7f823b1aa133ac12?lnk=gst&q=timed+out#7f823b1aa133ac12.
-        # This is needed even on files of only 30 bytes or so!
         wsgiInput = web.ctx.env['wsgi.input']
 
         while contentLength > 0:
@@ -176,7 +179,7 @@ class APIFile:
                 chunk = contentLength
             contentLength -= chunk
             currentChunk = wsgiInput.read(chunk)
-            print currentChunk
+            #print currentChunk
             tmpfile.write(currentChunk)
         tmpfile.seek(0)
 
@@ -192,16 +195,27 @@ class APIFile:
         #fp = open("test.pdf", "wb")
         #fp.write(file)
         #fp.close()
-        return data["foo"]
 
-    def PUT(self, arg):
-        data = web.input()
-        print data.keys()
-        #fp = open("foo", "wb")
-        #fp.write(data["myfile"])
-        #fp.close()
+        # For the moment, as we're testing, save the data to a dict, and then save to a pickled file
+        authors = urllib.unquote(data["authors"])
+        title = urllib.unquote(data["title"])
+        articleText = urllib.unquote(data["articleText"])
+        journalTitle = urllib.unquote(data["journalTitle"])
 
-        return "Got "
+        dataDict = {}
+        dataDict["authors"] = authors
+        dataDict["title"] = title
+        dataDict["articleText"] = articleText
+        dataDict["journalTitle"] = articleText
+
+        dataDict = station.documents.preprocessWebData(dataDict)
+        station.documents.addDocument(dataDict)
+
+        #pickleFP = open("dataDict.pickle", "wb")
+        #cPickle.dump(dataDict, pickleFP)
+        #pickleFP.close()
+        return urllib.unquote(data["journalTitle"])
+
 
 class APIPrograms:
     def GET(self):
@@ -283,6 +297,7 @@ class StationSingleton(object):
         if StationSingleton.station == None:
             StationSingleton.station = Station(configFile = "JJPSConfig.ini")
             StationSingleton.station.journalModel = Model(config = StationSingleton.station.config)
+            StationSingleton.station.documents = Documents(config = StationSingleton.station.config)
         return StationSingleton.station
     getStation = staticmethod(getStation)
 
