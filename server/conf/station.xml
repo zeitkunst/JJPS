@@ -70,7 +70,7 @@
     </schedule>
 
     <programs>
-        <program id="ProgramOne" processed="0">
+        <program id="ProgramOne" processed="1">
             <name>Program One</name>        
             <hostedBy>
                 <person ref="PersonOne"/>            

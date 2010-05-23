@@ -206,7 +206,7 @@ class APIFile:
         dataDict["authors"] = authors
         dataDict["title"] = title
         dataDict["articleText"] = articleText
-        dataDict["journalTitle"] = articleText
+        dataDict["journalTitle"] = journalTitle
 
         dataDict = station.documents.preprocessWebData(dataDict)
         station.documents.addDocument(dataDict)
