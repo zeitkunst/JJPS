@@ -13,16 +13,160 @@ from pybtex.database.input import bibtex
 # My libraries
 import Log
 import Text
+import Model
 
-class Documents(object):
+class DocumentBase(object):
 
-    def __init__(self, config = None):
+    def __init__(self, config = None, hashKeys = ["title", "authors"]):
+        """Initialize the document processing code.
+
+        The id in couchdb is computed from a sha256 hash of two keys in the dataDict.  You can set those keys by passing a "hashKeys" parameters.  Even if you only have one key in your database, you have to pass two hashKeys...so just pass the same key twice :-)  
+        IMPORTANT!  You need to keep the order of the keys in the "hashKeys" list consistent, otherwise you'll get new IDs when you had thought you were working with the same data ;-)"""
+
         self.config = config
 
         self.logger = Log.getLogger(config = self.config)
+        self.hashKeys = hashKeys
+
+    def clearDatabase(self, really = False):
+        """Delete all documents in the database.  Pass really=True to actually do it."""
+        # WARNING: THIS WILL REMOVE ALL DOCUMENTS IN THE DATABASE!
+        # IT WILL ONLY KEEP BEHIND THE DESIGN DOCUMENTS!
+        if really:
+            self.logger.warn("Deleting all documents in the database!")
+            for result in self.db:
+                if (result.find("_design") == -1):
+                    doc = self.db[result]
+                    self.db.delete(doc)
+
+    def addDocument(self, dataDict):
+        """Add the document in dataDict to the database.  Create an ID based on the hash of the title and author values."""
+        
+        # Create an id based on the hash of the title and author
+        key1 = self.hashKeys[0]
+        key2 = self.hashKeys[1]
+        id = hashlib.sha256(dataDict[key1].encode("ascii", "ignore") + dataDict[key2].encode("ascii", "ignore")).hexdigest()
+
+        dataDict["_id"] = id
+        self.logger.debug("Adding document \"%s\" to the database" % dataDict[key1])
+        try:
+            id, rev = self.db.save(dataDict)
+        except couchdb.http.ResourceConflict:
+            document = self.db[id]
+            rev = document["_rev"]
+            dataDict["_rev"] = rev
+            self.db.save(dataDict)
+
+
+    def computeTF(self, recompute = True, keysToTokenize = ["articleText"], keyToDisplay = "title"):
+        """Compute the TF for every document in the database.  Keys to draw text from to tokenize are given in "keysToTokenize".  Optionally, don't recompute."""
+
+        ifMap = """function(doc) { 
+        if (!('tf' in doc)) 
+            emit(doc._id, null); 
+        }"""
+
+        if recompute:
+            results = self.db
+        else:
+            results = self.db.query(ifMap)
+
+        self.logger.debug("Computing TF")
+        #for result in db.query(ifMap):
+        for result in results:
+            if (result.find("_design") != -1):
+                continue
+            doc = self.db[result]
+            self.logger.debug("Computing TF: Working on \"%s\"" % doc[keyToDisplay])
+            # Get the text to use
+            textToTokenize = ""
+            for key in keysToTokenize:
+                textToTokenize += doc[key] + "\n"
+            tokens = Text.tokenize(textToTokenize)
+            numTokens = len(tokens)
+            doc['numTokens'] = numTokens
+            doc['tf'] = Text.get_term_freq(tokens)
+            self.addDocument(doc)
+
+
+    def computeTFIDF(self, keyToDisplay = "title"):
+        """Run the TF-IDF computation."""
+
+        self.logger.debug("Computing IDF")
+        # The number of documents in the database (exclude design docs).
+        for result in self.db.view('_design/test/_view/all_docs_count'):
+            num_docs = result.value
+        
+        # Document frequency.  Number of documents a term appears in.
+        self.logger.debug("Computing document frequency")
+        df = {}
+        for result in self.db.view('_design/test/_view/docfreq', group=True):
+            df[result.key] = log(float(num_docs)/float(result.value))    
+
+        self.logger.debug("Computing TF-IDF")
+        # Compute tf-idf for each document.
+        for result in self.db.query('''function(doc) { if (!('tf_idf' in doc)) emit(doc._id, null); }'''):
+            doc = self.db[result.key]
+            self.logger.debug("Computing TF-IDF: Working on \"%s\"" % doc[keyToDisplay])
+            tf = doc['tf']
+            tf_idf = {}
+            for k, v in tf.items(): # By construction, there should never be KeyError's here
+                tf_idf[k] = v * df[k]
+            doc['tf_idf'] = tf_idf
+            self.addDocument(doc)
+
+
+class JournalDocuments(DocumentBase):
+    """Methods for processing the journal documents database."""
+
+    def __init__(self, config = None, dbName = None, hashKeys = ["journalName", "ownerName"]):
+        super(JournalDocuments, self).__init__(config = config, hashKeys = hashKeys)
 
         self.dbServer = couchdb.Server(self.config.get("Database", "host"))
-        self.db = self.dbServer[self.config.get("Database", "name")]
+        
+        # Setup the db
+        if (dbName is not None):
+            self.db = self.dbServer[dbName]
+        else:
+            raise Exception("Need to provide db name")
+        
+        # Setup the model
+        self.model = Model.Model(config = self.config)
+
+    def initDatabase(self):
+        """Initialize the database with the journal and owner names from our model.
+        THIS DESTROYS EVERYTHING IN THE DATABASE!!!"""
+
+        self.clearDatabase(really = True)
+        
+        self.logger.debug("Getting journal names from model")
+        self.journalNames = self.model.getJournalNames()
+        
+        count = 0
+        self.logger.debug("Adding journal info to db")
+        for journal in self.journalNames:
+            dataDict = {}
+            dataDict["ownerName"] = journal[0]
+            dataDict["journalName"] = journal[1]
+            self.addDocument(dataDict)
+            count += 1
+            if ((count % 100) == 0):
+                self.logger.debug("On journal %d" % count)
+
+
+
+class Documents(object):
+
+    def __init__(self, config = None, db = None):
+        self.config = config
+
+        self.logger = Log.getLogger(config = self.config)
+        
+        if (db is not None):
+            self.db = db
+        else:
+            self.dbServer = couchdb.Server(self.config.get("Database", "host"))
+            self.db = self.dbServer[self.config.get("Database", "name")]
 
     def preprocessWebData(self, dataDict):
         """Preprocess the web-based data in dataDict."""

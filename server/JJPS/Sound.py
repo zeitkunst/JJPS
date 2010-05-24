@@ -265,9 +265,9 @@ class Process(object):
         docIDs = [item for item in self.db if item.find("_design") == -1]
         docID = random.choice(docIDs)
         self.logger.debug("Random Vocal Playback: TTS")
-        self._makeTTSFileChunks(voice = None, text = self.db[docID]["text"], title = "Random Vocal Playback")
+        self._makeTTSFileChunks(voice = None, text = self.db[docID]["articleText"], title = "Random Vocal Playback")
         
-        codedText = self.createTextTransmission(self.db[docID]["text"])
+        codedText = self.createTextTransmission(self.db[docID]["articleText"])
         self.archiveShow("RandomVocalPlayback", codedText)
 
         self.logger.info("Random Vocal Playback: done")
@@ -282,7 +282,7 @@ class Process(object):
         self.logger.debug("Cutup Hour: getting fragments")
         cutupSentences = []
         for docID in docIDs:
-            sentences = nltk.sent_tokenize(self.db[docID]["text"])
+            sentences = nltk.sent_tokenize(self.db[docID]["articleText"])
             cutupSentences.extend(random.sample(sentences, numSentencesToGet))
         
         random.shuffle(cutupSentences)
@@ -512,7 +512,7 @@ class Process(object):
 
         self.logger.debug("Grain Combine: tokenizing words")
         # Tokenize our data into an ordered list of words
-        text = data["text"]
+        text = data["articleText"]
         tokens = self._makeTokens(text)
         
         # Then, get a syllable mapping
@@ -614,7 +614,7 @@ class Process(object):
         docID = random.choice(docIDs)
         data = self.db[docID]
 
-        tokens = self._makeTokens(data["text"], clean = False)
+        tokens = self._makeTokens(data["articleText"], clean = False)
 
         # Make regex for matching letters
         allLetters = re.compile("[a-zA-Z0-9]+")

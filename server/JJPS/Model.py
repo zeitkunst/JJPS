@@ -190,6 +190,23 @@ class Model(object):
             results = parentQuery.execute(self.model)
             return results.to_string()
 
+    def getJournalNames(self):
+        """Get a list of names from the query."""
+        getNamesQuery = """PREFIX jjps: <%s>
+SELECT ?journalName, ?ownerName
+WHERE {
+    ?journal jjps:hasJournalName ?journalName .
+    ?journal jjps:isOwnedBy ?ownerURI .
+    ?ownerURI jjps:hasOrganizationName ?ownerName .
+}""" % (jjpsURI)
+        getNames = RDF.Query(getNamesQuery.encode("ascii"), query_language = "sparql")
+        getNamesResults = getNames.execute(self.model)
+        
+        journalNames = []
+        for result in getNamesResults:
+            journalNames.append((result["ownerName"].literal_value["string"], result["journalName"].literal_value["string"]))
+        return journalNames
+
     def createBaseModel(self):
         self.parser.parse_into_model(self.model, self.ontologyPath, base_uri="http://journalofjournalperformancestudies.org/NS/JJPS.owl")
 
