@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 import cPickle
 import csv
+import os
 
 from lxml import etree
 import RDF
 import simplejson as json
 import networkx as nx
+import matplotlib.pyplot as plt
 
 # Local imports
 import Log
@@ -62,6 +64,24 @@ class Model(object):
             prices[issn] = (price, '')
 
         self.prices = prices
+
+    def getOwnerNames(self):
+        """Return all of the owners in the database."""
+        ownerQuery = """PREFIX jjps: <%s> 
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+            SELECT ?ownerName
+            WHERE {
+            ?ownerURI jjps:hasOrganizationName ?ownerName .
+            } """ % (jjpsURI)
+        owner = RDF.Query(ownerQuery.encode("ascii"), query_language="sparql")
+
+        results = owner.execute(self.model)
+
+        ownerList = []
+        for result in results:
+            ownerList.append(result["ownerName"].literal_value["string"])
+
+        return ownerList
 
     def getJournalInfo(self, journalName, returnFormat = "xml"):
         """Return the information about a particular journal."""
@@ -389,10 +409,8 @@ WHERE {
     
         self.writeModel()
 
-    def createGraphForOwner(self, topLevelOwner):
-        """Create a dot format network file for the given owner.  At the moment this only works for top-level owners already instantiated in our ontology file.
-        
-        TODO: instead of writing out a dot file, make a graph using networkx."""
+    def createGraphForTopLevelOwner(self, topLevelOwner):
+        """Create a dot format network file for the given owner.  At the moment this only works for top-level owners already instantiated in our ontology file."""
 
         graph = nx.DiGraph()
         #dotNetwork = "digraph {\n"
@@ -453,6 +471,89 @@ WHERE {
         #dotNetwork += "}"
 
         return graph
+
+    def createGraphForOwner(self, ownerName):
+        """Create a dot format network file for the given owner.  At the moment this only works for top-level owners already instantiated in our ontology file."""
+
+        graph = nx.DiGraph()
+        #dotNetwork = "digraph {\n"
+        ownerQuery = """PREFIX jjps: <%s> 
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+            SELECT ?journalName 
+            WHERE {
+            ?ownerURI jjps:hasOrganizationName "%s" .
+                ?journalURI jjps:isOwnedBy ?ownerURI .
+                ?journalURI jjps:hasJournalName ?journalName .
+            } """ % (jjpsURI, ownerName)
+        owner = RDF.Query(ownerQuery.encode("ascii"), query_language="sparql")
+
+        results = owner.execute(self.model)
+        journals = []
+
+        # Generate color lists
+        colorMapping = {}
+
+        count = 0
+        for result in results:
+            journalName = result["journalName"].literal_value["string"]
+
+            graph.add_edge(journalName, ownerName)
+
+            count += 1
+
+        return graph
+
+    def createImageOfGraph(self, g, iterations = 5, filename = None, figsize = (7, 3), graphParams = {"node_size": 0, "alpha": 0.4, "edge_color": 'r', "font_size": 10}):
+        """Create an image of the graph g with the given parameters.  Save it in the designated directory."""
+        try:
+            pos = nx.spring_layout(g, iterations = iterations)
+        except ZeroDivisionError:
+            # nothing is in the graph, so return
+            return False
+
+        plt.figure(figsize = figsize)
+        try:
+            nx.draw(g, pos, node_size = graphParams["node_size"], alpha = graphParams["alpha"], edge_color = graphParams["edge_color"], font_size = graphParams["font_size"])
+        except ValueError:
+            # Strangely, some graphs aren't able to be drawn as they give a "zero-size array to ufunc.reduce without identity" error
+            return False
+
+        if (filename is None):
+            filename = "foo.png"
+
+        plt.savefig(filename)
+        plt.close()
+
+        return True
+
+    def createAllOwnerImages(self, redo = False):
+        stem = "static/images/graphs/"
+
+        ownerList = self.getOwnerNames()
+
+        for owner in ownerList:
+            ownerUnderscores = owner.replace(" ", "_").replace("&amp;", "_").replace("&Amp;", "_").replace(".", "_").replace("/", "_") + ".png"
+
+            filename = os.path.join(stem, ownerUnderscores)
+            
+            # TODO
+            # There's got to be a better way of doing this...
+            if (redo == False):
+                # Check to see if we already have an image created
+                try:
+                    # If the stat call retuns properly, the file "exists"
+                    os.stat(filename)
+                    continue
+                except OSError:
+                    pass
+            
+
+            g = self.createGraphForOwner(owner)
+
+            self.logger.debug("Creating graph for %s" % owner)
+            
+
+            self.createImageOfGraph(g, filename = os.path.join(stem, ownerUnderscores))
 
 """Getting price information
 prices = {}

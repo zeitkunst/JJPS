@@ -63,6 +63,12 @@ var JJPS = {
         CiteULikeArray.push(new RegExp("http://(.+?).citeulike.org"));        
         CiteULikeArray.push(JJPS._processCiteULike);        
 
+        GoogleScholarArray = new Array();
+        GoogleScholarArray.push("GoogleScholar");
+        GoogleScholarArray.push(new RegExp("http://scholar.google.com/scholar"));        
+        GoogleScholarArray.push(JJPS._processGoogleScholar);        
+
+
 
         JJPS.regExps.push(wileyArray);
         JJPS.regExps.push(scienceDirectArray);
@@ -70,6 +76,7 @@ var JJPS = {
         JJPS.regExps.push(taylorAndFrancisArray);
         JJPS.regExps.push(SpringerArray);
         JJPS.regExps.push(CiteULikeArray);
+        JJPS.regExps.push(GoogleScholarArray);
     },
 
     // Return a connection to a local SQL store
@@ -150,6 +157,46 @@ var JJPS = {
         siteMethod(JJPS.doc);
        
     },
+
+    _processGoogleScholar: function(doc) {
+        // Get the list of results so that we can put our element just before it
+        resultsArray = getElementsByClassName(doc, "gs_r");
+
+        // Create our sponsored links            
+        slDiv = doc.createElement("div");
+        slDiv.id = "JJPSSponsoredLinks";
+        slDiv.style.fontSize = "0.9em";
+        slDiv.style.marginBottom = "1.0em";
+
+        link1Div = doc.createElement("div");
+        link1Div.id = "JJPSSponsoredLink1";
+        link1Div.style.width = "20%";
+        link1Div.style.cssFloat = "left";
+        link1Div.innerHTML = "testing1";
+
+        link2Div = doc.createElement("div");
+        link2Div.id = "JJPSSponsoredLink2";
+        link2Div.style.width = "20%";
+        link2Div.style.cssFloat = "left";
+        link2Div.innerHTML = "testing2";
+
+        link3Div = doc.createElement("div");
+        link3Div.id = "JJPSSponsoredLink3";
+        link3Div.style.width = "20%";
+        link3Div.style.cssFloat = "left";
+        link3Div.innerHTML = "testing3";
+
+        clearDiv = doc.createElement("div");
+        clearDiv.style.clear = "both";
+
+        slDiv.appendChild(link1Div);
+        slDiv.appendChild(link2Div);
+        slDiv.appendChild(link3Div);
+        slDiv.appendChild(clearDiv);
+
+        JJPS.doc.body.insertBefore(slDiv, resultsArray[0]);
+    },
+
 
     // Process Wiley Interscience
     // TODO
