@@ -90,7 +90,7 @@
             <archives>
             </archives>
         </program>    
-        <program id="ProgramThree" processed="0">
+        <program id="ProgramThree" processed="1">
             <name>Program Three</name>        
             <hostedBy>
                 <person ref="PersonOne"/>            

@@ -56,7 +56,7 @@
     <statusbar id="status-bar">
             <!-- class has to be "statusbarpanel-iconic -->
             <statusbarpanel id="JJPSStatusBarIcon" hidden="false"
-                class="statusbarpanel-iconic" onclick="JJPS.toggleDisplay();"/>
+                class="statusbarpanel-iconic" height="0" onclick="JJPS.toggleDisplay();"/>
     </statusbar>
 
 </overlay>
