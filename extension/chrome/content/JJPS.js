@@ -4,6 +4,7 @@ const DEFAULT_JJPSPANE_HEIGHT = 300;
 
 var JJPS = {
     preferences: null,
+    adRequest: null,
     request: null,
     doc: null,
     logStream: null,
@@ -160,82 +161,169 @@ var JJPS = {
 
     _processGoogleScholar: function(doc) {
         // Get the list of results so that we can put our element just before it
-        resultsArray = getElementsByClassName(doc, "gs_r");
 
-        // Create our sponsored links            
-        slDiv = doc.createElement("div");
-        slDiv.id = "JJPSSponsoredLinks";
-        slDiv.style.fontSize = "0.9em";
-        slDiv.style.marginBottom = "1.0em";
+        JJPS.adRequest = JJPS._getRequest();
+        JJPS.adRequest.open("GET", JJPS.serverURL + "ads", true);
+        JJPS.adRequest.setRequestHeader('Accept', 'application/xml');
+        JJPS.adRequest.onreadystatechange = JJPS._processAdResults;
+        /*
+        JJPS.adRequest.onreadystatechange = function() {
 
-        link1Div = doc.createElement("div");
-        link1Div.id = "JJPSSponsoredLink1";
-        link1Div.style.width = "20%";
-        link1Div.style.cssFloat = "left";
-        link1Div.innerHTML = "testing1";
+            resultsArray = getElementsByClassName(doc, "gs_r");
+    
+            // Create our sponsored links            
+            slDiv = doc.createElement("div");
+            slDiv.id = "JJPSSponsoredLinks";
+            slDiv.style.fontSize = "0.9em";
+            slDiv.style.marginBottom = "1.0em";
+    
+            link1Div = doc.createElement("div");
+            link1Div.id = "JJPSSponsoredLink1";
+            link1Div.style.width = "20%";
+            link1Div.style.cssFloat = "left";
+            link1Div.innerHTML = "testing1";
+    
+            link2Div = doc.createElement("div");
+            link2Div.id = "JJPSSponsoredLink2";
+            link2Div.style.width = "20%";
+            link2Div.style.cssFloat = "left";
+            link2Div.innerHTML = "testing2";
+    
+            link3Div = doc.createElement("div");
+            link3Div.id = "JJPSSponsoredLink3";
+            link3Div.style.width = "20%";
+            link3Div.style.cssFloat = "left";
+            link3Div.innerHTML = "testing3";
+    
+            clearDiv = doc.createElement("div");
+            clearDiv.style.clear = "both";
+    
+            slDiv.appendChild(link1Div);
+            slDiv.appendChild(link2Div);
+            slDiv.appendChild(link3Div);
+            slDiv.appendChild(clearDiv);
+    
+            div = doc.createElement("div");
+            div.style.background = "#FFF8DD none repeat scroll 0% 0%";        
+            div.style.padding = "6px 8px";
+            div.style.margin = "0pt 8px 16px 0pt";
+            divSp = doc.createElement("div");
+            divSp.style.cssFloat = "right";
+            divSp.style.fontSize = "11px";
+            divSp.style.marginLeft = "8px";
+            divSp.style.color = "#767676";
+            divSp.style.fontFamily = "arial, sans-serif";
+            divSp.innerHTML = "Sponsored Links";
+            ol = doc.createElement("ol");
+            ol.style.className = "nobr";
+            h3 = doc.createElement("h3");
+            h3.style.fontFamily = "arial,sans-serif";
+            h3.style.fontSize = "medium";
+            h3.style.fontWeight = "normal";
+            h3.innerHTML = "<a href=\"#\">Better your ASEO!</a><br/>Improve your academic<br/>search engine optimization!<br/>Choose the best keywords<br/>today!";
+            h3.style.margin = "0em";
+            h3.style.padding = "0em";
+            li = doc.createElement("li");
+            li.style.listStyleImage = "none";
+            li.style.listStyleType = "none";
+            li.style.margin = "12px 0pt 0pt";
+            li.style.lineHeight = "1.2";
+            cite = doc.createElement("cite");
+            cite.innerHTML = "hello";
+            cite.style.display = "block";
+            cite.style.textAlign = "left";
+            cite.style.color = "#228822";
+            cite.style.fontStyle = "normal";
+            cite.style.fontSize = "small";
+            li.appendChild(h3);
+            li.appendChild(cite);
+            ol.appendChild(li);
+            div.appendChild(divSp);
+            div.appendChild(ol);
+    
+            //JJPS.doc.body.insertBefore(slDiv, resultsArray[0]);
+            JJPS.doc.body.insertBefore(div, resultsArray[0]);
+   
+        }
+        */
+        JJPS.adRequest.send(null);
 
-        link2Div = doc.createElement("div");
-        link2Div.id = "JJPSSponsoredLink2";
-        link2Div.style.width = "20%";
-        link2Div.style.cssFloat = "left";
-        link2Div.innerHTML = "testing2";
+    },
 
-        link3Div = doc.createElement("div");
-        link3Div.id = "JJPSSponsoredLink3";
-        link3Div.style.width = "20%";
-        link3Div.style.cssFloat = "left";
-        link3Div.innerHTML = "testing3";
+    _processAdResults: function() {
+        if (JJPS.adRequest.readyState < 4) {
+            return;
+        }
 
-        clearDiv = doc.createElement("div");
-        clearDiv.style.clear = "both";
+        var results = JJPS.adRequest.responseXML;
+        var resultNodes = results.getElementsByTagName("result");
+        numNodes = resultNodes.length;
 
-        slDiv.appendChild(link1Div);
-        slDiv.appendChild(link2Div);
-        slDiv.appendChild(link3Div);
-        slDiv.appendChild(clearDiv);
-
-        div = doc.createElement("div");
+        // Create containing div and sponsored links div
+        div = JJPS.doc.createElement("div");
         div.style.background = "#FFF8DD none repeat scroll 0% 0%";        
         div.style.padding = "6px 8px";
         div.style.margin = "0pt 8px 16px 0pt";
-        divSp = doc.createElement("div");
+        div.style.fontSize = "small";
+        clearDiv = JJPS.doc.createElement("div");
+        clearDiv.style.clear = "both";
+        divSp = JJPS.doc.createElement("div");
         divSp.style.cssFloat = "right";
         divSp.style.fontSize = "11px";
         divSp.style.marginLeft = "8px";
         divSp.style.color = "#767676";
         divSp.style.fontFamily = "arial, sans-serif";
         divSp.innerHTML = "Sponsored Links";
-        ol = doc.createElement("ol");
+        ol = JJPS.doc.createElement("ol");
         ol.style.className = "nobr";
-        h3 = doc.createElement("h3");
-        h3.style.fontFamily = "arial,sans-serif";
-        h3.style.fontSize = "medium";
-        h3.style.fontWeight = "normal";
-        h3.innerHTML = "<a href=\"#\">Better your ASEO!</a><br/>Improve your academic<br/>search engine optimization!<br/>Choose the best keywords<br/>today!";
-        h3.style.margin = "0em";
-        h3.style.padding = "0em";
-        li = doc.createElement("li");
-        li.style.listStyleImage = "none";
-        li.style.listStyleType = "none";
-        li.style.margin = "12px 0pt 0pt";
-        li.style.lineHeight = "1.2";
-        cite = doc.createElement("cite");
-        cite.innerHTML = "hello";
-        cite.style.display = "block";
-        cite.style.textAlign = "left";
-        cite.style.color = "#228822";
-        cite.style.fontStyle = "normal";
-        cite.style.fontSize = "small";
-        li.appendChild(h3);
-        li.appendChild(cite);
-        ol.appendChild(li);
+
+        // Go through each item in the result and create an ad
+        for (index = 0; index < numNodes; index++) {
+
+            var currentResult = resultNodes[index];
+            
+            var title = currentResult.getAttribute("title");
+            var content = currentResult.getAttribute("content");
+            var href = currentResult.getAttribute("href");
+            content = content.replace("&#10;", "<br/>");
+
+            h3 = JJPS.doc.createElement("h3");
+            h3.style.fontFamily = "arial,sans-serif";
+            h3.style.fontSize = "medium";
+            h3.style.fontWeight = "normal";
+            h3.style.margin = "0em";
+            h3.style.padding = "0em";
+            h3.innerHTML = "<a href=\"" + href + "\">" + title + "</a>";
+
+            li = JJPS.doc.createElement("li");
+            li.style.listStyleImage = "none";
+            li.style.listStyleType = "none";
+            li.style.margin = "12px 0pt 0pt";
+            li.style.width = "25%";
+            li.style.cssFloat = "left";
+            li.style.lineHeight = "1.2";
+
+            cite = JJPS.doc.createElement("cite");
+            cite.innerHTML = href;
+            cite.style.display = "block";
+            cite.style.textAlign = "left";
+            cite.style.color = "#228822";
+            cite.style.fontStyle = "normal";
+            cite.style.fontSize = "small";
+            li.appendChild(h3);
+            li.innerHTML = li.innerHTML + content;
+            li.appendChild(cite);
+            ol.appendChild(li);
+        }
+
+
         div.appendChild(divSp);
         div.appendChild(ol);
-
-        //JJPS.doc.body.insertBefore(slDiv, resultsArray[0]);
+        div.appendChild(clearDiv);
+        resultsArray = getElementsByClassName(JJPS.doc, "gs_r");
         JJPS.doc.body.insertBefore(div, resultsArray[0]);
-    },
 
+    },
 
     // Process Wiley Interscience
     // TODO
@@ -675,6 +763,16 @@ var JJPS = {
         imageDiv.innerHTML = "<br/><br/><br/><br/><br/>";
         JJPS.doc.body.insertBefore(imageDiv, JJPS.doc.body.childNodes[0]);
 
+        // Pane methods
+
+        // Update ownership image
+        imageLabel = document.getElementById("JJPSNoGraph");        
+        imageLabel.setAttribute("hidden", "true");
+        graphImage = document.getElementById("JJPSOwnershipGraphImage");
+        //ownerName = ownerName.replace(/\s/g, "_").replace(/\&amp;/g, "_").   replace(/\&Amp;/g, "_").replace(/\./g, "_").replace(/\/g, "_") + ".png"
+        ownerName = ownerName.replace(/\s/g, "_").replace(/\&amp;/g, "_").replace(/\&Amp;/g, "_").replace(/\./g, "_").replace(/\\/g, "_") + ".png";
+        graphImage.src = "http://localhost:8080/static/images/graphs/" + ownerName;
+        graphImage.setAttribute("hidden", "false");
     },
 
     // Toggle the display of the bottom panel

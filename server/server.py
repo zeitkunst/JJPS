@@ -38,6 +38,7 @@ urls = (
     '/API', 'APIInfo',
     '/API/ownership/(.*?)', 'APIOwnership',
     '/API/journal/(.*?)', 'APIJournal',
+    '/API/ads', 'APIAds',
     '/API/test/(.*?)', 'APITest',
     '/API/file/(.*?)', 'APIFile',
     '/API/programs', 'APIPrograms',
@@ -150,6 +151,28 @@ class APIJournal:
         else:
             return "Don't know how to respond to that mimetype, sorry."
 
+
+class APIAds:
+    """Return some ad information for use in the extension."""
+
+    def GET(self):
+        results = etree.Element("results")
+        result = etree.Element("result")
+        result.set("title", "Better your ASEO!")
+        result.set("content", "Improve your academic\nsearch engine optimization!")
+        result.set("href", "#")
+        results.append(result)
+
+        result = etree.Element("result")
+        result.set("title", "Better your ASEO!")
+        result.set("content", "Improve your academic\nsearch engine optimization!")
+        result.set("href", "#")
+        results.append(result)
+
+
+        # Return
+        web.header("Content-Type", "application/xml; charset=utf-8")
+        return etree.tostring(results)
 
 class APITest:
     def GET(self, arg):

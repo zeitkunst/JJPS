@@ -54,9 +54,24 @@
                     </tabs>    
                     <tabpanels>
                         <tabpanel>
+                            <vbox>
+                                <label id="FrobpactFactor" value="Frobpact Factor" />
+                                <label id="FrobpactFactorValue" value="587" />
+                            
+                            </vbox>
+                            <vbox>
+                                <label id="EigenfrobFactor" value="Eigenfrob Factor" />
+                                <label id="EigenfrobFactorValue" value="27" />
+                            
+                            </vbox>
+
                         </tabpanel>        
 
                         <tabpanel>
+                            <label id="JJPSNoGraph" value="No ownership graph available" hidden="false" />
+                            <!-- TODO
+                            Fix problems with resizing that occur when we set the width this way -->
+                            <image id="JJPSOwnershipGraphImage" src="" width="700" hidden="true" />
                         </tabpanel>        
 
                         <tabpanel>
