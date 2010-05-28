@@ -194,7 +194,46 @@ var JJPS = {
         slDiv.appendChild(link3Div);
         slDiv.appendChild(clearDiv);
 
-        JJPS.doc.body.insertBefore(slDiv, resultsArray[0]);
+        div = doc.createElement("div");
+        div.style.background = "#FFF8DD none repeat scroll 0% 0%";        
+        div.style.padding = "6px 8px";
+        div.style.margin = "0pt 8px 16px 0pt";
+        divSp = doc.createElement("div");
+        divSp.style.cssFloat = "right";
+        divSp.style.fontSize = "11px";
+        divSp.style.marginLeft = "8px";
+        divSp.style.color = "#767676";
+        divSp.style.fontFamily = "arial, sans-serif";
+        divSp.innerHTML = "Sponsored Links";
+        ol = doc.createElement("ol");
+        ol.style.className = "nobr";
+        h3 = doc.createElement("h3");
+        h3.style.fontFamily = "arial,sans-serif";
+        h3.style.fontSize = "medium";
+        h3.style.fontWeight = "normal";
+        h3.innerHTML = "<a href=\"#\">Better your ASEO!</a><br/>Improve your academic<br/>search engine optimization!<br/>Choose the best keywords<br/>today!";
+        h3.style.margin = "0em";
+        h3.style.padding = "0em";
+        li = doc.createElement("li");
+        li.style.listStyleImage = "none";
+        li.style.listStyleType = "none";
+        li.style.margin = "12px 0pt 0pt";
+        li.style.lineHeight = "1.2";
+        cite = doc.createElement("cite");
+        cite.innerHTML = "hello";
+        cite.style.display = "block";
+        cite.style.textAlign = "left";
+        cite.style.color = "#228822";
+        cite.style.fontStyle = "normal";
+        cite.style.fontSize = "small";
+        li.appendChild(h3);
+        li.appendChild(cite);
+        ol.appendChild(li);
+        div.appendChild(divSp);
+        div.appendChild(ol);
+
+        //JJPS.doc.body.insertBefore(slDiv, resultsArray[0]);
+        JJPS.doc.body.insertBefore(div, resultsArray[0]);
     },
 
 

@@ -29,7 +29,7 @@
         </splitter>
         <hbox id="JJPSPane" persist="savedHeight" hidden="true">
             <hbox>
-                <vbox id="JJPS-testing-pane" persist="width" flex="1">
+                <vbox id="JJPS-testing-pane" persist="width" maxwidth="10%" flex="1">
                     <label id="JJPSRadioLabel" value="&JJPS.radio;" />
                     <hbox>
                         <label id="JJPSRadioCurrentLabel" value="&JJPS.current.program;"/>
@@ -44,10 +44,31 @@
                     </hbox>
                 </vbox>        
             </hbox>
-            <hbox>
-                <vbox id="JJPSRightPane" persist="width" flex="1">
-                    <label id="JJPSRightPaneLabel" value="testing" />            
-                </vbox>
+            <hbox id="JJPSRightPane">
+                <tabbox width="100%" height="100%">
+                    <tabs>
+                        <tab label="Impact Factors" />        
+                        <tab label="Ownership Graphs" />        
+                        <tab label="Owned Journals" />        
+                        <tab label="Social Network Factors" />        
+                    </tabs>    
+                    <tabpanels>
+                        <tabpanel>
+                        </tabpanel>        
+
+                        <tabpanel>
+                        </tabpanel>        
+
+                        <tabpanel>
+                        </tabpanel>        
+
+                        <tabpanel>
+                        </tabpanel>        
+
+                        <tabpanel>
+                        </tabpanel>        
+                    </tabpanels>
+                </tabbox>
             </hbox>
         </hbox>
     </vbox>
