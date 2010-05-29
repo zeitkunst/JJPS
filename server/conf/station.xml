@@ -120,7 +120,7 @@
             <archives>
             </archives>
         </program>    
-        <program id="NewsProgram" processed="0">
+        <program id="NewsProgram" processed="1">
             <name>News</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            

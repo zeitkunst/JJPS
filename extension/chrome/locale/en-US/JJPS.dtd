@@ -14,6 +14,12 @@
 <!ENTITY JJPS.preferences.advancedDisplayGroup "Advanced Display Options">
 <!ENTITY JJPS.preferences.showMarquee "Use Unnecessary Marquee">
 <!ENTITY JJPS.preferences.showMarqueeTooltip "Whether or not to display info using unnecessary marquees.">
+<!ENTITY JJPS.preferences.reverseFrobination "Reverse Frobination">
+<!ENTITY JJPS.preferences.reverseFrobinationTooltip "Reverse the frobination process.">
+<!ENTITY JJPS.unfrobedFrobpactFactor "Impact Factor">
+<!ENTITY JJPS.unfrobedEigenfrobFactor "Eigenfactor">
+<!ENTITY JJPS.unfrobedFrobfluence "Article Influence">
+
 <!ENTITY JJPS.preferences.showBuyOverlays "Show Buy Images">
 <!ENTITY JJPS.preferences.showBuyOverlaysTooltip "Whether or not show unnecessarily gaudy 'buy me' images.">
 

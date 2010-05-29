@@ -790,25 +790,50 @@ var JJPS = {
         graphImage.setAttribute("hidden", "false");
 
         // Update our metrics
+        // TODO
+        // Figure out how to use localized strings from dtd
+        // Frobpact
         if (frobpactFactor != "") {
             frobpactValue = document.getElementById("JJPSFrobpactFactorValue");
-            frobpactValue.setAttribute("value", frobpactFactor);
+            if (JJPS.reverseFrobination) {
+                frobpactValue.setAttribute("value", (frobpactFactor ^ 42)/(1000));
+                frobpact = document.getElementById("JJPSFrobpactFactor");
+                frobpact.setAttribute("value", "Impact Factor");
+            } else {
+                frobpactValue.setAttribute("value", frobpactFactor);
+            }
             document.getElementById("JJPSFrobpactBox").setAttribute("hidden", "false");
         } else {
             document.getElementById("JJPSFrobpactBox").setAttribute("hidden", "true");
         }
-
+        
+        // Eigenfrob
         if (eigenfrobFactor != "") {
             eigenfrobValue = document.getElementById("JJPSEigenfrobFactorValue");
-            eigenfrobValue.setAttribute("value", eigenfrobFactor);
+            if (JJPS.reverseFrobination) {
+                eigenfrobValue.setAttribute("value", (eigenfrobFactor ^ 42)/(100000));
+                eigenfrob = document.getElementById("JJPSEigenfrobFactor");
+                eigenfrob.setAttribute("value", "Eigenfactor");
+
+            } else {
+                eigenfrobValue.setAttribute("value", eigenfrobFactor);
+            }
             document.getElementById("JJPSEigenfrobBox").setAttribute("hidden", "false");
         } else {
             document.getElementById("JJPSEigenfrobBox").setAttribute("hidden", "true");
         }
-
+        
+        // Frobfluence
         if (frobfluence != "") {
             frobfluenceValue = document.getElementById("JJPSFrobfluenceValue");
-            frobfluenceValue.setAttribute("value", frobfluence);
+            if (JJPS.reverseFrobination) {
+                frobfluenceValue.setAttribute("value", (frobfluence ^ 42)/(1000));
+                frobfluence = document.getElementById("JJPSFrobfluence");
+                frobfluence.setAttribute("value", "Article Influence");
+
+            } else {
+                frobfluenceValue.setAttribute("value", frobfluence);
+            }
             document.getElementById("JJPSFrobfluenceBox").setAttribute("hidden", "false");
         } else {
             document.getElementById("JJPSFrobfluenceBox").setAttribute("hidden", "true");
@@ -946,6 +971,7 @@ var JJPS = {
         this.serverURL = prefs.getCharPref("serverURL");
         this.showMarquee = prefs.getBoolPref("showMarquee");
         this.showBuyOverlays = prefs.getBoolPref("showBuyOverlays");
+        this.reverseFrobination = prefs.getBoolPref("reverseFrobination");
     },
 
     _savePrefs: function() {
@@ -954,6 +980,7 @@ var JJPS = {
         prefs.setCharPref("serverURL", this.serverURL);
         prefs.setBoolPref("showMarquee", this.showMarquee);
         prefs.setBoolPref("showBuyOverlays", this.showBuyOverlays);
+        prefs.setBoolPref("reverseFrobination", this.reverseFrobination);
     },
 }
 

@@ -50,6 +50,10 @@
                 <groupbox>
                     <caption label="&JJPS.preferences.advancedDisplayGroup;" />                
                     <hbox>
+                        <checkbox tooltiptext="&JJPS.preferences.reverseFrobinationTooltip;" label="&JJPS.preferences.reverseFrobination;" checked="true" id="JJPSReverseFrobination" />                    
+                    </hbox>
+
+                    <hbox>
                         <checkbox tooltiptext="&JJPS.preferences.showMarqueeTooltip;" label="&JJPS.preferences.showMarquee;" checked="true" id="JJPSShowMarquee" />                    
                     </hbox>
                 </groupbox>
