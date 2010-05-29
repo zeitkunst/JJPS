@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import cPickle
 import csv
+import glob
 import os
 
 from lxml import etree
@@ -8,6 +9,7 @@ import RDF
 import simplejson as json
 import networkx as nx
 import matplotlib.pyplot as plt
+from BeautifulSoup import BeautifulSoup
 
 # Local imports
 import Log
@@ -65,6 +67,88 @@ class Model(object):
 
         self.prices = prices
 
+    def getFrobInfo(self, frobHTMLPath = "data/frob/"):
+        """Read in all of our frob* info."""
+
+        parsedData = []
+        for file in glob.glob(frobHTMLPath + "*.html"):
+            self.logger.debug("On file "+ file )
+            fp = open(file)
+            data = fp.read()
+            fp.close()
+            soup = BeautifulSoup(data)
+            tables = soup.findAll("table")
+            len(tables)
+            frobTable = tables[8]
+            trs = frobTable.findAll("tr")
+            dataTrs = trs[2:]
+            
+            for dataTr in dataTrs:
+                dataTds = dataTr.findAll("td")[2:]
+                parsedData.append([dataTd.getText() for dataTd in dataTds])
+
+        return parsedData
+    
+    def addFrobInfoToModel(self, frobInfo):
+        """Frobinate the info and add it to the model."""
+        
+        self.logger.debug("Getting ISSN/Journal mapping")
+        # Get the URIs and associated ISSNs so that we can make a dictionary
+        issnQuery = """PREFIX jjps: <%s> 
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+            SELECT ?issn, ?journalURI
+            WHERE {
+            ?journalURI jjps:hasISSN ?issn .
+            } """ % (jjpsURI)
+        issn = RDF.Query(issnQuery.encode("ascii"), query_language="sparql")
+
+        results = issn.execute(self.model)
+
+        issnDict = {}
+
+        for result in results:
+            issnValue = result["issn"].literal_value["string"]
+            journalURI = str(result["journalURI"].uri)
+            issnDict[issnValue] = journalURI
+        
+        # Adding frobinated values to the model
+        for frob in frobInfo:
+            issn = frob[1]
+
+            # Get URI for this issn
+            try:
+                journalURI = issnDict[issn]
+                self.logger.debug("Working on " + journalURI)
+            except KeyError:
+                self.logger.debug("Problem with ISSN " + issn)
+                continue
+
+            if ((frob[3] != '') and (frob[3] != "&nbsp;")):
+                frobpactFactor = int(float(frob[3]) * 1000) ^ 42
+            else:
+                frobpactFactor = ''
+
+            if ((frob[8] != '') and (frob[8] != "&nbsp;")):
+                eigenfrobFactor = int(float(frob[8]) * 100000) ^ 42
+            else:
+                eigenfrobFactor = ''
+
+            if ((frob[9] != '') and (frob[9] != "&nbsp;")):
+                frobfluenceFactor = int(float(frob[9]) * 1000) ^ 42
+            else:
+                frobfluenceFactor = ''
+            
+
+            # Add frobinated statements to model
+            frobStatement = RDF.Statement(RDF.Uri(journalURI), jjpsNS["hasFrobpactFactor"], str(frobpactFactor))
+            self.model.append(frobStatement)
+
+            frobStatement = RDF.Statement(RDF.Uri(journalURI), jjpsNS["hasEigenfrobFactor"], str(eigenfrobFactor))
+            self.model.append(frobStatement)
+
+            frobStatement = RDF.Statement(RDF.Uri(journalURI), jjpsNS["hasFrobfluence"], str(frobfluenceFactor))
+            self.model.append(frobStatement)
+
     def getOwnerNames(self):
         """Return all of the owners in the database."""
         ownerQuery = """PREFIX jjps: <%s> 
@@ -94,15 +178,24 @@ class Model(object):
             queryString = """
             PREFIX jjps: <%s> 
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
-            SELECT ?price, ?ownerURI, ?ownerName
+            SELECT ?price, ?ownerURI, ?ownerName, ?frobpactFactor, ?eigenfrobFactor, ?frobfluence
             WHERE {
                 jjps:%s jjps:isOwnedBy ?ownerURI .
                 ?ownerURI jjps:hasOrganizationName ?ownerName .
                 OPTIONAL {
                     jjps:%s jjps:hasSubscriptionPrice ?price .
                 } .
+                OPTIONAL {
+                    jjps:%s jjps:hasFrobpactFactor ?frobpactFactor .
+                } .
+                OPTIONAL {
+                    jjps:%s jjps:hasEigenfrobFactor ?eigenfrobFactor .
+                } .
+                OPTIONAL {
+                    jjps:%s jjps:hasFrobfluence ?frobfluence .
+                } .
             } 
-            """ % (jjpsURI, journalNameFormatted, journalNameFormatted)
+            """ % (jjpsURI, journalNameFormatted, journalNameFormatted, journalNameFormatted, journalNameFormatted, journalNameFormatted)
 
             """                """
 
@@ -120,11 +213,31 @@ class Model(object):
                     price = result["price"].literal_value["string"]
                 else:
                     price = ""
+
+                if (result["frobpactFactor"] is not None):
+                    frobpactFactor = result["frobpactFactor"].literal_value["string"]
+                else:
+                    frobpactFactor = ""
+
+                if (result["eigenfrobFactor"] is not None):
+                    eigenfrobFactor = result["eigenfrobFactor"].literal_value["string"]
+                else:
+                    eigenfrobFactor = ""
+
+                if (result["frobfluence"] is not None):
+                    frobfluence = result["frobfluence"].literal_value["string"]
+                else:
+                    frobfluence = ""
+
+
                 ownerURI = str(result["ownerURI"].uri)
                 ownerName = result["ownerName"].literal_value["string"]
-                resultXML.set("price", price)
                 resultXML.set("ownerURI", ownerURI)
                 resultXML.set("ownerName", ownerName)
+                resultXML.set("price", price)
+                resultXML.set("frobpactFactor", frobpactFactor)
+                resultXML.set("frobfluence", frobfluence)
+                resultXML.set("eigenfrobFactor", eigenfrobFactor)
                 resultsXML.append(resultXML)
 
             # Next, try and get its parent owner

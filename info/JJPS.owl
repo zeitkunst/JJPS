@@ -84,21 +84,45 @@
     
 
 
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasEigenfrobFactor -->
+
+    <owl:DatatypeProperty rdf:about="#hasEigenfrobFactor">
+        <rdfs:comment xml:lang="en"
+            >Frobinated Eigenfrob Factor.</rdfs:comment>
+        <rdfs:domain rdf:resource="#Journal"/>
+        <rdfs:range rdf:resource="&xsd;float"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasFrobfluence -->
+
+    <owl:DatatypeProperty rdf:about="#hasFrobfluence">
+        <rdfs:comment xml:lang="en"
+            >Frobinated Frobfluence.</rdfs:comment>
+        <rdfs:domain rdf:resource="#Journal"/>
+        <rdfs:range rdf:resource="&xsd;float"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasFrobpactFactor -->
+
+    <owl:DatatypeProperty rdf:about="#hasFrobpactFactor">
+        <rdfs:comment xml:lang="en"
+            >Frobinated Frobpact Factor.</rdfs:comment>
+        <rdfs:domain rdf:resource="#Journal"/>
+        <rdfs:range rdf:resource="&xsd;float"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasHomepage -->
 
     <owl:DatatypeProperty rdf:about="#hasHomepage">
         <rdfs:domain rdf:resource="#Journal"/>
         <rdfs:domain rdf:resource="#Organization"/>
         <rdfs:range rdf:resource="&xsd;anyURI"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasISIImpactFactor -->
-
-    <owl:DatatypeProperty rdf:about="#hasISIImpactFactor">
-        <rdfs:domain rdf:resource="#Journal"/>
-        <rdfs:range rdf:resource="&xsd;float"/>
     </owl:DatatypeProperty>
     
 

@@ -27,9 +27,9 @@
         <splitter id="JJPSSplitter" resizebefore="closet" resizeafter="closest" hidden="false" onmouseup="JJPS.updatePaneHeight()">
             <grippy />
         </splitter>
-        <hbox id="JJPSPane" persist="savedHeight" hidden="true">
+        <hbox id="JJPSPane" persist="savedHeight" hidden="true" flex="1">
             <hbox>
-                <vbox id="JJPS-testing-pane" persist="width" maxwidth="10%" flex="1">
+                <vbox id="JJPSRadioPane" persist="width" maxwidth="100px" flex="1">
                     <label id="JJPSRadioLabel" value="&JJPS.radio;" />
                     <hbox>
                         <label id="JJPSRadioCurrentLabel" value="&JJPS.current.program;"/>
@@ -44,8 +44,8 @@
                     </hbox>
                 </vbox>        
             </hbox>
-            <hbox id="JJPSRightPane">
-                <tabbox width="100%" height="100%">
+            <hbox id="JJPSRightPane" flex="1">
+                <tabbox width="100%" height="100%" flex="1">
                     <tabs>
                         <tab label="Impact Factors" />        
                         <tab label="Ownership Graphs" />        
@@ -53,34 +53,39 @@
                         <tab label="Social Network Factors" />        
                     </tabs>    
                     <tabpanels>
-                        <tabpanel>
-                            <vbox>
-                                <label id="FrobpactFactor" value="Frobpact Factor" />
-                                <label id="FrobpactFactorValue" value="587" />
+                        <tabpanel id="JJPSFactorsBox">
+                            <vbox id="JJPSFrobpactBox" hidden="true">
+                                <label id="JJPSFrobpactFactor" value="Frobpact Factor" />
+                                <label id="JJPSFrobpactFactorValue" value="" />
                             
                             </vbox>
-                            <vbox>
-                                <label id="EigenfrobFactor" value="Eigenfrob Factor" />
-                                <label id="EigenfrobFactorValue" value="27" />
+                            <vbox id="JJPSEigenfrobBox" hidden="true">
+                                <label id="JJPSEigenfrobFactor" value="Eigenfrob Factor" />
+                                <label id="JJPSEigenfrobFactorValue" value="" />
+                            
+                            </vbox>
+                            <vbox id="JJPSFrobfluenceBox" hidden="true">
+                                <label id="JJPSFrobfluence" value="Frobfluence" />
+                                <label id="JJPSFrobfluenceValue" value="" />
                             
                             </vbox>
 
                         </tabpanel>        
 
                         <tabpanel>
-                            <label id="JJPSNoGraph" value="No ownership graph available" hidden="false" />
-                            <!-- TODO
-                            Fix problems with resizing that occur when we set the width this way -->
-                            <image id="JJPSOwnershipGraphImage" src="" width="700" hidden="true" />
+                            <hbox id="JJPSOwnershipBox" pack="start" align="start" maxwidth="700px" maxheight="300px" minwidth="100px" minheight="43px" style="overflow: auto">
+                                <label id="JJPSNoGraph" value="No ownership graph available" hidden="false" />
+                                <!-- TODO
+                                Fix problems with resizing that occur when we set the width this way -->
+                                <image id="JJPSOwnershipGraphImage" src="" width="700" hidden="true" />
+                            </hbox>
                         </tabpanel>        
 
                         <tabpanel>
                         </tabpanel>        
 
                         <tabpanel>
-                        </tabpanel>        
-
-                        <tabpanel>
+                            <button id="JJPSCopyInfoButton" label="Copy Journal Info" oncommand="JJPS.copyToClipboard()" flex="0" />                    
                         </tabpanel>        
                     </tabpanels>
                 </tabbox>

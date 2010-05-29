@@ -7,6 +7,7 @@ var JJPS = {
     adRequest: null,
     request: null,
     doc: null,
+    clipboardInfo: null,
     logStream: null,
     logFile: null,
     logDisabled: false,
@@ -692,6 +693,9 @@ var JJPS = {
         var price = result.getAttribute("price");
         var ownerName = result.getAttribute("ownerName");
         var parentName = result.getAttribute("parentName");
+        var frobpactFactor = result.getAttribute("frobpactFactor");
+        var frobfluence = result.getAttribute("frobfluence");
+        var eigenfrobFactor = result.getAttribute("eigenfrobFactor");
         
         overlayDiv = JJPS.doc.createElement("div");
         overlayDiv.id = "JJPSInfoDiv";
@@ -766,13 +770,60 @@ var JJPS = {
         // Pane methods
 
         // Update ownership image
+        ownershipBox = document.getElementById("JJPSOwnershipBox");
+        boxW = ownershipBox.boxObject.width;
+        boxH = ownershipBox.boxObject.height;
         imageLabel = document.getElementById("JJPSNoGraph");        
         imageLabel.setAttribute("hidden", "true");
         graphImage = document.getElementById("JJPSOwnershipGraphImage");
-        //ownerName = ownerName.replace(/\s/g, "_").replace(/\&amp;/g, "_").   replace(/\&Amp;/g, "_").replace(/\./g, "_").replace(/\/g, "_") + ".png"
         ownerName = ownerName.replace(/\s/g, "_").replace(/\&amp;/g, "_").replace(/\&Amp;/g, "_").replace(/\./g, "_").replace(/\\/g, "_") + ".png";
-        graphImage.src = "http://localhost:8080/static/images/graphs/" + ownerName;
+        
+        // TODO
+        // deal with situation where last character is not a slash
+        var serverStem = "";
+        if (JJPS.serverURL.lastIndexOf("/") != -1) {
+            // If the last character is a "/", then cut off "API/"
+            serverStem = JJPS.serverURL.substr(0, JJPS.serverURL.length - 4);
+        }
+
+        graphImage.src = serverStem + "static/images/graphs/" + ownerName;
         graphImage.setAttribute("hidden", "false");
+
+        // Update our metrics
+        if (frobpactFactor != "") {
+            frobpactValue = document.getElementById("JJPSFrobpactFactorValue");
+            frobpactValue.setAttribute("value", frobpactFactor);
+            document.getElementById("JJPSFrobpactBox").setAttribute("hidden", "false");
+        } else {
+            document.getElementById("JJPSFrobpactBox").setAttribute("hidden", "true");
+        }
+
+        if (eigenfrobFactor != "") {
+            eigenfrobValue = document.getElementById("JJPSEigenfrobFactorValue");
+            eigenfrobValue.setAttribute("value", eigenfrobFactor);
+            document.getElementById("JJPSEigenfrobBox").setAttribute("hidden", "false");
+        } else {
+            document.getElementById("JJPSEigenfrobBox").setAttribute("hidden", "true");
+        }
+
+        if (frobfluence != "") {
+            frobfluenceValue = document.getElementById("JJPSFrobfluenceValue");
+            frobfluenceValue.setAttribute("value", frobfluence);
+            document.getElementById("JJPSFrobfluenceBox").setAttribute("hidden", "false");
+        } else {
+            document.getElementById("JJPSFrobfluenceBox").setAttribute("hidden", "true");
+        }
+
+
+        // Update copy button text for clipboard
+        // TODO
+        // Add more info, like the journal we're looking at.
+        JJPS.clipboardInfo = insertText;
+    },
+
+    copyToClipboard: function(aEvent) {
+        const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].getService(Components.interfaces.nsIClipboardHelper);  
+        gClipboardHelper.copyString(JJPS.clipboardInfo);   
     },
 
     // Toggle the display of the bottom panel

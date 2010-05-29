@@ -398,7 +398,7 @@ class Process(object):
                 tempFP.close()
 
                 # Create no spaces version of show name with trailing zeros
-                titleNospaces = title.replace(" ", "")
+                titleNospaces = title.replace(" ", "").replace("'", "")
                 titleNospacesChunk = "%s%03d" % (titleNospaces, index)
                 
 

@@ -23,3 +23,39 @@
     list-style-image: url(chrome://JJPS/skin/JJPSStatusBarIcon.png);
 }
 
+
+#JJPSFactorsBox {
+    overflow: auto;
+}
+
+#JJPSOwnershipBox {
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+
+#JJPSFrobpactFactor {
+    font-size: 3.5em;
+}
+
+#JJPSFrobpactFactorValue {
+
+}
+                            
+#JJPSEigenfrobFactor {
+    font-size: 3.5em;
+
+}
+
+#JJPSEigenfrobFactorValue {
+
+}
+                            
+#JJPSFrobfluence {
+    font-size: 3.5em;
+
+}
+
+#JJPSFrobfluenceValue {
+
+}
