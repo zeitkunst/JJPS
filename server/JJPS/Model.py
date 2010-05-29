@@ -88,7 +88,70 @@ class Model(object):
                 parsedData.append([dataTd.getText() for dataTd in dataTds])
 
         return parsedData
-    
+   
+    def getSJRData(self):
+        """Read the SJR data from our file."""
+        lines = csv.reader(open("data/sjr.csv"))
+        
+        dataDict = {}
+        for line in lines:
+            issn = line[2]
+            if (len(issn) != 8):
+                continue
+            issn = issn[0:4] + "-" + issn[4:]
+            dataDict[issn] = {"sjr": line[3], "hIndex": line[4]}
+        
+        return dataDict
+
+    def getISSNJournalMapping(self):
+        """Return a mapping from ISSN to journalURI."""
+
+        self.logger.debug("Getting ISSN/Journal mapping")
+        # Get the URIs and associated ISSNs so that we can make a dictionary
+        issnQuery = """PREFIX jjps: <%s> 
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+            SELECT ?issn, ?journalURI
+            WHERE {
+            ?journalURI jjps:hasISSN ?issn .
+            } """ % (jjpsURI)
+        issn = RDF.Query(issnQuery.encode("ascii"), query_language="sparql")
+
+        results = issn.execute(self.model)
+
+        issnDict = {}
+
+        for result in results:
+            issnValue = result["issn"].literal_value["string"]
+            journalURI = str(result["journalURI"].uri)
+            issnDict[issnValue] = journalURI
+        
+        return issnDict
+
+    def addSJRInfoToModel(self, sjrInfo):
+        """Add the SJR info to the model indexed on ISSN."""
+
+        issnDict = self.getISSNJournalMapping()
+        
+        sjrISSNs = sjrInfo.keys()
+
+        for issn in sjrISSNs:
+            try:
+                journalURI = issnDict[issn]
+                self.logger.debug("Working on " + journalURI)
+            except KeyError:
+                self.logger.debug("Problem with ISSN " + issn)
+                continue
+            
+            sjr = sjrInfo[issn]["sjr"]
+            hIndex = sjrInfo[issn]["hIndex"]
+
+            # Add statements to model
+            sjrStatement = RDF.Statement(RDF.Uri(journalURI), jjpsNS["hasSJR"], str(sjr))
+            self.model.append(sjrStatement)
+
+            hIndexStatement = RDF.Statement(RDF.Uri(journalURI), jjpsNS["hasHIndex"], str(hIndex))
+            self.model.append(hIndexStatement)
+
     def addFrobInfoToModel(self, frobInfo):
         """Frobinate the info and add it to the model."""
         
@@ -178,7 +241,7 @@ class Model(object):
             queryString = """
             PREFIX jjps: <%s> 
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
-            SELECT ?price, ?ownerURI, ?ownerName, ?frobpactFactor, ?eigenfrobFactor, ?frobfluence
+            SELECT ?price, ?ownerURI, ?ownerName, ?frobpactFactor, ?eigenfrobFactor, ?frobfluence, ?sjr, ?hIndex
             WHERE {
                 jjps:%s jjps:isOwnedBy ?ownerURI .
                 ?ownerURI jjps:hasOrganizationName ?ownerName .
@@ -194,8 +257,15 @@ class Model(object):
                 OPTIONAL {
                     jjps:%s jjps:hasFrobfluence ?frobfluence .
                 } .
+                OPTIONAL {
+                    jjps:%s jjps:hasSJR ?sjr .
+                } .
+                OPTIONAL {
+                    jjps:%s jjps:hasHIndex ?hIndex .
+                } .
+
             } 
-            """ % (jjpsURI, journalNameFormatted, journalNameFormatted, journalNameFormatted, journalNameFormatted, journalNameFormatted)
+            """ % (jjpsURI, journalNameFormatted, journalNameFormatted, journalNameFormatted, journalNameFormatted, journalNameFormatted, journalNameFormatted, journalNameFormatted)
 
             """                """
 
@@ -229,6 +299,16 @@ class Model(object):
                 else:
                     frobfluence = ""
 
+                if (result["sjr"] is not None):
+                    sjr = result["sjr"].literal_value["string"]
+                else:
+                    sjr = ""
+
+                if (result["hIndex"] is not None):
+                    hIndex = result["hIndex"].literal_value["string"]
+                else:
+                    hIndex = ""
+
 
                 ownerURI = str(result["ownerURI"].uri)
                 ownerName = result["ownerName"].literal_value["string"]
@@ -238,6 +318,8 @@ class Model(object):
                 resultXML.set("frobpactFactor", frobpactFactor)
                 resultXML.set("frobfluence", frobfluence)
                 resultXML.set("eigenfrobFactor", eigenfrobFactor)
+                resultXML.set("sjr", sjr)
+                resultXML.set("hIndex", hIndex)
                 resultsXML.append(resultXML)
 
             # Next, try and get its parent owner

@@ -117,6 +117,15 @@
     
 
 
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasHIndex -->
+
+    <owl:DatatypeProperty rdf:about="#hasHIndex">
+        <rdfs:domain rdf:resource="#Journal"/>
+        <rdfs:range rdf:resource="&xsd;float"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasHomepage -->
 
     <owl:DatatypeProperty rdf:about="#hasHomepage">
@@ -157,6 +166,15 @@
     <owl:DatatypeProperty rdf:about="#hasOrganizationName">
         <rdfs:domain rdf:resource="#Organization"/>
         <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://journalofjournalperformancestudies.org/NS/JJPS.owl#hasSJR -->
+
+    <owl:DatatypeProperty rdf:about="#hasSJR">
+        <rdfs:domain rdf:resource="#Journal"/>
+        <rdfs:range rdf:resource="&xsd;float"/>
     </owl:DatatypeProperty>
     
 
