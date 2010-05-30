@@ -286,6 +286,7 @@ class Model(object):
 
             resultsXML = etree.Element("results")
             resultsXML.set("type", "journalInfo")
+            resultsXML.set("journalName", journalName)
             for result in results:
                 resultXML = etree.Element("result")
                 if (result["price"] is not None):

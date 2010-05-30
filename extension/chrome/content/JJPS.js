@@ -679,6 +679,7 @@ var JJPS = {
         JJPS._readPrefs();
 
         var results = JJPS.journalRequest.responseXML;
+        var journalName = results.getElementsByTagName("results")[0].getAttribute("journalName");
         var result = results.getElementsByTagName("result")[0];
         var price = result.getAttribute("price");
         var ownerName = result.getAttribute("ownerName");
@@ -693,7 +694,7 @@ var JJPS = {
         overlayDiv = JJPS.doc.createElement("div");
         overlayDiv.id = "JJPSTicker";
 
-        insertText = "This journal is owned by " + ownerName;       
+        insertText = journalName + " is owned by " + ownerName;       
         if  (parentName != null) {
             insertText += ", a subsidiary of " + parentName;
         }
