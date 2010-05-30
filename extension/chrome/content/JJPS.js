@@ -6,6 +6,7 @@ var JJPS = {
     preferences: null,
     adRequest: null,
     request: null,
+    newsItemIndex: null,
     doc: null,
     clipboardInfo: null,
     logStream: null,
@@ -665,17 +666,6 @@ var JJPS = {
             JJPS.journalRequest.send(null);
 
         }
-        /*
-        if (pageTitle != "") {
-            pageTitle = pageTitle.replace(/<.*?>/g, '').trim();
-
-            JJPS.journalRequest = JJPS._getRequest();
-            JJPS.journalRequest.open("GET", JJPS.serverURL + "journal/" + pageTitle, true);
-            JJPS.journalRequest.setRequestHeader('Accept', 'application/xml');
-            JJPS.journalRequest.onreadystatechange = JJPS.processJournalResult;
-            JJPS.journalRequest.send(null);
-        }
-        */
     },
 
 
@@ -696,18 +686,12 @@ var JJPS = {
         var frobpactFactor = result.getAttribute("frobpactFactor");
         var frobfluence = result.getAttribute("frobfluence");
         var eigenfrobFactor = result.getAttribute("eigenfrobFactor");
+        var sjr = result.getAttribute("sjr");
+        var hIndex = result.getAttribute("hIndex");
+        var clickValue = result.getAttribute("clickValue");
         
         overlayDiv = JJPS.doc.createElement("div");
-        overlayDiv.id = "JJPSInfoDiv";
-        overlayDiv.style.position = "fixed";
-        overlayDiv.style.bottom = "0em";
-        overlayDiv.style.left = "0em";
-        overlayDiv.style.width = "100%";
-        overlayDiv.style.height = "2em";
-        overlayDiv.style.fontSize = "0.8em";
-        overlayDiv.style.backgroundColor = "#000000";
-        overlayDiv.style.color = "#ff0000";
-        overlayDiv.style.zIndex = "100";
+        overlayDiv.id = "JJPSTicker";
 
         insertText = "This journal is owned by " + ownerName;       
         if  (parentName != null) {
@@ -720,7 +704,82 @@ var JJPS = {
         }
 
         insertText += ".";
-        overlayDiv.innerHTML = "<div id='marqueeDiv'>" + insertText + "</div>";
+        ownershipDiv = JJPS.doc.createElement("div");
+        ownershipDiv.id = "JJPSOwnershipDiv";
+        //ownershipDiv.style.marginTop = "6px";
+        ownershipDiv.style.padding = "0em";
+        ownershipDiv.style.fontWeight = "bold";
+        ownershipDiv.innerHTML = insertText;
+        overlayDiv.appendChild(ownershipDiv);
+
+        // Try and get headlines
+        headlines = results.getElementsByTagName("headlines")[0].getElementsByTagName("headline");
+        numHeadlines = headlines.length;
+        if (numHeadlines != 0) {
+            headlinesDiv = JJPS.doc.createElement("div");
+            headlinesDiv.id = "JJPSNews";
+            ol = JJPS.doc.createElement("ol");
+            // If we have headlines, try and get stocks as well
+            // TODO
+            // bad assumption?
+            stocks = results.getElementsByTagName("stocks")[0].getElementsByTagName("stock");
+            numStocks = stocks.length;
+            if (numStocks != 0) {
+                for (i = 0; i < numStocks; i++) {
+                    li = JJPS.doc.createElement("li");
+                    var name = stocks[i].getAttribute("name");
+                    var symbol = stocks[i].getAttribute("symbol");
+                    var price = stocks[i].getAttribute("price");
+                    var change = stocks[i].getAttribute("change");
+                    stockToInsert = symbol + " " + price + " ";
+                    if (change.charAt(0) == "-") {
+                        stockToInsert += "<span class='stockDown'>" + change + "</span>";
+                    } else {
+                        stockToInsert += "<span class='stockUp'>" + change + "</span>";
+                    }
+                    
+                    li.innerHTML = stockToInsert;
+                    li.className = "JJPSNewsItemHide";
+                    ol.appendChild(li);
+                }
+            }
+
+            for (i = 0; i < numHeadlines; i++) {
+                li = JJPS.doc.createElement("li");
+                li.innerHTML = headlines[i].getAttribute("value");
+                if (i == 0) {
+                    JJPS.newsItemIndex = 0;
+                    li.className = "JJPSNewsItemShow";
+                    li.id = "JJPSNewsItemMarquee";
+                } else {
+                    li.className = "JJPSNewsItemHide";
+                }
+                ol.appendChild(li);
+            }
+            headlinesDiv.appendChild(ol);
+            overlayDiv.appendChild(headlinesDiv);
+            overlayDiv.style.height = "60px";
+
+        }
+
+        // Try and setup a basic headline switching method
+        setInterval(function() {
+            // Cycle to next index
+
+            show = getElementsByClassName(JJPS.doc, "JJPSNewsItemShow")[0];
+            hide = getElementsByClassName(JJPS.doc, "JJPSNewsItemHide");
+            numItems = hide.length;
+
+            if (JJPS.newsItemIndex >= numItems) {
+                JJPS.newsItemIndex = 0;
+            }
+
+            show.className = "JJPSNewsItemHide";
+            show.id = "";
+            hide[JJPS.newsItemIndex].className = "JJPSNewsItemShow";
+            hide[JJPS.newsItemIndex].id = "JJPSNewsItemMarquee";
+            JJPS.newsItemIndex += 1;
+        }, 5000);
         JJPS.doc.body.insertBefore(overlayDiv, JJPS.doc.body.childNodes[0]);
 
         if (JJPS.showMarquee) {
@@ -732,7 +791,7 @@ var JJPS = {
 
             // We get the following code from http://jsbin.com/uyawi/3/edit
             // Have to fix things up to work with the version of jquery we have and the particular contexts we need
-            var marquee = $jq("#marqueeDiv", JJPS.doc);
+            var marquee = $jq("#JJPSOwnershipDiv", JJPS.doc);
             marquee.css({"overflow": "hidden", "width": "100%"});
 
             // wrap "My Text" with a span (IE doesn't like divs inline-block)
@@ -788,10 +847,15 @@ var JJPS = {
 
         graphImage.src = serverStem + "static/images/graphs/" + ownerName;
         graphImage.setAttribute("hidden", "false");
+        // TODO
+        // for now...
+        graphImage.setAttribute("width", "500px");
+        graphImage.setAttribute("height", "215px");
 
         // Update our metrics
         // TODO
         // Figure out how to use localized strings from dtd
+        //
         // Frobpact
         if (frobpactFactor != "") {
             frobpactValue = document.getElementById("JJPSFrobpactFactorValue");
@@ -801,6 +865,9 @@ var JJPS = {
                 frobpact.setAttribute("value", "Impact Factor");
             } else {
                 frobpactValue.setAttribute("value", frobpactFactor);
+                frobpact = document.getElementById("JJPSFrobpactFactor");
+                frobpact.setAttribute("value", "FrobpactFactor");
+
             }
             document.getElementById("JJPSFrobpactBox").setAttribute("hidden", "false");
         } else {
@@ -817,6 +884,9 @@ var JJPS = {
 
             } else {
                 eigenfrobValue.setAttribute("value", eigenfrobFactor);
+                eigenfrob = document.getElementById("JJPSEigenfrobFactor");
+                eigenfrob.setAttribute("value", "EigenfrobFactor");
+
             }
             document.getElementById("JJPSEigenfrobBox").setAttribute("hidden", "false");
         } else {
@@ -833,11 +903,42 @@ var JJPS = {
 
             } else {
                 frobfluenceValue.setAttribute("value", frobfluence);
+                frobfluence = document.getElementById("JJPSFrobfluence");
+                frobfluence.setAttribute("value", "Frobfluence");
+
             }
             document.getElementById("JJPSFrobfluenceBox").setAttribute("hidden", "false");
         } else {
             document.getElementById("JJPSFrobfluenceBox").setAttribute("hidden", "true");
         }
+        
+        // SJR
+        if (sjr != "") {
+            SJRValue = document.getElementById("JJPSSJRValue");
+            SJRValue.setAttribute("value", sjr);
+            document.getElementById("JJPSSJRBox").setAttribute("hidden", "false");
+        } else {
+            document.getElementById("JJPSSJR").setAttribute("hidden", "true");
+        }
+
+        // HIndex
+        if (hIndex != "") {
+            HIndexValue = document.getElementById("JJPSHIndexValue");
+            HIndexValue.setAttribute("value", hIndex);
+            document.getElementById("JJPSHIndexBox").setAttribute("hidden", "false");
+        } else {
+            document.getElementById("JJPSHIndex").setAttribute("hidden", "true");
+        }
+
+        // ClickValue
+        if (clickValue != "") {
+            ClickValueValue = document.getElementById("JJPSClickValueValue");
+            ClickValueValue.setAttribute("value", "$" + clickValue);
+            document.getElementById("JJPSClickValueBox").setAttribute("hidden", "false");
+        } else {
+            document.getElementById("JJPSClickValue").setAttribute("hidden", "true");
+        }
+
 
 
         // Update copy button text for clipboard

@@ -4,3 +4,63 @@
     font-weight: bold;
     z-index: 90;
 }
+
+#JJPSTicker {
+    height: 40px;
+    margin: 0em;
+    padding: 0em;
+    position: fixed;
+    bottom: 0em;
+    left: 0em;
+    width: 100%;
+    height: 30px;
+    z-index: 100;
+    font-size: 4em;
+}
+
+#JJPSOwnershipDiv {
+    height: 30px;
+    background-color: #000;
+    color: #FFF;
+    margin: 0em;
+    padding: 0em;
+}
+
+#JJPSNews {
+    height: 30px;
+    color: #000;
+    background-color: #FFF;
+    margin: 0em;
+    padding: 0em;
+    font-weight: bold;
+}
+
+#JJPSNews ol {
+    margin: 0em;
+    padding: 0em;
+}
+
+#JJPSNews ol li {
+    margin: 0em;
+    padding: 0em;
+}
+
+li.JJPSNewsItem {
+
+}
+
+li.JJPSNewsItemShow {
+    display: inline;
+}
+
+li.JJPSNewsItemHide {
+    display: none;
+}
+
+.stockDown {
+    color: #FF0000;
+}
+
+.stockUp {
+    color: #00FF00;
+}

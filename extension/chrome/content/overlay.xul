@@ -67,8 +67,20 @@
                             <vbox id="JJPSFrobfluenceBox" hidden="true">
                                 <label id="JJPSFrobfluence" value="Frobfluence" />
                                 <label id="JJPSFrobfluenceValue" value="" />
-                            
                             </vbox>
+                            <vbox id="JJPSSJRBox" hidden="true">
+                                <label id="JJPSSJR" value="SJR" />
+                                <label id="JJPSSJRValue" value="" />
+                            </vbox>
+                            <vbox id="JJPSHIndexBox" hidden="true">
+                                <label id="JJPSHIndex" value="hIndex" />
+                                <label id="JJPSHIndexValue" value="" />
+                            </vbox>
+                            <vbox id="JJPSClickValueBox" hidden="true">
+                                <label id="JJPSClickValue" value="Click Value" />
+                                <label id="JJPSClickValueValue" value="" />
+                            </vbox>
+
 
                         </tabpanel>        
 

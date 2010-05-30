@@ -1,7 +1,9 @@
 """Dealing with documents in couchdb"""
 
+import csv
 import hashlib
 from math import log
+import operator
 import os
 import random
 import subprocess
@@ -57,6 +59,20 @@ class DocumentBase(object):
             dataDict["_rev"] = rev
             self.db.save(dataDict)
 
+    def addDocumentByName(self, name, dataDict):
+        """Add the document in dataDict to the database.  Name of document is given by method argument."""
+        
+        id = name
+
+        dataDict["_id"] = id
+        self.logger.debug("Adding document \"%s\" to the database" % name)
+        try:
+            id, rev = self.db.save(dataDict)
+        except couchdb.http.ResourceConflict:
+            document = self.db[id]
+            rev = document["_rev"]
+            dataDict["_rev"] = rev
+            self.db.save(dataDict)
 
     def computeTF(self, recompute = True, keysToTokenize = ["articleText"], keyToDisplay = "title"):
         """Compute the TF for every document in the database.  Keys to draw text from to tokenize are given in "keysToTokenize".  Optionally, don't recompute."""
@@ -115,6 +131,17 @@ class DocumentBase(object):
             doc['tf_idf'] = tf_idf
             self.addDocument(doc)
 
+    def getWordFrequency(self):
+        """Return an ordered set of word frequency."""
+        self.logger.debug("Getting sorted word frequency from database")
+        wordFreq = {}
+        for result in self.db.view('_design/test/_view/docfreq', group=True):
+            wordFreq[result.key] = result.value
+        
+        wordFreq = sorted(wordFreq.iteritems(), key = operator.itemgetter(1))
+        wordFreq.reverse()
+
+        return wordFreq
 
 class JournalDocuments(DocumentBase):
     """Methods for processing the journal documents database."""
@@ -153,8 +180,96 @@ class JournalDocuments(DocumentBase):
             if ((count % 100) == 0):
                 self.logger.debug("On journal %d" % count)
 
+    def writeWordLists(self):
+        """Write a file with possible word lists for Google use."""
+        self.logger.debug("Writing word list files")
+        wordFreq = self.getWordFrequency()
 
+        wordsList1 = wordFreq[0:500]
+        wordsList2 = wordFreq[500:1000]
 
+        fp = open(os.path.join("data", "wordsList1.txt"), "w")
+        fp.write("\n".join([item[0] for item in wordsList1]))
+        fp.close()
+                           
+        fp = open(os.path.join("data", "wordsList2.txt"), "w")
+        fp.write("\n".join([item[0] for item in wordsList2]))
+        fp.close()
+
+class PPCDocuments(DocumentBase):
+    """Methods for processing ppc database."""
+
+    def __init__(self, config = None, dbName = None):
+        super(PPCDocuments, self).__init__(config = config)
+
+        self.dbServer = couchdb.Server(self.config.get("Database", "host"))
+        
+        # Setup the db
+        if (dbName is not None):
+            self.db = self.dbServer[dbName]
+        else:
+            raise Exception("Need to provide db name")
+
+    def addPPCInfo(self):
+        """Add the PPC info to the database."""
+        
+        # TODO
+        # Make this configurable?
+        ppcFiles = ["data/ppc1.csv", "data/ppc2.csv"]
+
+        # TODO
+        # File has null bytes
+        # Solution taken from: http://stackoverflow.com/questions/2243655/reading-csv-file-without-for
+        def nonull(stream):
+            for line in stream:
+                yield line.replace('\x00', '')
+
+        for file in ppcFiles:
+            f = open(file, "rb")
+            lines = csv.reader(nonull(f), delimiter="\t")
+
+            data = [line for line in lines]
+            # Drop the first line
+            data = data[2:len(data) - 2]
+            for item in data:
+                word = item[0]
+                dataDict = {}
+                dataDict["lowPPC"] = item[3]
+                dataDict["highPPC"] = item[4]
+                dataDict["lowClick"] = item[7]
+                dataDict["highClick"] = item[8]
+                dataDict["volume"] = item[2]
+                self.addDocumentByName(word, dataDict)
+    
+    def getPPCInfo(self, text):
+        """Get PPC info from our database from the string given."""
+
+        tokens = Text.tokenize(text)
+        
+        documents = []
+        for token in tokens:
+            try:
+                documents.append(self.db[token])
+            except couchdb.http.ResourceNotFound:
+                continue
+
+        return documents            
+    
+    def getClickValue(self, text):
+        """Return the click value for the given text.
+
+        Click value is defined as the \sum_{i=0}^{n} \bar{\text{count}} \times \bar{\text{price}}, where the first term is the mean of the click values and the second term is the mean of the prices and the limit is the number of words in the text."""
+        
+        ppcInfo = self.getPPCInfo(text)
+
+        total = 0
+
+        for info in ppcInfo:
+            click = (float(info["highClick"].replace(",", "")) + float(info["lowClick"].replace(",", "")))/2
+            ppc = (float(info["highPPC"].replace("$", "")) + float(info["lowPPC"].replace("$", "")))/2
+            total += click * ppc
+        
+        return total
 class Documents(object):
 
     def __init__(self, config = None, db = None):

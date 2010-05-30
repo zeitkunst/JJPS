@@ -12,6 +12,8 @@ import matplotlib.pyplot as plt
 from BeautifulSoup import BeautifulSoup
 
 # Local imports
+import Companies
+import Documents
 import Log
 
 jjpsURI = u"http://journalofjournalperformancestudies.org/NS/JJPS.owl#"
@@ -40,6 +42,13 @@ class Model(object):
         self.model = RDF.Model(self.storage)
         self.parser = RDF.Parser()
 
+        # setup link to PPC database
+        # TODO
+        # Make this configurable?
+        self.d = Documents.PPCDocuments(config = self.config, dbName="jjps_ppc")
+        
+        # Setup link to company info
+        self.companies = Companies.Companies(config = config)
 
     def getSubscriptionPrices(self):
         # TODO
@@ -340,6 +349,45 @@ class Model(object):
                 parentName = result["parentName"].literal_value["string"]
                 resultXML.set("parentURI", parentURI)
                 resultXML.set("parentName", parentName)
+            
+            # Figure out what to add wrt the stock quotes and headlines
+            # Try and use the parent name
+            companyName = resultXML.get("parentName")
+            if (companyName is None):
+                # If it doesn't exist, use the owner name
+                companyName = resultXML.get("ownerName")
+
+            results = self.companies.getCompanyInfo(companyName)
+            headlines = etree.Element("headlines")
+            for headline in results["headlines"]:
+                headlineE = etree.Element("headline")
+                headlineE.set("value", headline)
+                headlines.append(headlineE)
+            resultsXML.append(headlines)
+
+            # Add stock quotes if they exist
+            try:
+                stocks = results["stocks"]
+                stocksE = etree.Element("stocks")
+
+                for stock in stocks:
+                    stockE = etree.Element("stock")
+                    stockE.set("name", stock[0])
+                    stockE.set("symbol", stock[1])
+                    stockE.set("price", stock[2])
+                    stockE.set("change", stock[3])
+                    stockE.set("date", stock[4])
+                    stockE.set("time", stock[5])
+                    stockE.set("volume", stock[6])
+                    stocksE.append(stockE)
+
+                resultsXML.append(stocksE)
+            except KeyError:
+                pass
+
+            # Get click value
+            clickValue = self.d.getClickValue(journalName)
+            resultXML.set("clickValue", unicode(round(clickValue)))
 
             return etree.tostring(resultsXML)
         elif (returnFormat == "json"):
