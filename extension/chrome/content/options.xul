@@ -29,9 +29,6 @@
                 <vbox>
                 <groupbox id="JJPSStandardGroupbox">
                     <caption label="&JJPS.preferences.standardGroup;"/>
-                    <hbox>
-                        <checkbox tooltiptext="&JJPS.preferences.showBuyOverlaysTooltip;" label="&JJPS.preferences.showBuyOverlays;" checked="true" id="JJPSShowBuyOverlays" />                    
-                    </hbox>
                 </groupbox>
 
                     <label id="JJPSStandard" value="standard" />                

@@ -20,7 +20,4 @@
 <!ENTITY JJPS.unfrobedEigenfrobFactor "Eigenfactor">
 <!ENTITY JJPS.unfrobedFrobfluence "Article Influence">
 
-<!ENTITY JJPS.preferences.showBuyOverlays "Show Buy Images">
-<!ENTITY JJPS.preferences.showBuyOverlaysTooltip "Whether or not show unnecessarily gaudy 'buy me' images.">
-
 <!ENTITY JJPS.preferences.info "Journal of Journal Performances is a commission of Turbulence.org.">

@@ -1,3 +1,7 @@
+#JJPSRadioPane {
+    background-color: #FF0000;
+}
+
 #JJPSRadioLabel {
     font-weight: bold;
     text-align: center;
@@ -23,36 +27,57 @@
     list-style-image: url(chrome://JJPS/skin/JJPSStatusBarIcon.png);
 }
 
+#JJPSDeckButtons {
+}
+
+#JJPSDeckButtonsLabel {
+    font-weight: bold;
+}
+
+#JJPSRightDeck {
+    min-height: 50px; 
+    overflow: auto;
+    background: url(chrome://JJPS/skin/owlTree.png) no-repeat;
+}
+
+#JJPSRightDeck tabpanels {
+    border: none;
+}
+
+#JJPSRightDeck tabpanels, #JJPSRightDeck tabpanel, #JJPSRightDeck tabbox, #JJPSRightDeck hbox {
+    background-color: transparent;
+}
 
 #JJPSFactorsBox {
     overflow: auto;
 }
 
+#JJPSFactorsBox groupbox {
+    float: left;
+    max-width: 250px;
+    border: 1px solid #000;
+    -moz-border-radius: 5px;
+    background-color: #eee;
+    opacity: 0.8;
+}
+
 #JJPSOwnershipBox {
-    overflow-x: auto;
-    overflow-y: auto;
+}
+
+#JJPSFrobpactBox {
+}
+
+caption#JJPSFrobpactFactor, caption#JJPSEigenfrobFactor, caption#JJPSFrobfluence, caption#JJPSSJR, caption#JJPSHIndex, caption#JJPSClickValue {
+    font-weight: bold;
+    font-size: 1em;
+    font-color: blue;
+}
+
+#JJPSFrobpactFactorValue, #JJPSEigenfrobFactorValue, #JJPSFrobfluenceValue, #JJPSSJRValue, #JJPSHIndexValue, #JJPSClickValueValue {
+    font-weight: bold;
+    font-size: 3em;
 }
 
 
-#JJPSFrobpactFactor {
-}
-
-#JJPSFrobpactFactorValue {
-
-}
-                            
-#JJPSEigenfrobFactor {
-
-}
-
-#JJPSEigenfrobFactorValue {
-
-}
-                            
-#JJPSFrobfluence {
-
-}
-
-#JJPSFrobfluenceValue {
-
+#JJPSOwnershipGraphImage {
 }

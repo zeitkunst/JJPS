@@ -336,7 +336,13 @@ var JJPS = {
         if (journalTitleDiv != null) {
             // 2nd div -> 1st h2 -> 1st a -> text
             journalTitle = journalTitleDiv.childNodes[1].childNodes[0].childNodes[0].innerHTML;
-            alert(journalTitle);
+
+            JJPS.journalRequest = JJPS._getRequest();
+            JJPS.journalRequest.open("GET", JJPS.serverURL + "journal/" + journalTitle, true);
+            JJPS.journalRequest.setRequestHeader('Accept', 'application/xml');
+            JJPS.journalRequest.onreadystatechange = JJPS.processJournalResult;
+            JJPS.journalRequest.send(null);
+
         }
     },
 
@@ -720,28 +726,32 @@ var JJPS = {
             headlinesDiv = JJPS.doc.createElement("div");
             headlinesDiv.id = "JJPSNews";
             ol = JJPS.doc.createElement("ol");
+
             // If we have headlines, try and get stocks as well
             // TODO
-            // bad assumption?
-            stocks = results.getElementsByTagName("stocks")[0].getElementsByTagName("stock");
-            numStocks = stocks.length;
-            if (numStocks != 0) {
-                for (i = 0; i < numStocks; i++) {
-                    li = JJPS.doc.createElement("li");
-                    var name = stocks[i].getAttribute("name");
-                    var symbol = stocks[i].getAttribute("symbol");
-                    var price = stocks[i].getAttribute("price");
-                    var change = stocks[i].getAttribute("change");
-                    stockToInsert = symbol + " " + price + " ";
-                    if (change.charAt(0) == "-") {
-                        stockToInsert += "<span class='stockDown'>" + change + "</span>";
-                    } else {
-                        stockToInsert += "<span class='stockUp'>" + change + "</span>";
+            // bad assumption?  will we ever have stocks but no headlines?
+            stocks = results.getElementsByTagName("stocks");
+            if (stocks.length != 0) {
+                stocks = stocks[0].getElementsByTagName("stock");
+                numStocks = stocks.length;
+                if (numStocks != 0) {
+                    for (i = 0; i < numStocks; i++) {
+                        li = JJPS.doc.createElement("li");
+                        var name = stocks[i].getAttribute("name");
+                        var symbol = stocks[i].getAttribute("symbol");
+                        var price = stocks[i].getAttribute("price");
+                        var change = stocks[i].getAttribute("change");
+                        stockToInsert = symbol + " " + price + " ";
+                        if (change.charAt(0) == "-") {
+                            stockToInsert += "<span class='stockDown'>" + change + "</span>";
+                        } else {
+                            stockToInsert += "<span class='stockUp'>" + change + "</span>";
+                        }
+                        
+                        li.innerHTML = stockToInsert;
+                        li.className = "JJPSNewsItemHide";
+                        ol.appendChild(li);
                     }
-                    
-                    li.innerHTML = stockToInsert;
-                    li.className = "JJPSNewsItemHide";
-                    ol.appendChild(li);
                 }
             }
 
@@ -751,7 +761,6 @@ var JJPS = {
                 if (i == 0) {
                     JJPS.newsItemIndex = 0;
                     li.className = "JJPSNewsItemShow";
-                    li.id = "JJPSNewsItemMarquee";
                 } else {
                     li.className = "JJPSNewsItemHide";
                 }
@@ -776,11 +785,10 @@ var JJPS = {
             }
 
             show.className = "JJPSNewsItemHide";
-            show.id = "";
             hide[JJPS.newsItemIndex].className = "JJPSNewsItemShow";
-            hide[JJPS.newsItemIndex].id = "JJPSNewsItemMarquee";
             JJPS.newsItemIndex += 1;
-        }, 5000);
+
+        }, 12000);
         JJPS.doc.body.insertBefore(overlayDiv, JJPS.doc.body.childNodes[0]);
 
         if (JJPS.showMarquee) {
@@ -792,6 +800,8 @@ var JJPS = {
 
             // We get the following code from http://jsbin.com/uyawi/3/edit
             // Have to fix things up to work with the version of jquery we have and the particular contexts we need
+
+            // Top marquee
             var marquee = $jq("#JJPSOwnershipDiv", JJPS.doc);
             marquee.css({"overflow": "hidden", "width": "100%"});
 
@@ -809,23 +819,9 @@ var JJPS = {
             };
 
             reset.call(marquee.find("div"));
+            
 
         } 
-
-        // Add the graphics
-        imageDiv = JJPS.doc.createElement("div");
-
-        // If we're supposed to show the overlays, set the appropriate ID
-        if (JJPS.showBuyOverlays) {
-            imageDiv.id = "JJPSBuyImage001";
-        }
-
-        imageDiv.style.position = "fixed";
-        imageDiv.style.top = "1em";
-        imageDiv.style.left = "1.2em";
-        imageDiv.style.width = "300px";
-        imageDiv.innerHTML = "<br/><br/><br/><br/><br/>";
-        JJPS.doc.body.insertBefore(imageDiv, JJPS.doc.body.childNodes[0]);
 
         // Pane methods
 
@@ -849,9 +845,15 @@ var JJPS = {
         graphImage.src = serverStem + "static/images/graphs/" + ownerName;
         graphImage.setAttribute("hidden", "false");
         // TODO
-        // for now...
-        graphImage.setAttribute("width", "500px");
-        graphImage.setAttribute("height", "215px");
+        // not quite working...
+        windowW = window.width;
+        if (windowW < (700 + 100)) {
+            graphImage.setAttribute("width", windowW - 40);
+            graphImage.setAttribute("height", 0.43 * (windowW - 40));
+        }
+
+        //graphImage.setAttribute("width", "500px");
+        //graphImage.setAttribute("height", "215px");
 
         // Update our metrics
         // TODO
@@ -863,11 +865,11 @@ var JJPS = {
             if (JJPS.reverseFrobination) {
                 frobpactValue.setAttribute("value", (frobpactFactor ^ 42)/(1000));
                 frobpact = document.getElementById("JJPSFrobpactFactor");
-                frobpact.setAttribute("value", "Impact Factor");
+                frobpact.setAttribute("label", "Impact Factor");
             } else {
                 frobpactValue.setAttribute("value", frobpactFactor);
                 frobpact = document.getElementById("JJPSFrobpactFactor");
-                frobpact.setAttribute("value", "FrobpactFactor");
+                frobpact.setAttribute("label", "FrobpactFactor");
 
             }
             document.getElementById("JJPSFrobpactBox").setAttribute("hidden", "false");
@@ -881,12 +883,12 @@ var JJPS = {
             if (JJPS.reverseFrobination) {
                 eigenfrobValue.setAttribute("value", (eigenfrobFactor ^ 42)/(100000));
                 eigenfrob = document.getElementById("JJPSEigenfrobFactor");
-                eigenfrob.setAttribute("value", "Eigenfactor");
+                eigenfrob.setAttribute("label", "Eigenfactor");
 
             } else {
                 eigenfrobValue.setAttribute("value", eigenfrobFactor);
                 eigenfrob = document.getElementById("JJPSEigenfrobFactor");
-                eigenfrob.setAttribute("value", "EigenfrobFactor");
+                eigenfrob.setAttribute("label", "EigenfrobFactor");
 
             }
             document.getElementById("JJPSEigenfrobBox").setAttribute("hidden", "false");
@@ -900,12 +902,12 @@ var JJPS = {
             if (JJPS.reverseFrobination) {
                 frobfluenceValue.setAttribute("value", (frobfluence ^ 42)/(1000));
                 frobfluence = document.getElementById("JJPSFrobfluence");
-                frobfluence.setAttribute("value", "Article Influence");
+                frobfluence.setAttribute("label", "Article Influence");
 
             } else {
                 frobfluenceValue.setAttribute("value", frobfluence);
                 frobfluence = document.getElementById("JJPSFrobfluence");
-                frobfluence.setAttribute("value", "Frobfluence");
+                frobfluence.setAttribute("label", "Frobfluence");
 
             }
             document.getElementById("JJPSFrobfluenceBox").setAttribute("hidden", "false");
@@ -919,7 +921,7 @@ var JJPS = {
             SJRValue.setAttribute("value", sjr);
             document.getElementById("JJPSSJRBox").setAttribute("hidden", "false");
         } else {
-            document.getElementById("JJPSSJR").setAttribute("hidden", "true");
+            document.getElementById("JJPSSJRBox").setAttribute("hidden", "true");
         }
 
         // HIndex
@@ -928,7 +930,7 @@ var JJPS = {
             HIndexValue.setAttribute("value", hIndex);
             document.getElementById("JJPSHIndexBox").setAttribute("hidden", "false");
         } else {
-            document.getElementById("JJPSHIndex").setAttribute("hidden", "true");
+            document.getElementById("JJPSHIndexBox").setAttribute("hidden", "true");
         }
 
         // ClickValue
@@ -1072,7 +1074,6 @@ var JJPS = {
         var prefs = this._getPrefs();
         this.serverURL = prefs.getCharPref("serverURL");
         this.showMarquee = prefs.getBoolPref("showMarquee");
-        this.showBuyOverlays = prefs.getBoolPref("showBuyOverlays");
         this.reverseFrobination = prefs.getBoolPref("reverseFrobination");
     },
 
@@ -1081,7 +1082,6 @@ var JJPS = {
 
         prefs.setCharPref("serverURL", this.serverURL);
         prefs.setBoolPref("showMarquee", this.showMarquee);
-        prefs.setBoolPref("showBuyOverlays", this.showBuyOverlays);
         prefs.setBoolPref("reverseFrobination", this.reverseFrobination);
     },
 }

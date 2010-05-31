@@ -11,10 +11,6 @@ var JJPSPreferences = {
         if (checkbox != null)
             JJPS.showMarquee = checkbox.checked;
 
-        var checkbox = document.getElementById("JJPSShowBuyOverlays");
-        if (checkbox != null)
-            JJPS.showBuyOverlays = checkbox.checked;
-
         var checkbox = document.getElementById("JJPSReverseFrobination");
         if (checkbox != null)
             JJPS.reverseFrobination = checkbox.checked;
@@ -31,10 +27,6 @@ var JJPSPreferences = {
         var checkbox = document.getElementById("JJPSShowMarquee");
         if (checkbox != null)
             checkbox.setAttribute("checked", JJPS.showMarquee);
-
-        var checkbox = document.getElementById("JJPSShowBuyOverlays");
-        if (checkbox != null)
-            checkbox.setAttribute("checked", JJPS.showBuyOverlays);
 
         var checkbox = document.getElementById("JJPSReverseFrobination");
         if (checkbox != null)
