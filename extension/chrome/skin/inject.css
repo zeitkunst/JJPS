@@ -5,6 +5,27 @@
     z-index: 90;
 }
 
+/*
+ * TODO
+ * Change all sizings to pixels, make sure we define all styles, otherwise we will inherit everything from the site
+ */
+/*
+ * Try a "reset" on the div
+ */
+#JJPSHeaderDiv * {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 100%;
+    font-family: "Gill Sans", "Lucida Grande", "Helvetical Neue", "Verdana", "sans-serif";
+    vertical-align: baseline;
+    color: black;
+    background-color: transparent;
+}
+
 #JJPSHeaderDiv {
     position: fixed;
     left: 0;
@@ -153,6 +174,10 @@
     background: #fff;
     position: static;
     font-size: 0.9em;
+}
+
+#JJPSMenuUL #JJPSGraphSubpanel .subpanel {
+    width: 700px;
 }
 
 #JJPSTicker {

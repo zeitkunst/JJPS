@@ -121,14 +121,49 @@ var JJPS = {
         div.appendChild(ul);
         div.appendChild(h3);
 
-        return div;
+        var li = JJPS.doc.createElement("li");
+        li.id = "JJPSFactorsSubpanel";
+        var a = JJPS.doc.createElement("a");
+        a.setAttribute("href", "#");
+        a.innerHTML = "Factors";
+        li.appendChild(a);
+        li.appendChild(div);
+
+        return li;
     },
+
+    // Create the graph subpanel
+    _createGraphSubpanel: function() {
+
+        var div = JJPS.doc.createElement("div");
+        div.className = "subpanel";
+
+        var h3 = JJPS.doc.createElement("h3");
+        h3.innerHTML = "Ownership Graph";
+        
+        var img = JJPS.doc.createElement("img");
+        img.id = "JJPSGraphImage";
+
+        div.appendChild(img);
+        div.appendChild(h3);
+
+        var li = JJPS.doc.createElement("li");
+        li.id = "JJPSGraphSubpanel";
+        var a = JJPS.doc.createElement("a");
+        a.setAttribute("href", "#");
+        a.innerHTML = "Graph";
+        li.appendChild(a);
+        li.appendChild(div);
+
+        return li;
+    },
+
 
     // Setup the jquery methods for our panel
     _setPanelsJQuery: function() {
         $jq = jQuery.noConflict();
 
-        $jq("#JJPSFactorsSubpanel a:first", JJPS.doc).click(
+        $jq("#JJPSFactorsSubpanel a:first, #JJPSGraphSubpanel a:first", JJPS.doc).click(
         function() {
             if ($jq(this, JJPS.doc).next(".subpanel").is(":visible")) {
                 $jq(this, JJPS.doc).next(".subpanel").hide();
@@ -897,35 +932,6 @@ var JJPS = {
 
         // Pane methods
 
-        // Update ownership image
-        ownershipBox = document.getElementById("JJPSOwnershipBox");
-        boxW = ownershipBox.boxObject.width;
-        boxH = ownershipBox.boxObject.height;
-        imageLabel = document.getElementById("JJPSNoGraph");        
-        imageLabel.setAttribute("hidden", "true");
-        graphImage = document.getElementById("JJPSOwnershipGraphImage");
-        ownerName = ownerName.replace(/\s/g, "_").replace(/\&amp;/g, "_").replace(/\&Amp;/g, "_").replace(/\./g, "_").replace(/\\/g, "_") + ".png";
-        
-        // TODO
-        // deal with situation where last character is not a slash
-        var serverStem = "";
-        if (JJPS.serverURL.lastIndexOf("/") != -1) {
-            // If the last character is a "/", then cut off "API/"
-            serverStem = JJPS.serverURL.substr(0, JJPS.serverURL.length - 4);
-        }
-
-        graphImage.src = serverStem + "static/images/graphs/" + ownerName;
-        graphImage.setAttribute("hidden", "false");
-        // TODO
-        // not quite working...
-        windowW = window.width;
-        if (windowW < (700 + 100)) {
-            graphImage.setAttribute("width", windowW - 40);
-            graphImage.setAttribute("height", 0.43 * (windowW - 40));
-        }
-
-        //graphImage.setAttribute("width", "500px");
-        //graphImage.setAttribute("height", "215px");
 
         // Setup our header
         headerDiv = JJPS.doc.createElement("div");
@@ -965,22 +971,19 @@ var JJPS = {
 
         li = JJPS.doc.createElement("li");
         li.innerHTML = "<a href='#'>Factors <small>Factors</small></a>";
-        menuUL.appendChild(li);
+        //menuUL.appendChild(li);
 
         li = JJPS.doc.createElement("li");
         li.innerHTML = "<a href='#'>Testing <small>Testing</small></a>";
-        menuUL.appendChild(li);
+        //menuUL.appendChild(li);
 
         // Load the factors panel
-        factorsDiv = JJPS._createFactorsSubpanel();
-        var li = JJPS.doc.createElement("li");
-        li.id = "JJPSFactorsSubpanel";
-        var a = JJPS.doc.createElement("a");
-        a.setAttribute("href", "#");
-        a.innerHTML = "Factors";
-        li.appendChild(a);
-        li.appendChild(factorsDiv);
-        menuUL.appendChild(li);
+        factorsLI = JJPS._createFactorsSubpanel();
+        menuUL.appendChild(factorsLI);
+
+        // Graph link
+        graphLI = JJPS._createGraphSubpanel();
+        menuUL.appendChild(graphLI);
 
         headerDiv.appendChild(logoDiv);
         headerDiv.appendChild(menuUL);
@@ -1078,6 +1081,39 @@ var JJPS = {
         // Add more info, like the journal we're looking at.
         JJPS.clipboardInfo = insertText;
 
+        // Update ownership image
+        ownershipBox = document.getElementById("JJPSOwnershipBox");
+        boxW = ownershipBox.boxObject.width;
+        boxH = ownershipBox.boxObject.height;
+        imageLabel = document.getElementById("JJPSNoGraph");        
+        imageLabel.setAttribute("hidden", "true");
+        graphImage = document.getElementById("JJPSOwnershipGraphImage");
+        ownerName = ownerName.replace(/\s/g, "_").replace(/\&amp;/g, "_").replace(/\&Amp;/g, "_").replace(/\./g, "_").replace(/\\/g, "_") + ".png";
+        
+        // TODO
+        // deal with situation where last character is not a slash
+        var serverStem = "";
+        if (JJPS.serverURL.lastIndexOf("/") != -1) {
+            // If the last character is a "/", then cut off "API/"
+            serverStem = JJPS.serverURL.substr(0, JJPS.serverURL.length - 4);
+        }
+
+        graphImage.src = serverStem + "static/images/graphs/" + ownerName;
+        graphImage.setAttribute("hidden", "false");
+        // TODO
+        // not quite working...
+        windowW = window.width;
+        if (windowW < (700 + 100)) {
+            graphImage.setAttribute("width", windowW - 40);
+            graphImage.setAttribute("height", 0.43 * (windowW - 40));
+        }
+
+        //graphImage.setAttribute("width", "500px");
+        //graphImage.setAttribute("height", "215px");
+
+        // Try setting image of graph header panel
+        JJPS.doc.getElementById("JJPSGraphImage").setAttribute("src", serverStem + "static/images/graphs/" + ownerName);
+        JJPS.doc.getElementById("JJPSGraphImage").setAttribute("width", 700);
     },
 
     copyToClipboard: function(aEvent) {
