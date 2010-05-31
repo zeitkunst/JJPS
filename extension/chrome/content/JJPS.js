@@ -13,6 +13,7 @@ var JJPS = {
     logFile: null,
     logDisabled: false,
     regExps: null,
+    factorsList: new Array("Frobpact Factor", "Eigenfrob Factor", "Frobfluence", "SJR", "HIndex", "Click Value"),
 
     // Methods to run when we initialize
     _init: function() {
@@ -80,6 +81,77 @@ var JJPS = {
         JJPS.regExps.push(SpringerArray);
         JJPS.regExps.push(CiteULikeArray);
         JJPS.regExps.push(GoogleScholarArray);
+    },
+
+    // Create the factors subpanel for the header
+    _createFactorsSubpanel: function() {
+        var list = JJPS.factorsList;        
+
+        var div = JJPS.doc.createElement("div");
+        div.className = "subpanel";
+
+        var h3 = JJPS.doc.createElement("h3");
+        h3.innerHTML = "Factors";
+
+        var ul = JJPS.doc.createElement("ul");
+        ul.id = "JJPSHeaderFactorsUL";
+
+        numElements = list.length;
+
+        for (i = 0; i < numElements; i++) {
+            var factor = JJPS.factorsList[i];
+            var factorNospaces = factor.replace(/ /, "");
+
+            var li = JJPS.doc.createElement("li");
+            li.id = "JJPS" + factorNospaces;
+
+            var span = JJPS.doc.createElement("span");
+            span.id = "JJPS" + factorNospaces + "Name";
+            span.innerHTML = factor + ": ";
+            li.appendChild(span);
+
+            var span = JJPS.doc.createElement("span");
+            span.id = "JJPS" + factorNospaces + "Value";
+            span.innerHTML = "";
+            li.appendChild(span);
+            
+            ul.appendChild(li);
+        }
+
+        div.appendChild(ul);
+        div.appendChild(h3);
+
+        return div;
+    },
+
+    // Setup the jquery methods for our panel
+    _setPanelsJQuery: function() {
+        $jq = jQuery.noConflict();
+
+        $jq("#JJPSFactorsSubpanel a:first", JJPS.doc).click(
+        function() {
+            if ($jq(this, JJPS.doc).next(".subpanel").is(":visible")) {
+                $jq(this, JJPS.doc).next(".subpanel").hide();
+                $jq("#JJPSHeaderDiv li a").removeClass("active");
+            } else {
+                $jq(".subpanel", JJPS.doc).hide();
+                // TODO
+                // Figure out why toggle doesn't work on the next line
+                $jq(this, JJPS.doc).next(".subpanel").css("display", "block");
+                $jq("#JJPSHeaderDiv li a").removeClass("active");
+                $jq(this, JJPS.doc).toggleClass("active");
+            }
+
+            return false;
+        });
+    },
+
+    // Do the program request
+    _doProgramRequest: function() {
+        JJPS.request.open("GET", JJPS.serverURL + "programs", true);
+        JJPS.request.setRequestHeader('Accept', 'application/xml');
+        JJPS.request.onreadystatechange = JJPS.processProgramList;
+        JJPS.request.send(null);
     },
 
     // Return a connection to a local SQL store
@@ -855,99 +927,157 @@ var JJPS = {
         //graphImage.setAttribute("width", "500px");
         //graphImage.setAttribute("height", "215px");
 
+        // Setup our header
+        headerDiv = JJPS.doc.createElement("div");
+        headerDiv.id = "JJPSHeaderDiv";
+        logoDiv = JJPS.doc.createElement("div");
+        logoDiv.id = "JJPSHeaderLogoDiv";
+        logoDiv.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;";
+
+        radioDiv = JJPS.doc.createElement("div");
+        radioDiv.id = "JJPSHeaderRadioDiv";
+        radioLogoDiv = JJPS.doc.createElement("div");
+        radioLogoDiv.id = "JJPSHeaderRadioLogoDiv";
+        radioLogoDiv.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;";
+        radioDiv.appendChild(radioLogoDiv);
+
+        radioInfoDiv = JJPS.doc.createElement("div");
+        radioInfoDiv.id = "JJPSRadioInfoDiv";
+        radioInfoUL = JJPS.doc.createElement("ul");
+        radioInfoUL.id = "JJPSRadioInfoUL";
+
+        radioInfoLI = JJPS.doc.createElement("li");
+        radioInfoLI.id = "JJPSRadioInfoCurrent";
+        radioInfoLI.innerHTML = "<strong>Current Program</strong>: ";
+        radioInfoUL.appendChild(radioInfoLI);
+
+        radioInfoLI = JJPS.doc.createElement("li");
+        radioInfoLI.id = "JJPSRadioInfoNext";
+        radioInfoLI.innerHTML = "<strong>Next Program</strong>: ";
+        radioInfoUL.appendChild(radioInfoLI);
+        radioInfoDiv.appendChild(radioInfoUL);
+        radioDiv.appendChild(radioInfoDiv);
+
+        headerDiv.appendChild(radioDiv);
+
+        menuUL = JJPS.doc.createElement("ul");
+        menuUL.id = "JJPSMenuUL";
+
+        li = JJPS.doc.createElement("li");
+        li.innerHTML = "<a href='#'>Factors <small>Factors</small></a>";
+        menuUL.appendChild(li);
+
+        li = JJPS.doc.createElement("li");
+        li.innerHTML = "<a href='#'>Testing <small>Testing</small></a>";
+        menuUL.appendChild(li);
+
+        // Load the factors panel
+        factorsDiv = JJPS._createFactorsSubpanel();
+        var li = JJPS.doc.createElement("li");
+        li.id = "JJPSFactorsSubpanel";
+        var a = JJPS.doc.createElement("a");
+        a.setAttribute("href", "#");
+        a.innerHTML = "Factors";
+        li.appendChild(a);
+        li.appendChild(factorsDiv);
+        menuUL.appendChild(li);
+
+        headerDiv.appendChild(logoDiv);
+        headerDiv.appendChild(menuUL);
+
+        // Insert the header
+        JJPS.doc.body.insertBefore(headerDiv, JJPS.doc.body.childNodes[0]);
+        
+        // Setup the panels jquery
+        JJPS._setPanelsJQuery();
+
+        // Fire off the program request
+        JJPS._doProgramRequest();
+
+
         // Update our metrics
         // TODO
         // Figure out how to use localized strings from dtd
         //
         // Frobpact
+        frobpactLI = JJPS.doc.getElementById("JJPSFrobpactFactor");
         if (frobpactFactor != "") {
-            frobpactValue = document.getElementById("JJPSFrobpactFactorValue");
             if (JJPS.reverseFrobination) {
-                frobpactValue.setAttribute("value", (frobpactFactor ^ 42)/(1000));
-                frobpact = document.getElementById("JJPSFrobpactFactor");
-                frobpact.setAttribute("label", "Impact Factor");
+                JJPS.doc.getElementById("JJPSFrobpactFactorName").innerHTML = "Impact Factor: ";
+                JJPS.doc.getElementById("JJPSFrobpactFactorValue").innerHTML = (frobpactFactor ^ 42)/(1000);
             } else {
-                frobpactValue.setAttribute("value", frobpactFactor);
-                frobpact = document.getElementById("JJPSFrobpactFactor");
-                frobpact.setAttribute("label", "FrobpactFactor");
-
+                JJPS.doc.getElementById("JJPSFrobpactFactorName").innerHTML = "Frobpact Factor: ";
+                JJPS.doc.getElementById("JJPSFrobpactFactorValue").innerHTML = frobpactFactor;
             }
-            document.getElementById("JJPSFrobpactBox").setAttribute("hidden", "false");
+            frobpactLI.style.display = "block";
         } else {
-            document.getElementById("JJPSFrobpactBox").setAttribute("hidden", "true");
+            frobpactLI.style.display = "none";
         }
         
+
         // Eigenfrob
+        eigenfrobLI = JJPS.doc.getElementById("JJPSEigenfrobFactor");
         if (eigenfrobFactor != "") {
-            eigenfrobValue = document.getElementById("JJPSEigenfrobFactorValue");
             if (JJPS.reverseFrobination) {
-                eigenfrobValue.setAttribute("value", (eigenfrobFactor ^ 42)/(100000));
-                eigenfrob = document.getElementById("JJPSEigenfrobFactor");
-                eigenfrob.setAttribute("label", "Eigenfactor");
-
+                JJPS.doc.getElementById("JJPSEigenfrobFactorName").innerHTML = "Eigenfactor: ";
+                JJPS.doc.getElementById("JJPSEigenfrobFactorValue").innerHTML = (eigenfrobFactor ^ 42)/(100000);
             } else {
-                eigenfrobValue.setAttribute("value", eigenfrobFactor);
-                eigenfrob = document.getElementById("JJPSEigenfrobFactor");
-                eigenfrob.setAttribute("label", "EigenfrobFactor");
-
+                JJPS.doc.getElementById("JJPSEigenfrobFactorName").innerHTML = "Eigenfrob Factor: ";
+                JJPS.doc.getElementById("JJPSEigenfrobFactorValue").innerHTML = eigenfrobFactor;
             }
-            document.getElementById("JJPSEigenfrobBox").setAttribute("hidden", "false");
+            eigenfrobLI.style.display = "block";
         } else {
-            document.getElementById("JJPSEigenfrobBox").setAttribute("hidden", "true");
+            eigenfrobLI.style.display = "none";
         }
-        
-        // Frobfluence
+
+        // Frobfluence 
+        frobfluenceLI = JJPS.doc.getElementById("JJPSFrobfluence");
         if (frobfluence != "") {
-            frobfluenceValue = document.getElementById("JJPSFrobfluenceValue");
             if (JJPS.reverseFrobination) {
-                frobfluenceValue.setAttribute("value", (frobfluence ^ 42)/(1000));
-                frobfluence = document.getElementById("JJPSFrobfluence");
-                frobfluence.setAttribute("label", "Article Influence");
-
+                JJPS.doc.getElementById("JJPSFrobfluenceName").innerHTML = "Article Influence: ";
+                JJPS.doc.getElementById("JJPSFrobfluenceValue").innerHTML = (frobfluence ^ 42)/(1000);
             } else {
-                frobfluenceValue.setAttribute("value", frobfluence);
-                frobfluence = document.getElementById("JJPSFrobfluence");
-                frobfluence.setAttribute("label", "Frobfluence");
-
+                JJPS.doc.getElementById("JJPSFrobfluenceName").innerHTML = "Frobfluence: ";
+                JJPS.doc.getElementById("JJPSFrobfluenceValue").innerHTML = frobfluence;
             }
-            document.getElementById("JJPSFrobfluenceBox").setAttribute("hidden", "false");
+            frobfluenceLI.style.display = "block";
         } else {
-            document.getElementById("JJPSFrobfluenceBox").setAttribute("hidden", "true");
+            frobfluenceLI.style.display = "none";
         }
-        
+
+
+
         // SJR
+        sjrLI = JJPS.doc.getElementById("JJPSSJR");
         if (sjr != "") {
-            SJRValue = document.getElementById("JJPSSJRValue");
-            SJRValue.setAttribute("value", sjr);
-            document.getElementById("JJPSSJRBox").setAttribute("hidden", "false");
+            JJPS.doc.getElementById("JJPSSJRValue").innerHTML = sjr;
+            JJPS.doc.getElementById("JJPSSJR").style.display = "block";
         } else {
-            document.getElementById("JJPSSJRBox").setAttribute("hidden", "true");
+            JJPS.doc.getElementById("JJPSSJR").style.display = "none";
         }
 
         // HIndex
         if (hIndex != "") {
-            HIndexValue = document.getElementById("JJPSHIndexValue");
-            HIndexValue.setAttribute("value", hIndex);
-            document.getElementById("JJPSHIndexBox").setAttribute("hidden", "false");
+            JJPS.doc.getElementById("JJPSHIndexValue").innerHTML = hIndex;
+            JJPS.doc.getElementById("JJPSHIndex").style.display = "block";
         } else {
-            document.getElementById("JJPSHIndexBox").setAttribute("hidden", "true");
+            JJPS.doc.getElementById("JJPSHIndex").style.display = "none";
         }
 
         // ClickValue
         if (clickValue != "") {
-            ClickValueValue = document.getElementById("JJPSClickValueValue");
-            ClickValueValue.setAttribute("value", "$" + clickValue);
-            document.getElementById("JJPSClickValueBox").setAttribute("hidden", "false");
+            JJPS.doc.getElementById("JJPSClickValueValue").innerHTML = clickValue;
+            JJPS.doc.getElementById("JJPSClickValue").style.display = "block";
         } else {
-            document.getElementById("JJPSClickValue").setAttribute("hidden", "true");
+            JJPS.doc.getElementById("JJPSClickValue").style.display = "none";
         }
-
 
 
         // Update copy button text for clipboard
         // TODO
         // Add more info, like the journal we're looking at.
         JJPS.clipboardInfo = insertText;
+
     },
 
     copyToClipboard: function(aEvent) {
@@ -1038,6 +1168,12 @@ var JJPS = {
         //description.value = displayString
         currentLabel.value = current.firstChild.nodeValue;
         nextLabel.value = next.firstChild.nodeValue;
+
+        currentHeader = JJPS.doc.getElementById("JJPSRadioInfoCurrent");
+        currentHeader.innerHTML = "<strong>Current Program</strong>: " + current.firstChild.nodeValue;
+        nextHeader = JJPS.doc.getElementById("JJPSRadioInfoNext");
+        nextHeader.innerHTML = "<strong>Next Program</strong>: " + next.firstChild.nodeValue;
+
     },
 
     //////////////////////////////////////////////////

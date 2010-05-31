@@ -5,6 +5,156 @@
     z-index: 90;
 }
 
+#JJPSHeaderDiv {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    background: #e3e2e2;
+    border: 1px solid #c3c3c3;
+    border-top: none;
+    width: 94%;
+    margin: 0 3%;
+}
+
+#JJPSHeaderLogoDiv {
+    margin: 0em;
+    padding: 0em;
+    width: 60px;
+    float: left;
+    background: url(chrome://JJPS/skin/JJPSHeaderIcon.png) no-repeat;
+}
+
+#JJPSHeaderRadioDiv {
+    width: 250px;
+    float: right;
+    font-size: 10px;
+}
+
+#JJPSHeaderRadioLogoDiv {
+    margin: 0em;
+    padding: 0em;
+    width: 30px;
+    float: left;
+    background: url(chrome://JJPS/skin/JJPSRadioIcon.png) no-repeat;
+}
+
+#JJPSRadioInfoUL {
+    padding: 0;
+    margin: 0;
+    float: left;
+    list-style: none;
+    border-top: 1px solid #fff;
+    font-size: 1.1em;
+}
+
+#JJPSRadioInfoUL li {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+#JJPSMenuUL {
+    padding: 0;
+    margin: 0;
+    float: left;
+    list-style: none;
+    border-top: 1px solid #fff;
+    font-size: 1.1em;
+}
+
+#JJPSMenuUL li {
+    padding: 0;
+    margin: 0;
+    float: left;
+    position: relative;
+    list-style-type: none;
+}
+
+#JJPSMenuUL li a {
+    padding: 5px;
+    float: left;
+    /*text-indent: -9999px;*/
+    text-decoration: none;
+    color: #333;
+    position: relative;
+}
+
+#JJPSMenuUL a small {
+    text-align: center;
+    width: 70px;
+    padding: 5px 5px 11px;
+    display: none;
+    color: #fff;
+    font-size: 1em;
+    text-indent: 0;
+}
+
+#JJPSMenuUL a:hover small {
+    display: block;
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    margin-left: -40px;
+    z-index: 9999;
+    color: black;
+}
+
+/* For the panels */
+#JJPSMenuUL li div a {
+    text-indent: 0;
+    width: auto;
+    height: auto;
+    padding: 0em;
+    float: none;
+    color: #00629a;
+    position: static;
+}
+
+#JJPSMenuUL li div a:hover {
+    text-decoration: underline;
+}
+
+#JJPSMenuUL .subpanel {
+    position: absolute;
+    left: 0em;
+    top: 30px;
+    width: 200px;
+    display: none;
+    border: 1px solid #555;
+    background: #fff;
+    overflow: hidden;
+}
+
+#JJPSMenuUL h3 {
+    background: #526ea6;
+    padding: 5px 10px;
+    color: #fff;
+    font-size: 1.1.em;
+    cursor: pointer;
+}
+
+#JJPSMenuUL .subpanel ul {
+    padding: 0em;
+    margin: 0em;
+    background: #fff;
+    width: 100%;
+    overflow: auto;
+    padding-top: 2px;
+}
+
+#JJPSMenuUL .subpanel li {
+    float: none;
+    display: block;
+    padding: 0em;
+    margin: 0em;
+    overflow: hidden;
+    clear: both;
+    background: #fff;
+    position: static;
+    font-size: 0.9em;
+}
+
 #JJPSTicker {
     font-family: "Helvetica", "Verdana", sans-serif;
     height: 40px;
