@@ -768,7 +768,7 @@ var JJPS = {
             }
             headlinesDiv.appendChild(ol);
             overlayDiv.appendChild(headlinesDiv);
-            overlayDiv.style.height = "60px";
+            overlayDiv.style.height = "40px";
 
         }
 

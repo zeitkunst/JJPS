@@ -1,13 +1,20 @@
 #JJPSRadioPane {
-    background-color: #FF0000;
+    background: url(chrome://JJPS/skin/JJPSRadio.png) no-repeat;
 }
 
 #JJPSRadioLabel {
     font-weight: bold;
     text-align: center;
     font-family: "Lucida Grande", "Helvetica Neue", "Helvetica", "Verdana", "Arial", sans-serif;
+    color: #ef2121;
     font-size: 2em;
     margin-bottom: 1em;
+    padding: 3px;
+    border: 1px solid #000;
+    -moz-border-radius: 5px;
+    background-color: #eee;
+    opacity: 0.8;
+
 }
 
 #JJPSRadioCurrentLabel, #JJPSRadioNextLabel {
@@ -18,13 +25,21 @@
     text-align: right;
 }
 
+#JJPSRadioBox {
+    padding: 3px;
+    border: 1px solid #000;
+    -moz-border-radius: 5px;
+    background-color: #eee;
+    opacity: 0.8;
+}
+
 /* Stealing from Zotero at the moment */
 #JJPSStatusBarIcon
 {
     width: 55px;
     margin: 0 0 -1px; /* For Fitts's law (on OS X, at least) */
     padding: 0 0 1px;
-    list-style-image: url(chrome://JJPS/skin/JJPSStatusBarIcon.png);
+    list-style-image: url(chrome://JJPS/skin/JJPSStatusBarIcon2.png);
 }
 
 #JJPSDeckButtons {
@@ -37,7 +52,7 @@
 #JJPSRightDeck {
     min-height: 50px; 
     overflow: auto;
-    background: url(chrome://JJPS/skin/owlTree.png) no-repeat;
+    background: url(chrome://JJPS/skin/JJPSOwlTree.png) no-repeat;
 }
 
 #JJPSRightDeck tabpanels {
@@ -69,8 +84,8 @@
 
 caption#JJPSFrobpactFactor, caption#JJPSEigenfrobFactor, caption#JJPSFrobfluence, caption#JJPSSJR, caption#JJPSHIndex, caption#JJPSClickValue {
     font-weight: bold;
-    font-size: 1em;
-    font-color: blue;
+    font-size: 1.2em;
+    color: #ef2121;
 }
 
 #JJPSFrobpactFactorValue, #JJPSEigenfrobFactorValue, #JJPSFrobfluenceValue, #JJPSSJRValue, #JJPSHIndexValue, #JJPSClickValueValue {

@@ -31,6 +31,7 @@
             <hbox>
                 <vbox id="JJPSRadioPane" persist="width" maxwidth="100px" flex="1">
                     <label id="JJPSRadioLabel" value="&JJPS.radio;" />
+                    <vbox id="JJPSRadioBox">
                     <hbox>
                         <label id="JJPSRadioCurrentLabel" value="&JJPS.current.program;"/>
                         <label id="JJPSRadioCurrent" value="" />
@@ -42,17 +43,20 @@
                     <hbox pack="center">
                         <button id="JJPSRadioButton" label="&JJPS.radio.button;" oncommand="window.open('http://localhost:8000/JJPS.m3u');" />                    
                     </hbox>
+                    </vbox>
                 </vbox>        
             </hbox>
             <splitter id="JJPSMiddleSplitter" resizebefore="closet" resizeafter="closest" hidden="false">
                 <grippy />
             </splitter>
-            <vbox id="JJPSDeckButtons">
+            <vbox style="min-height: 50px; overflow: auto;">
+            <hbox id="JJPSDeckButtons">
                 <label id="JJPSDeckButtonsLabel" value="Info Options" />
                 <button id="JJPSImpactSwitch" label="Impact Factor" oncommand="document.getElementById('JJPSRightDeck').selectedIndex = 0;" />                    
                 <button id="JJPSOwnershipSwitch" label="Ownership Graph" oncommand="document.getElementById('JJPSRightDeck').selectedIndex = 1;" />                    
                 <button id="JJPSSocialSwitch" label="Social Networking" oncommand="document.getElementById('JJPSRightDeck').selectedIndex = 2;" />                    
-            </vbox>
+            </hbox>
+            <hbox>
             <deck id="JJPSRightDeck" selectedIndex="0">
                 <vbox id="JJPSFactorsBox" pack="start">
                     <groupbox id="JJPSFrobpactBox" hidden="true">
@@ -86,11 +90,16 @@
                     <label id="JJPSNoGraph" value="No ownership graph available" hidden="false" />
                     <image id="JJPSOwnershipGraphImage" src="" hidden="true" />
                 </hbox>
-                <hbox pack="center">
+                <vbox id="JJPSSocialBox" pack="start" align="start">
+
+                    <button id="JJPSVoteButton" label="Vote for Article" oncommand="" />
+                    <button id="JJPSUploadTextButton" label="Upload Article Text" oncommand="" />
                     <button id="JJPSCopyInfoButton" label="Copy Journal Info" oncommand="JJPS.copyToClipboard()" />                    
-                </hbox>
+                </vbox>
 
             </deck>
+            </hbox>
+            </vbox>
             <!--
             <hbox id="JJPSRightPane">
                 <tabbox width="100%" height="100%">
