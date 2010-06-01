@@ -227,6 +227,23 @@
     color: #ca0000;
 }
 
+#JJPSHeaderAdParent, #JJPSHeaderResponseParent {
+    margin-left: 4px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    padding-left: 6px;
+    width: 100px;
+    height: 32px;
+    float: left;
+    border-left: 1px solid #565656;
+}
+
+#JJPSHeaderResponseDiv {
+    margin-top: 4px;
+    font-size: 10px;
+}
+
+
 /* For the ticker */
 
 #JJPSTicker {

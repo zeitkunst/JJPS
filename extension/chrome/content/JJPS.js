@@ -18,6 +18,8 @@ var JJPS = {
     currentJournalName: null,
     currentArticleTitle: null,
     currentArticleURL: null,
+    trendingWords: null,
+    trendingWordsIndex: null,
     factorsList: new Array("Frobpact Factor", "Eigenfrob Factor", "Frobfluence", "SJR", "HIndex", "Click Value"),
 
     // Methods to run when we initialize
@@ -170,13 +172,15 @@ var JJPS = {
         $jq("#JJPSFactorsSubpanel a:first, #JJPSGraphSubpanel a:first", JJPS.doc).click(
         function() {
             if ($jq(this, JJPS.doc).next(".subpanel").is(":visible")) {
-                $jq(this, JJPS.doc).next(".subpanel").hide();
+                $jq(this, JJPS.doc).next(".subpanel").fadeOut("slow");
                 $jq("#JJPSHeaderDiv li a").removeClass("active");
             } else {
-                $jq(".subpanel", JJPS.doc).hide();
+                $jq(".subpanel", JJPS.doc).fadeOut("slow");
                 // TODO
                 // Figure out why toggle doesn't work on the next line
                 $jq(this, JJPS.doc).next(".subpanel").css("display", "block");
+                $jq(this, JJPS.doc).next(".subpanel").css("opacity", 0.0);
+                $jq(this, JJPS.doc).next(".subpanel").animate({"opacity": 1.0}, 600);
                 $jq("#JJPSHeaderDiv li a").removeClass("active");
                 $jq(this, JJPS.doc).toggleClass("active");
             }
@@ -194,22 +198,27 @@ var JJPS = {
     },
 
     voteForArticle: function() {
-            postData = new Array();
-            postData["articleTitle"] = JJPS.currentArticleTitle;
-            postData["journalName"] = JJPS.currentJournalName;
-            postData["currentArticleURL"] = JJPS.currentArticleURL;
+        postData = new Array();
+        postData["articleTitle"] = JJPS.currentArticleTitle;
+        postData["journalName"] = JJPS.currentJournalName;
+        postData["currentArticleURL"] = JJPS.currentArticleURL;
 
-            
-            JJPS.voteRequest = JJPS._getRequest();            
-            JJPS.voteRequest.onload = JJPS.respondToVote;
+        
+        JJPS.voteRequest = JJPS._getRequest();            
+        JJPS.voteRequest.onload = JJPS.respondToVote;
 
-            // Send it off!
-            JJPS.uploadPostData(postData, JJPS.serverURL + "vote", JJPS.voteRequest);
-       
+        // Send it off!
+        JJPS.uploadPostData(postData, JJPS.serverURL + "vote", JJPS.voteRequest);
+        
+        return false;       
     },
 
     respondToVote: function() {
-        JJPS.doc.getElementById("JJPSHeaderResponseDiv").innerHTML = "Vote recorded!";
+        JJPS.doc.getElementById("JJPSHeaderResponseDiv").innerHTML = "<strong>Response</strong>: Vote recorded!";
+        JJPS.doc.getElementById("JJPSHeaderResponseDiv").style.display = "block";
+
+        $jq = jQuery.noConflict();
+        $jq("#JJPSHeaderResponseDiv", JJPS.doc).fadeOut(2000);
     },
 
     // Do the program request
@@ -837,6 +846,9 @@ var JJPS = {
         var sjr = result.getAttribute("sjr");
         var hIndex = result.getAttribute("hIndex");
         var clickValue = result.getAttribute("clickValue");
+
+        // Get the trending words
+        var trendingWords = results.getElementsByTagName("words")[0];
         
         overlayDiv = JJPS.doc.createElement("div");
         overlayDiv.id = "JJPSTicker";
@@ -911,25 +923,26 @@ var JJPS = {
             overlayDiv.appendChild(headlinesDiv);
             overlayDiv.style.height = "40px";
 
+            // Try and setup a basic headline switching method
+            setInterval(function() {
+                // Cycle to next index
+    
+                show = getElementsByClassName(JJPS.doc, "JJPSNewsItemShow")[0];
+                hide = getElementsByClassName(JJPS.doc, "JJPSNewsItemHide");
+                numItems = hide.length;
+    
+                if (JJPS.newsItemIndex >= numItems) {
+                    JJPS.newsItemIndex = 0;
+                }
+    
+                show.className = "JJPSNewsItemHide";
+                hide[JJPS.newsItemIndex].className = "JJPSNewsItemShow";
+                JJPS.newsItemIndex += 1;
+    
+            }, 12000);
+
         }
 
-        // Try and setup a basic headline switching method
-        setInterval(function() {
-            // Cycle to next index
-
-            show = getElementsByClassName(JJPS.doc, "JJPSNewsItemShow")[0];
-            hide = getElementsByClassName(JJPS.doc, "JJPSNewsItemHide");
-            numItems = hide.length;
-
-            if (JJPS.newsItemIndex >= numItems) {
-                JJPS.newsItemIndex = 0;
-            }
-
-            show.className = "JJPSNewsItemHide";
-            hide[JJPS.newsItemIndex].className = "JJPSNewsItemShow";
-            JJPS.newsItemIndex += 1;
-
-        }, 12000);
         JJPS.doc.body.insertBefore(overlayDiv, JJPS.doc.body.childNodes[0]);
 
         if (JJPS.showMarquee) {
@@ -1030,27 +1043,27 @@ var JJPS = {
         headerDiv.appendChild(logoDiv);
         headerDiv.appendChild(menuUL);
 
+        // Ads
+        adParent = JJPS.doc.createElement("div");
+        adParent.id = "JJPSHeaderAdParent";
+        adDiv = JJPS.doc.createElement("div");
+        adDiv.id = "JJPSHeaderAdDiv";
+        adDiv.style.display = "none";
+        adParent.appendChild(adDiv);
+        headerDiv.appendChild(adParent);
+
+        // Responses
+        responseParent = JJPS.doc.createElement("div");
+        responseParent.id = "JJPSHeaderResponseParent";
         responseDiv = JJPS.doc.createElement("div");
         responseDiv.id = "JJPSHeaderResponseDiv";
-        responseP = JJPS.doc.createElement("p");
-        responseP.id = "JJPSHeaderResponseP";
-        responseDiv.appendChild(responseP);
-        headerDiv.appendChild(responseDiv);
+        responseDiv.style.display = "none";
+        responseParent.appendChild(responseDiv);
+        headerDiv.appendChild(responseParent);
 
         // Insert the header
         JJPS.doc.body.insertBefore(headerDiv, JJPS.doc.body.childNodes[0]);
         
-        // Setup the panels jquery
-        JJPS._setPanelsJQuery();
-
-        // Setup the copy command
-        JJPS._setupCopy();
-
-        // Setup the vote command
-        JJPS._setupVote();
-
-        // Fire off the program request
-        JJPS._doProgramRequest();
 
 
         // Update our metrics
@@ -1135,12 +1148,6 @@ var JJPS = {
         JJPS.clipboardInfo = insertText;
 
         // Update ownership image
-        ownershipBox = document.getElementById("JJPSOwnershipBox");
-        boxW = ownershipBox.boxObject.width;
-        boxH = ownershipBox.boxObject.height;
-        imageLabel = document.getElementById("JJPSNoGraph");        
-        imageLabel.setAttribute("hidden", "true");
-        graphImage = document.getElementById("JJPSOwnershipGraphImage");
         ownerName = ownerName.replace(/\s/g, "_").replace(/\&amp;/g, "_").replace(/\&Amp;/g, "_").replace(/\./g, "_").replace(/\\/g, "_") + ".png";
         
         // TODO
@@ -1151,27 +1158,70 @@ var JJPS = {
             serverStem = JJPS.serverURL.substr(0, JJPS.serverURL.length - 4);
         }
 
-        graphImage.src = serverStem + "static/images/graphs/" + ownerName;
-        graphImage.setAttribute("hidden", "false");
-        // TODO
-        // not quite working...
-        windowW = window.width;
-        if (windowW < (700 + 100)) {
-            graphImage.setAttribute("width", windowW - 40);
-            graphImage.setAttribute("height", 0.43 * (windowW - 40));
-        }
-
-        //graphImage.setAttribute("width", "500px");
-        //graphImage.setAttribute("height", "215px");
-
         // Try setting image of graph header panel
         JJPS.doc.getElementById("JJPSGraphImage").setAttribute("src", serverStem + "static/images/graphs/" + ownerName);
         JJPS.doc.getElementById("JJPSGraphImage").setAttribute("width", 700);
+
+
+        // Setup the panels jquery
+        JJPS._setPanelsJQuery();
+
+        // Setup the copy command
+        JJPS._setupCopy();
+
+        // Setup the vote command
+        JJPS._setupVote();
+
+        // Fire off the program request
+        JJPS._doProgramRequest();
+
+        // Update the trending words
+        JJPS._doTrendingWords(trendingWords);
+
+    },
+
+    _doTrendingWords: function(trendingWords) {
+        // Update our trending words
+        JJPS.trendingWords = new Array();
+        
+        trendingWords = trendingWords.getElementsByTagName("word");
+        numWords = trendingWords.length;
+
+        for (var i = 0; i < numWords; i++) {
+            JJPS.trendingWords.push(new Array(trendingWords[i].getAttribute("name"), trendingWords[i].getAttribute("price")));
+        }        
+        
+        JJPS.trendingWordsIndex = 0;
+        setInterval(function () {
+            adDiv = JJPS.doc.getElementById("JJPSHeaderAdDiv");
+            adDiv.style.display = "block";
+            adDiv.innerHTML = "<span style='font-weight: bold'>" + JJPS.trendingWords[JJPS.trendingWordsIndex][0] + "</span>: " + JJPS.trendingWords[JJPS.trendingWordsIndex][1];
+            JJPS.trendingWordsIndex += 1;
+            if ((JJPS.trendingWordsIndex % JJPS.trendingWords.length) == 0) {
+                JJPS.trendingWordsIndex = 0;
+            }
+            $jq = jQuery.noConflict();
+            $jq("#JJPSHeaderAdDiv", JJPS.doc).fadeOut(5000);
+                
+        }, 5000);
+
     },
 
     copyToClipboard: function(aEvent) {
         const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].getService(Components.interfaces.nsIClipboardHelper);  
         gClipboardHelper.copyString(JJPS.clipboardInfo);   
+        JJPS._displayResponseMessage("Info copied!");
+        
+        return false;
+    },
+
+    _displayResponseMessage: function(message) {
+        JJPS.doc.getElementById("JJPSHeaderResponseDiv").innerHTML = message;
+        JJPS.doc.getElementById("JJPSHeaderResponseDiv").style.display = "block";
+
+        $jq = jQuery.noConflict();
+        $jq("#JJPSHeaderResponseDiv", JJPS.doc).fadeOut(2000);
+
     },
 
     // Toggle the display of the bottom panel

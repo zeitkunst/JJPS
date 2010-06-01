@@ -10,6 +10,7 @@ import subprocess
 
 import couchdb
 import BeautifulSoup
+from lxml import etree
 from pybtex.database.input import bibtex
 
 # My libraries
@@ -41,7 +42,7 @@ class DocumentBase(object):
                     doc = self.db[result]
                     self.db.delete(doc)
 
-    def addDocument(self, dataDict):
+    def addDocument(self, dataDict, showName = False):
         """Add the document in dataDict to the database.  Create an ID based on the hash of the title and author values."""
         
         # Create an id based on the hash of the title and author
@@ -50,7 +51,9 @@ class DocumentBase(object):
         id = hashlib.sha256(dataDict[key1].encode("ascii", "ignore") + dataDict[key2].encode("ascii", "ignore")).hexdigest()
 
         dataDict["_id"] = id
-        self.logger.debug("Adding document \"%s\" to the database" % dataDict[key1])
+        if (showName):
+            self.logger.debug("Adding document \"%s\" to the database" % dataDict[key1])
+
         try:
             id, rev = self.db.save(dataDict)
         except couchdb.http.ResourceConflict:
@@ -146,7 +149,7 @@ class DocumentBase(object):
 class JournalDocuments(DocumentBase):
     """Methods for processing the journal documents database."""
 
-    def __init__(self, config = None, dbName = None, hashKeys = ["journalName", "ownerName"]):
+    def __init__(self, config = None, dbName = "jjps_journals", hashKeys = ["journalName", "ownerName"]):
         super(JournalDocuments, self).__init__(config = config, hashKeys = hashKeys)
 
         self.dbServer = couchdb.Server(self.config.get("Database", "host"))
@@ -195,11 +198,53 @@ class JournalDocuments(DocumentBase):
         fp = open(os.path.join("data", "wordsList2.txt"), "w")
         fp.write("\n".join([item[0] for item in wordsList2]))
         fp.close()
+    
+    def updatePPCInfo(self):
+        """Update the PPC info for the journals database from the PPC database."""
+        
+        self.logger.debug("Updating PPC info")
+        ppcDocuments = PPCDocuments(config = self.config)
+        ids = [id for id in self.db]
+        
+        count = 0
+        for id in ids:
+            if ((count % 100) == 0):
+                self.logger.debug("Working on journal %d" % count)
+
+            if (id.find("_design") != -1):
+                continue
+            
+            data = self.db[id]
+            # Try and get the current values
+            try:
+                currentClick = data["click"]
+            except KeyError:
+                currentClick = 0
+
+            try:
+                currentVolume = data["volume"]
+            except KeyError:
+                currentVolume = 0
+
+            try:
+                currentPPC = data["ppc"]
+            except KeyError:
+                currentPPC = 0
+
+            text = data["ownerName"] + data["journalName"]
+            ppcDataDict = ppcDocuments.makeClickInfo(text)
+            data["deltaClick"] = ppcDataDict["click"] - float(currentClick) 
+            data["deltaVolume"] = ppcDataDict["volume"] - float(currentVolume) 
+            data["deltaPPC"] = ppcDataDict["ppc"] - float(currentPPC) 
+            data.update(ppcDataDict)
+            self.addDocument(data)
+
+            count += 1
 
 class PPCDocuments(DocumentBase):
     """Methods for processing ppc database."""
 
-    def __init__(self, config = None, dbName = None):
+    def __init__(self, config = None, dbName = "jjps_ppc"):
         super(PPCDocuments, self).__init__(config = config)
 
         self.dbServer = couchdb.Server(self.config.get("Database", "host"))
@@ -254,7 +299,40 @@ class PPCDocuments(DocumentBase):
                 continue
 
         return documents            
-    
+
+    def makeClickInfo(self, text):
+        """Make a dictionary of click info for the given text.  Useful for updating entries in jjps_journals."""
+
+        ppcInfo = self.getPPCInfo(text)
+        count = float(len(ppcInfo))
+
+        if (count == 0):
+            dataDict = {}
+            dataDict["click"] = 0
+            dataDict["volume"] = 0
+            dataDict["ppc"] = 0
+            return dataDict
+
+        dataDict = {}
+
+        totalClick = 0
+        totalVolume = 0
+        totalPPC = 0
+
+        for info in ppcInfo:
+            if (info["highClick"] != "no data"):
+                totalClick += float(info["highClick"].replace(",", ""))
+            if (info["volume"] != "no data"):
+                totalVolume += float(info["volume"])
+            if (info["highPPC"] != "no data"):
+                totalPPC += float(info["highPPC"][1:])
+
+        dataDict["click"] = totalClick / count
+        dataDict["volume"] = totalVolume / count
+        dataDict["ppc"] = totalPPC / count
+
+        return dataDict
+
     def getClickValue(self, text):
         """Return the click value for the given text.
 
@@ -270,6 +348,61 @@ class PPCDocuments(DocumentBase):
             total += click * ppc
         
         return total
+    
+    def getTrendingWordsByPrice(self, num = 20):
+        """Get a list of the top trending words, sorted by price."""
+        results = []
+
+        for result in self.db.view("_design/ppc/_view/ppcVolume"):
+            results.append(result["value"])
+
+        results = sorted(results, key = operator.itemgetter(2))
+        results.reverse()
+
+        count = 0
+        
+        words = []
+        words = etree.Element("words")
+        for result in results:
+            if (result[2] == "no data"):
+                continue
+            
+            word = etree.Element("word")
+            word.set("name", result[0])
+            word.set("price", result[2])
+            words.append(word)
+
+            count += 1
+
+            if (count == num):
+                break
+
+        return words
+
+    def getTrendingWordsByVolume(self, num = 20):
+        """Get a list of the top trending words, sorted by volume."""
+        results = []
+
+        for result in self.db.view("_design/ppc/_view/ppcVolume"):
+            results.append(result["value"])
+
+        results = sorted(results, key = operator.itemgetter(1))
+        results.reverse()
+
+        count = 0
+        
+        words = []
+        for result in results:
+            if (result[1] == "no data"):
+                continue
+            
+            words.append(result)
+            count += 1
+
+            if (count == num):
+                break
+
+        return words
 
 class VoteDocuments(DocumentBase):
     """Methods for processing ppc database."""
@@ -309,6 +442,42 @@ class VoteDocuments(DocumentBase):
             dataDict["_rev"] = rev
             dataDict["votes"] = votes + 1
             self.db.save(dataDict)
+
+class AdsDocuments(DocumentBase):
+    """Methods for processing ppc database."""
+    
+    # Initial ad list
+    initialAds = [ {"title": "Better your ASEO!", 
+                    "content": "Improve your academic search engine optimization!",
+                    "href": "#"},
+                  {"title": "Measure author performance!",
+                   "content": "Ensure your authors are writing optimally!",
+                   "href": "http://www.elsevier.com/wps/find/editorshome.editors/joumeasures"},
+                  {"title": "Googlable titles?",
+                   "content": "Can your title be found via Google?  Take this test to find out!",
+                   "href": "http://www.ojr.org/ojr/people/eulken/200910/1788/"},
+                  {"title": "Discover the hottest trends!",
+                   "content": "Want to know what research is hot?  Check it out here!",
+                   "href": "http://www.mendeley.com/research/mendeley-a-lastfm-for-research/"}]
+
+    def __init__(self, config = None, dbName = "jjps_ads", hashKeys = ["title", "href"]):
+        super(AdsDocuments, self).__init__(config = config, hashKeys = hashKeys)
+
+        self.dbServer = couchdb.Server(self.config.get("Database", "host"))
+        
+        # Setup the db
+        if (dbName is not None):
+            self.db = self.dbServer[dbName]
+        else:
+            raise Exception("Need to provide db name")
+
+    def initDatabase(self):
+        """Initialize the ads database with our own subset.  Useful during our testing phases :-)"""
+
+        self.clearDatabase(really = True)
+        
+        for ad in self.initialAds:
+            self.addDocument(ad)
 
 class Documents(object):
 

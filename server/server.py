@@ -23,7 +23,7 @@ from lxml import etree
 # My own library imports
 from JJPS.Station import Station
 from JJPS.Model import Model 
-from JJPS.Documents import Documents, VoteDocuments
+from JJPS.Documents import Documents, VoteDocuments, PPCDocuments
 
 import serverConfig
 
@@ -135,10 +135,16 @@ class APIJournal:
         station = StationSingleton.getStation()
 
         if ((bestMimetype == "application/xhtml+xml") or (bestMimetype == "application/xml") or (bestMimetype == "text/xml")):
+            # Get XML representation of the journal
             journalsXML = station.journalModel.getJournalInfo(journalName)
+
+            # Get the top trending words
+            words = station.ppcDocuments.getTrendingWordsByPrice()
+            journalsXML.append(words)
+
             web.header("Content-Type", "text/xml; charset=utf-8")
             web.header('Content-Encoding', 'utf-8')
-            return journalsXML
+            return etree.tostring(journalsXML)
         elif ((bestMimetype == "application/rdf") or (bestMimetype == "application/rdf+xml")):
             journalsRDF = station.journalModel.getJournalInfo(journalName, returnFormat="rdf")
             web.header("Content-Type", "application/rdf+xml; charset=utf-8")
@@ -374,6 +380,7 @@ class StationSingleton(object):
             # TODO
             # Make name configurable?
             StationSingleton.station.voteDocuments = VoteDocuments(config = StationSingleton.station.config, dbName = "jjps_votes")
+            StationSingleton.station.ppcDocuments = PPCDocuments(config = StationSingleton.station.config)
         return StationSingleton.station
     getStation = staticmethod(getStation)
 

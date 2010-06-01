@@ -390,7 +390,7 @@ class Model(object):
             clickValue = self.d.getClickValue(journalName)
             resultXML.set("clickValue", unicode(round(clickValue)))
 
-            return etree.tostring(resultsXML)
+            return resultsXML
         elif (returnFormat == "json"):
             pass
         elif (returnFormat == "rdf"):
