@@ -1,14 +1,10 @@
-#JJPSBuyImage001 {
-    background: url('chrome://JJPS/skin/buy001.png') no-repeat;
-    font-size: 5em;
-    font-weight: bold;
-    z-index: 90;
-}
-
 /*
  * TODO
  * Change all sizings to pixels, make sure we define all styles, otherwise we will inherit everything from the site
+ *
+ * Lots taken from http://www.sohtanaka.com/web-design/facebook-style-footer-admin-panel-part-1/
  */
+
 /*
  * Try a "reset" on the div
  */
@@ -31,25 +27,37 @@
     left: 0;
     top: 0;
     z-index: 9999;
-    background: #e3e2e2;
-    border: 1px solid #c3c3c3;
-    border-top: none;
+    background: #b3b2b2;
     width: 94%;
+    height: 40px;
     margin: 0 3%;
+    border: 1px solid #212121;
+    border-top: none;
+    line-height: 15px;
 }
 
 #JJPSHeaderLogoDiv {
-    margin: 0em;
-    padding: 0em;
     width: 60px;
+    height: 32px;
+    margin-top: 4px;
+    padding-right: 4px;
+    border-right: 1px solid #565656;
     float: left;
     background: url(chrome://JJPS/skin/JJPSHeaderIcon.png) no-repeat;
+    /*background: url(JJPSHeaderIcon.png) no-repeat;*/
 }
 
 #JJPSHeaderRadioDiv {
+    margin-top: 4px;
     width: 250px;
     float: right;
     font-size: 10px;
+    border-left: 1px solid #565656;
+    padding-left: 6px;
+}
+
+#JJPSHeaderRadioDiv strong {
+    font-weight: bold;
 }
 
 #JJPSHeaderRadioLogoDiv {
@@ -58,6 +66,7 @@
     width: 30px;
     float: left;
     background: url(chrome://JJPS/skin/JJPSRadioIcon.png) no-repeat;
+    /*background: url(JJPSRadioIcon.png) no-repeat;*/
 }
 
 #JJPSRadioInfoUL {
@@ -65,8 +74,6 @@
     margin: 0;
     float: left;
     list-style: none;
-    border-top: 1px solid #fff;
-    font-size: 1.1em;
 }
 
 #JJPSRadioInfoUL li {
@@ -77,11 +84,9 @@
 
 #JJPSMenuUL {
     padding: 0;
-    margin: 0;
+    margin-left: 4px;
     float: left;
     list-style: none;
-    border-top: 1px solid #fff;
-    font-size: 1.1em;
 }
 
 #JJPSMenuUL li {
@@ -90,6 +95,8 @@
     float: left;
     position: relative;
     list-style-type: none;
+    margin-top: 4px;
+    color: #ca0000;
 }
 
 #JJPSMenuUL li a {
@@ -97,8 +104,15 @@
     float: left;
     /*text-indent: -9999px;*/
     text-decoration: none;
-    color: #333;
+    color: #ca0000;
     position: relative;
+    font-size: 14px;
+    font-weight: bold;
+    display: block;
+}
+
+#JJPSMenuUL li a:hover {
+    background-color: #d3d2d2;
 }
 
 #JJPSMenuUL a small {
@@ -107,7 +121,6 @@
     padding: 5px 5px 11px;
     display: none;
     color: #fff;
-    font-size: 1em;
     text-indent: 0;
 }
 
@@ -139,26 +152,23 @@
 #JJPSMenuUL .subpanel {
     position: absolute;
     left: 0em;
-    top: 30px;
+    top: 36px;
     width: 200px;
     display: none;
     border: 1px solid #555;
-    background: #fff;
     overflow: hidden;
 }
 
 #JJPSMenuUL h3 {
-    background: #526ea6;
     padding: 5px 10px;
-    color: #fff;
-    font-size: 1.1.em;
     cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 #JJPSMenuUL .subpanel ul {
     padding: 0em;
     margin: 0em;
-    background: #fff;
     width: 100%;
     overflow: auto;
     padding-top: 2px;
@@ -171,14 +181,53 @@
     margin: 0em;
     overflow: hidden;
     clear: both;
-    background: #fff;
     position: static;
-    font-size: 0.9em;
+}
+
+#JJPSMenuUL #JJPSFactorsSubpanel .subpanel {
+    position: absolute;
+    left: 0em;
+    top: 36px;
+    width: 200px;
+    background-color: #d3d2d2;
+}
+
+#JJPSMenuUL #JJPSFactorsSubpanel .subpanel ul {
+    padding: 6px;
+}
+
+
+#JJPSMenuUL #JJPSFactorsSubpanel .subpanel ul li {
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+#JJPSMenuUL #JJPSFactorsSubpanel .subpanel ul li:hover {
+    background-color: #b3b2b2;
+}
+
+#JJPSFrobpactFactorName, #JJPSEigenfrobFactorName, #JJPSFrobfluenceName, #JJPSSJRName, #JJPSHIndexName, #JJPSClickValueName {
+    font-weight: bold;
+}
+
+#JJPSFrobpactFactorValue, #JJPSEigenfrobFactorValue, #JJPSFrobfluenceValue, #JJPSSJRValue, #JJPSHIndexValue, #JJPSClickValueValue {
 }
 
 #JJPSMenuUL #JJPSGraphSubpanel .subpanel {
+    position: absolute;
+    left: 0em;
+    top: 36px;
     width: 700px;
+    background-color: #d3d2d2;
+
 }
+
+#JJPSMenuUL #JJPSGraphSubpanel .subpanel h3 {
+    background: #b3b2b2;
+    color: #ca0000;
+}
+
+/* For the ticker */
 
 #JJPSTicker {
     font-family: "Helvetica", "Verdana", sans-serif;

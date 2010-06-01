@@ -270,6 +270,47 @@ class PPCDocuments(DocumentBase):
             total += click * ppc
         
         return total
+
+class VoteDocuments(DocumentBase):
+    """Methods for processing ppc database."""
+
+    def __init__(self, config = None, dbName = None):
+        super(VoteDocuments, self).__init__(config = config)
+
+        self.dbServer = couchdb.Server(self.config.get("Database", "host"))
+        
+        # Setup the db
+        if (dbName is not None):
+            self.db = self.dbServer[dbName]
+        else:
+            raise Exception("Need to provide db name")
+
+    def addVote(self, name, dataDict):
+        """Add the document in dataDict to the database.  Name of document is given by method argument."""
+        
+        id = name.strip()
+
+        # Try and get the data by the given id
+        # If it doesn't exist, add the votes value to the dictionary
+        try:
+            data = self.db[id]
+            dataDict["votes"] = int(data["votes"]) + 1
+        except couchdb.http.ResourceNotFound:
+            dataDict["votes"] = 1
+
+        dataDict["_id"] = id
+        self.logger.debug("Adding document \"%s\" to the database" % name)
+        try:
+            id, rev = self.db.save(dataDict)
+        except couchdb.http.ResourceConflict:
+            document = self.db[id]
+            self.logger.debug(document.keys())
+            rev = document["_rev"]
+            votes = int(document["votes"])
+            dataDict["_rev"] = rev
+            dataDict["votes"] = votes + 1
+            self.db.save(dataDict)
+
 class Documents(object):
 
     def __init__(self, config = None, db = None):

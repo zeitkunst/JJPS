@@ -13,6 +13,9 @@ var JJPS = {
     logFile: null,
     logDisabled: false,
     regExps: null,
+    currentJournalName: null,
+    currentArticleTitle: null,
+    currentArticleURL: null,
     factorsList: new Array("Frobpact Factor", "Eigenfrob Factor", "Frobfluence", "SJR", "HIndex", "Click Value"),
 
     // Methods to run when we initialize
@@ -119,7 +122,6 @@ var JJPS = {
         }
 
         div.appendChild(ul);
-        div.appendChild(h3);
 
         var li = JJPS.doc.createElement("li");
         li.id = "JJPSFactorsSubpanel";
@@ -133,13 +135,13 @@ var JJPS = {
     },
 
     // Create the graph subpanel
-    _createGraphSubpanel: function() {
+    _createGraphSubpanel: function(ownerName) {
 
         var div = JJPS.doc.createElement("div");
         div.className = "subpanel";
 
         var h3 = JJPS.doc.createElement("h3");
-        h3.innerHTML = "Ownership Graph";
+        h3.innerHTML = "Ownership Graph for " + ownerName;
         
         var img = JJPS.doc.createElement("img");
         img.id = "JJPSGraphImage";
@@ -179,6 +181,25 @@ var JJPS = {
 
             return false;
         });
+    },
+
+    _setupCopy: function() {
+        JJPS.doc.getElementById("JJPSCopy").addEventListener("click", JJPS.copyToClipboard, false);
+    },
+
+    _setupVote: function() {
+        JJPS.doc.getElementById("JJPSVote").addEventListener("click", JJPS.voteForArticle, false);
+    },
+
+    voteForArticle: function() {
+            postData = new Array();
+            postData["articleTitle"] = JJPS.currentArticleTitle;
+            postData["journalName"] = JJPS.currentJournalName;
+            postData["currentArticleURL"] = JJPS.currentArticleURL;
+
+            // Send it off!
+            JJPS.uploadPostData(postData, JJPS.serverURL + "vote");
+       
     },
 
     // Do the program request
@@ -769,8 +790,14 @@ var JJPS = {
         citationNode = JJPS.doc.getElementById("citation");
         
         if (citationNode != null) {
+            articleTitle = JJPS.doc.getElementById("article_title").innerHTML;
+
             journalName = citationNode.childNodes[0].innerHTML;        
             journalName = journalName.trim();
+
+            JJPS.currentJournalName = journalName;
+            JJPS.currentArticleTitle = articleTitle;
+            JJPS.currentArticleURL = JJPS.doc.location.href;
 
             JJPS.journalRequest = JJPS._getRequest();
             JJPS.journalRequest.open("GET", JJPS.serverURL + "journal/" + journalName, true);
@@ -969,21 +996,29 @@ var JJPS = {
         menuUL = JJPS.doc.createElement("ul");
         menuUL.id = "JJPSMenuUL";
 
-        li = JJPS.doc.createElement("li");
-        li.innerHTML = "<a href='#'>Factors <small>Factors</small></a>";
-        //menuUL.appendChild(li);
-
-        li = JJPS.doc.createElement("li");
-        li.innerHTML = "<a href='#'>Testing <small>Testing</small></a>";
-        //menuUL.appendChild(li);
-
         // Load the factors panel
         factorsLI = JJPS._createFactorsSubpanel();
         menuUL.appendChild(factorsLI);
 
         // Graph link
-        graphLI = JJPS._createGraphSubpanel();
+        graphLI = JJPS._createGraphSubpanel(ownerName);
         menuUL.appendChild(graphLI);
+        
+        // Vote
+        var li = JJPS.doc.createElement("li");
+        li.innerHTML = "<a id='JJPSVote' href='#'>Vote <small>Vote for article</small></a>";
+        menuUL.appendChild(li);
+
+        // Upload 
+        var li = JJPS.doc.createElement("li");
+        li.innerHTML = "<a id='JJPSUpload' href='#'>Upload <small>Upload Article</small></a>";
+        menuUL.appendChild(li);
+
+        // Copy
+        var li = JJPS.doc.createElement("li");
+        li.innerHTML = "<a id='JJPSCopy' href='#'>Copy <small>Copy info to clipboard</small></a>";
+        menuUL.appendChild(li);
+
 
         headerDiv.appendChild(logoDiv);
         headerDiv.appendChild(menuUL);
@@ -993,6 +1028,12 @@ var JJPS = {
         
         // Setup the panels jquery
         JJPS._setPanelsJQuery();
+
+        // Setup the copy command
+        JJPS._setupCopy();
+
+        // Setup the vote command
+        JJPS._setupVote();
 
         // Fire off the program request
         JJPS._doProgramRequest();
@@ -1077,8 +1118,6 @@ var JJPS = {
 
 
         // Update copy button text for clipboard
-        // TODO
-        // Add more info, like the journal we're looking at.
         JJPS.clipboardInfo = insertText;
 
         // Update ownership image

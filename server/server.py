@@ -23,7 +23,7 @@ from lxml import etree
 # My own library imports
 from JJPS.Station import Station
 from JJPS.Model import Model 
-from JJPS.Documents import Documents
+from JJPS.Documents import Documents, VoteDocuments
 
 import serverConfig
 
@@ -41,6 +41,7 @@ urls = (
     '/API/ads', 'APIAds',
     '/API/test/(.*?)', 'APITest',
     '/API/file/(.*?)', 'APIFile',
+    '/API/vote', 'APIVote',
     '/API/programs', 'APIPrograms',
     # Admin URIs
     '/admin', 'adminIndex',
@@ -239,6 +240,52 @@ class APIFile:
         #pickleFP.close()
         return urllib.unquote(data["journalTitle"])
 
+class APIVote:
+    def POST(self):
+        station = StationSingleton.getStation()
+
+        # BEGIN HACK HACK HACK HACK HACK HACK HACK HACK HACK
+        # I shouldn't have to do the following...but I do, for some reason, otherwise I get annoying timeout errors when posting from javascript.  See this thread for background info, even though it's a different use-case: http://groups.google.com/group/webpy/browse_thread/thread/b22d7dd17b1e477d/7f823b1aa133ac12?lnk=gst&q=timed+out#7f823b1aa133ac12.
+        # This is needed even on files of only 30 bytes or so!
+        tmpfile = os.tmpfile()
+        contentLength = int(web.ctx.env['CONTENT_LENGTH'])
+        if contentLength <= 0:
+            raise AssertionError('invalid content length')
+
+        wsgiInput = web.ctx.env['wsgi.input']
+
+        while contentLength > 0:
+            chunk = 1024
+            if contentLength < chunk:
+                chunk = contentLength
+            contentLength -= chunk
+            currentChunk = wsgiInput.read(chunk)
+            #print currentChunk
+            tmpfile.write(currentChunk)
+        tmpfile.seek(0)
+
+        web.ctx.env['wsgi.input'] = tmpfile 
+
+        data = web.input(myfile = {})
+        #data = web.input()
+        tmpfile.close()
+        # END HACK HACK HACK HACK HACK HACK HACK HACK HACK
+
+        # Writing PDF files, if we get them            
+        #file = data["myfile"].file.read()
+        #fp = open("test.pdf", "wb")
+        #fp.write(file)
+        #fp.close()
+
+        # For the moment, as we're testing, save the data to a dict, and then save to a pickled file
+        dataDict = {}
+        dataDict["articleTitle"] = urllib.unquote(data["articleTitle"])
+        dataDict["journalName"] = urllib.unquote(data["journalName"])
+        dataDict["currentArticleURL"] = urllib.unquote(data["currentArticleURL"])
+        station.voteDocuments.addVote(dataDict["articleTitle"], dataDict)
+
+        return urllib.unquote(data["currentArticleURL"])
+
 
 class APIPrograms:
     def GET(self):
@@ -321,6 +368,9 @@ class StationSingleton(object):
             StationSingleton.station = Station(configFile = "JJPSConfig.ini")
             StationSingleton.station.journalModel = Model(config = StationSingleton.station.config)
             StationSingleton.station.documents = Documents(config = StationSingleton.station.config)
+            # TODO
+            # Make name configurable?
+            StationSingleton.station.voteDocuments = VoteDocuments(config = StationSingleton.station.config, dbName = "jjps_votes")
         return StationSingleton.station
     getStation = staticmethod(getStation)
 
