@@ -284,7 +284,10 @@ class APIVote:
         dataDict["currentArticleURL"] = urllib.unquote(data["currentArticleURL"])
         station.voteDocuments.addVote(dataDict["articleTitle"], dataDict)
 
-        return urllib.unquote(data["currentArticleURL"])
+        web.header("Content-Type", "application/xml; charset=utf-8")
+        results = etree.Element("results")
+        results.set("done", "true")
+        return etree.tostring(results)
 
 
 class APIPrograms:

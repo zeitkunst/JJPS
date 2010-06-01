@@ -160,7 +160,7 @@
             <archives>
             </archives>
         </program>
-        <program id="Telegraph" processed="0">
+        <program id="Telegraph" processed="1">
             <name>Telegraph</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
@@ -170,7 +170,7 @@
             <archives>
             </archives>
         </program>
-        <program id="GrainCombine" processed="1">
+        <program id="GrainCombine" processed="0">
             <name>Grain Combine</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            

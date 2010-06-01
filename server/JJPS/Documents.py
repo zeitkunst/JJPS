@@ -304,7 +304,6 @@ class VoteDocuments(DocumentBase):
             id, rev = self.db.save(dataDict)
         except couchdb.http.ResourceConflict:
             document = self.db[id]
-            self.logger.debug(document.keys())
             rev = document["_rev"]
             votes = int(document["votes"])
             dataDict["_rev"] = rev

@@ -6,6 +6,8 @@ var JJPS = {
     preferences: null,
     adRequest: null,
     request: null,
+    programRequest: null,
+    voteRequest: null,
     newsItemIndex: null,
     doc: null,
     clipboardInfo: null,
@@ -197,17 +199,26 @@ var JJPS = {
             postData["journalName"] = JJPS.currentJournalName;
             postData["currentArticleURL"] = JJPS.currentArticleURL;
 
+            
+            JJPS.voteRequest = JJPS._getRequest();            
+            JJPS.voteRequest.onload = JJPS.respondToVote;
+
             // Send it off!
-            JJPS.uploadPostData(postData, JJPS.serverURL + "vote");
+            JJPS.uploadPostData(postData, JJPS.serverURL + "vote", JJPS.voteRequest);
        
+    },
+
+    respondToVote: function() {
+        JJPS.doc.getElementById("JJPSHeaderResponseDiv").innerHTML = "Vote recorded!";
     },
 
     // Do the program request
     _doProgramRequest: function() {
-        JJPS.request.open("GET", JJPS.serverURL + "programs", true);
-        JJPS.request.setRequestHeader('Accept', 'application/xml');
-        JJPS.request.onreadystatechange = JJPS.processProgramList;
-        JJPS.request.send(null);
+        JJPS.programRequest = JJPS._getRequest();
+        JJPS.programRequest.open("GET", JJPS.serverURL + "programs", true);
+        JJPS.programRequest.setRequestHeader('Accept', 'application/xml');
+        JJPS.programRequest.onreadystatechange = JJPS.processProgramList;
+        JJPS.programRequest.send(null);
     },
 
     // Return a connection to a local SQL store
@@ -587,7 +598,7 @@ var JJPS = {
     },
 
     // UPLOAD MULTIPART HASH
-    uploadPostData: function(postData, url) {
+    uploadPostData: function(postData, url, requestName) {
         // boundary setup
         var boundary = "-------------" + (new Date().getTime());
 
@@ -618,14 +629,10 @@ var JJPS = {
         multiStream.appendStream(endBoundaryStream);
 
         // then do our request            
-        var uploadRequest = JJPS._getRequest();
-        uploadRequest.open("POST", url, false);
-        uploadRequest.setRequestHeader("Content-Length", multiStream.available());
-        uploadRequest.setRequestHeader("Content-Type","multipart/form-data; boundary="+boundary);
-        uploadRequest.onload = function(event) {
-            alert(event.target.responseText);
-        }
-        uploadRequest.send(multiStream);
+        requestName.open("POST", url, false);
+        requestName.setRequestHeader("Content-Length", multiStream.available());
+        requestName.setRequestHeader("Content-Type","multipart/form-data; boundary="+boundary);
+        requestName.send(multiStream);
 
     },
 
@@ -1023,6 +1030,13 @@ var JJPS = {
         headerDiv.appendChild(logoDiv);
         headerDiv.appendChild(menuUL);
 
+        responseDiv = JJPS.doc.createElement("div");
+        responseDiv.id = "JJPSHeaderResponseDiv";
+        responseP = JJPS.doc.createElement("p");
+        responseP.id = "JJPSHeaderResponseP";
+        responseDiv.appendChild(responseP);
+        headerDiv.appendChild(responseDiv);
+
         // Insert the header
         JJPS.doc.body.insertBefore(headerDiv, JJPS.doc.body.childNodes[0]);
         
@@ -1229,10 +1243,10 @@ var JJPS = {
 
     // Process the returned program list from our API and update the labels
     processProgramList: function() {
-        if (JJPS.request.readyState < 4) {
+        if (JJPS.programRequest.readyState < 4) {
             return;
         }
-        var results = JJPS.request.responseXML;
+        var results = JJPS.programRequest.responseXML;
         description = document.getElementById("JJPSPaneCaption");
         currentLabel = document.getElementById("JJPSRadioCurrent");
         nextLabel = document.getElementById("JJPSRadioNext");
