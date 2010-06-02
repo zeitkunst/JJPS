@@ -260,6 +260,49 @@
     font-weight: bold !important;
 }
 
+.JJPSAds {
+    background: "#FFF8DD none repeat scroll 0% 0%" !important;        
+    padding: 6px 8px !important;
+    margin: 0pt 8px 16px 0pt !important;
+    font-size: small !important;
+    text-align: left !important;
+}
+
+#JJPSAdSponsored {
+    float: right !important;
+    font-size: 11px !important;
+    margin-left: 8px !important;
+    color: #767676 !important;
+    font-family: "arial, sans-serif" !important;
+}
+.JJPSAdH3 {
+    font-family: "arial,sans-serif" !important;
+    font-size: 11px !important;
+    font-weight: normal !important;
+    text-align: left !important;
+    margin: 0em !important;
+    padding: 0em !important;
+}
+
+.JJPSAdLI {
+    list-style-image: none !important;
+    list-style-type: none !important;
+    margin: 12px 10px 12px 0px !important;
+    width: 100px !important;
+    float: left !important;
+    line-height: 1.2 !important;
+    text-align: left !important;
+    font-size: 10px !important;
+}
+
+.JJPSAdCite {
+    display: block !important;
+    text-align: left !important;
+    color: #228822 !important;
+    font-style: normal !important;
+    font-size: 9px !important;
+    text-align: left !important;
+}
 /* For the ticker */
 
 #JJPSTicker {

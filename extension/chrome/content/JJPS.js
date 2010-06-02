@@ -387,6 +387,8 @@ var JJPS = {
 
         var results = JJPS.adRequest.responseXML;
         var resultNodes = results.getElementsByTagName("result");
+        var journalsOrderingType = results.getElementsByTagName("journals")[0].getAttribute("type");
+        var journalNodes = results.getElementsByTagName("journal");
         numNodes = resultNodes.length;
         
         numChosenNodes = JJPS._randomSample(numNodes, 3);
@@ -395,25 +397,32 @@ var JJPS = {
         // TODO
         // move styling to inject.css
         div = JJPS.doc.createElement("div");
-        div.style.background = "#FFF8DD none repeat scroll 0% 0%";        
-        div.style.padding = "6px 8px";
-        div.style.margin = "0pt 8px 16px 0pt";
-        div.style.fontSize = "small";
-        div.style.textAlign = "left";
+        div.className = "JJPSAds";
         clearDiv = JJPS.doc.createElement("div");
         clearDiv.style.clear = "both";
         divSp = JJPS.doc.createElement("div");
-        divSp.style.cssFloat = "right";
-        divSp.style.fontSize = "11px";
-        divSp.style.marginLeft = "8px";
-        divSp.style.color = "#767676";
-        divSp.style.fontFamily = "arial, sans-serif";
+        divSp.id = "JJPSAdSponsored";
         divSp.innerHTML = "Sponsored Links";
         ol = JJPS.doc.createElement("ol");
         ol.style.className = "nobr";
 
-        // Go through each item in the result and create an ad
         var liNodes = new Array();
+
+        doAdChoice = function(liOptions, numAds) {
+
+            adIndicies = JJPS._randomSample(liOptions.length, numAds);
+
+            for (var index = 0; index < adIndicies.length; index++) {
+                ol.appendChild(liOptions[adIndicies[index]]);
+            }
+            div.appendChild(divSp);
+            div.appendChild(ol);
+            div.appendChild(clearDiv);
+
+            return div;
+        }
+
+        // Load specifically written ads
         for (index = 0; index < numNodes; index++) {
 
             var currentResult = resultNodes[index];
@@ -421,40 +430,61 @@ var JJPS = {
             var title = currentResult.getAttribute("title");
             var content = currentResult.getAttribute("content");
             var href = currentResult.getAttribute("href");
-            content = content.replace("&#10;", "<br/>");
 
             h3 = JJPS.doc.createElement("h3");
-            h3.style.fontFamily = "arial,sans-serif";
-            h3.style.fontSize = "11px";
-            h3.style.fontWeight = "normal";
-            h3.style.textAlign = "left";
-            h3.style.margin = "0em";
-            h3.style.padding = "0em";
+            h3.className = "JJPSAdH3";
             h3.innerHTML = "<a href=\"" + href + "\">" + title + "</a>";
 
             li = JJPS.doc.createElement("li");
-            li.style.listStyleImage = "none";
-            li.style.listStyleType = "none";
-            li.style.margin = "12px 10px 12px 0px";
-            li.style.width = "100px";
-            li.style.cssFloat = "left";
-            li.style.lineHeight = "1.2";
-            li.style.textAlign = "left";
-            li.style.fontSize = "10px";
+            li.className = "JJPSAdLI";
 
             cite = JJPS.doc.createElement("cite");
-            cite.innerHTML = href;
-            cite.style.display = "block";
-            cite.style.textAlign = "left";
-            cite.style.color = "#228822";
-            cite.style.fontStyle = "normal";
-            cite.style.fontSize = "9px";
-            cite.style.textAlign = "left";
+            cite.className = "JJPSAdCite";
+            if (href.length > 15) {
+                cite.innerHTML = href.substring(0, 15) + "...";
+            } else {
+                cite.innerHTML = href;
+            }
             li.appendChild(h3);
             li.innerHTML = li.innerHTML + content;
             li.appendChild(cite);
             liNodes.push(li);
-            ol.appendChild(li);
+            //ol.appendChild(li);
+        }
+        
+        // Load journal PPC, etc. info        
+        for (var index = 0; index < journalNodes.length; index++) {
+            var currentJournal = journalNodes[index];
+            var journalName = currentJournal.getAttribute("journalName");
+            var ownerName = currentJournal.getAttribute("ownerName");
+            var click = currentJournal.getAttribute("click");
+            var price = currentJournal.getAttribute("price");
+            var volume = currentJournal.getAttribute("volume");
+
+            li = JJPS.doc.createElement("li");
+            li.className = "JJPSAdLI";
+
+            h3 = JJPS.doc.createElement("h3");
+            h3.className = "JJPSAdH3";
+            h3.innerHTML = "<a href=\"" + "#" + "\">" + journalName + "</a>";
+
+            cite = JJPS.doc.createElement("cite");
+            cite.className = "JJPSAdCite";
+
+
+            li.appendChild(h3);
+            if (journalsOrderingType == "price") {
+                li.innerHTML = li.innerHTML + "Owned by " + ownerName + " is valuable: $" + price + "." ;
+            } else if (journalsOrderingType == "click") {
+                li.innerHTML = li.innerHTML + "Owned by " + ownerName + "might be clicked a lot: " + click + "." ;
+            } else if (journalsOrderingType == "volume") {
+                li.innerHTML = li.innerHTML + "Owned by " + ownerName + " might be high volume.";
+
+            }
+
+            li.appendChild(cite);
+            liNodes.push(li);
+           
         }
 
 
@@ -467,7 +497,8 @@ var JJPS = {
         // Science Direct
         leaderboard = JJPS.doc.getElementById("leaderboard");
         if (leaderboard != null) {
-            leaderboard.innerHTML = div.innerHTML;        
+            var divToInsert = doAdChoice(liNodes, 5);
+            leaderboard.innerHTML = divToInsert.innerHTML;        
         }
 
         skyscraper = JJPS.doc.getElementById("skyscraper");
@@ -483,32 +514,36 @@ var JJPS = {
         // Sage
         topbannerad = JJPS.doc.getElementById("topbannerad");
         if (topbannerad != null) {
-            div.style.fontSize = "10px";
-            topbannerad.innerHTML = div.innerHTML;
+            var divToInsert = doAdChoice(liNodes, 3);
+            topbannerad.innerHTML = divToInsert.innerHTML;
         }
 
         // Google Scholar
         resultsArray = getElementsByClassName(JJPS.doc, "gs_r");
         if (resultsArray != 0) {
-            JJPS.doc.body.insertBefore(div, resultsArray[0]);
+            var divToInsert = doAdChoice(liNodes, 5);
+            JJPS.doc.body.insertBefore(divToInsert, resultsArray[0]);
         }
 
         // Wiley Interscience
         firstWideFBoxCell = JJPS.doc.getElementById("firstWideFBoxCell");
         if (firstWideFBoxCell != null) {
-            firstWideFBoxCell.innerHTML = div.innerHTML;
+            var divToInsert = doAdChoice(liNodes, 5);
+            firstWideFBoxCell.innerHTML = divToInsert.innerHTML;
         }
 
         // Springer
         advertisementControl = getElementsByClassName(JJPS.doc, "advertisementControl");
         if (advertisementControl.length != 0) {
-            advertisementControl[0].innerHTML = div.innerHTML;
+            var divToInsert = doAdChoice(liNodes, 3);
+            advertisementControl[0].innerHTML = divToInsert.innerHTML;
         }
 
         // Ingenta Connect
         topAd = JJPS.doc.getElementById("top-ad-alignment");
         if (topAd != null) {
-            topAd.innerHTML = div.innerHTML;
+            var divToInsert = doAdChoice(liNodes, 5);
+            topAd.innerHTML = divToInsert.innerHTML;
         }
 
     },

@@ -537,12 +537,7 @@ class AdsDocuments(DocumentBase):
             data = self.db[id]
             result.set("title", data["title"])
             result.set("content", data["content"])
-            # Shorten href if needed
-            if (len(data["href"]) > 14):
-                href = data["href"][0:14] + "..."
-            else:
-                href = data["href"]
-            result.set("href", href)
+            result.set("href", data["href"])
             results.append(result)
 
         return results

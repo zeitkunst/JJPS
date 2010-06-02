@@ -145,11 +145,6 @@ class APIJournal:
                 words = station.ppcDocuments.getTrendingWordsByVolume()
             journalsXML.append(words)
             
-            # TODO
-            # This doesn't work as desired because of the code in getPPCData...need to rewrite there
-            options = ["price", "click", "volume"]
-            value = random.randint(0, len(options) - 1)
-            journalsXML.append(station.journalDocuments.getPPCData(sortBy = options[value]))
 
             web.header("Content-Type", "text/xml; charset=utf-8")
             web.header('Content-Encoding', 'utf-8')
@@ -173,9 +168,17 @@ class APIAds:
 
     def GET(self):
         station = StationSingleton.getStation()
+        
+        adsXML = station.adsDocuments.getAds()
+        # TODO
+        # This doesn't work as desired because of the code in getPPCData...need to rewrite there
+        options = ["price", "click", "volume"]
+        value = random.randint(0, len(options) - 1)
+        adsXML.append(station.journalDocuments.getPPCData(sortBy = options[value]))
+
         # Return
         web.header("Content-Type", "application/xml; charset=utf-8")
-        return etree.tostring(station.adsDocuments.getAds())
+        return etree.tostring(adsXML)
 
 class APITest:
     def GET(self, arg):
