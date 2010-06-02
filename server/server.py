@@ -23,7 +23,7 @@ from lxml import etree
 # My own library imports
 from JJPS.Station import Station
 from JJPS.Model import Model 
-from JJPS.Documents import Documents, VoteDocuments, PPCDocuments
+from JJPS.Documents import Documents, VoteDocuments, PPCDocuments, AdsDocuments
 
 import serverConfig
 
@@ -163,23 +163,10 @@ class APIAds:
     """Return some ad information for use in the extension."""
 
     def GET(self):
-        results = etree.Element("results")
-        result = etree.Element("result")
-        result.set("title", "Better your ASEO!")
-        result.set("content", "Improve your academic\nsearch engine optimization!")
-        result.set("href", "#")
-        results.append(result)
-
-        result = etree.Element("result")
-        result.set("title", "Better your ASEO!")
-        result.set("content", "Improve your academic\nsearch engine optimization!")
-        result.set("href", "#")
-        results.append(result)
-
-
+        station = StationSingleton.getStation()
         # Return
         web.header("Content-Type", "application/xml; charset=utf-8")
-        return etree.tostring(results)
+        return etree.tostring(station.adsDocuments.getAds())
 
 class APITest:
     def GET(self, arg):
@@ -381,6 +368,7 @@ class StationSingleton(object):
             # Make name configurable?
             StationSingleton.station.voteDocuments = VoteDocuments(config = StationSingleton.station.config, dbName = "jjps_votes")
             StationSingleton.station.ppcDocuments = PPCDocuments(config = StationSingleton.station.config)
+            StationSingleton.station.adsDocuments = AdsDocuments(config = StationSingleton.station.config)
         return StationSingleton.station
     getStation = staticmethod(getStation)
 

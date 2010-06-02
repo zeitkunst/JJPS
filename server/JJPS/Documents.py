@@ -479,6 +479,26 @@ class AdsDocuments(DocumentBase):
         for ad in self.initialAds:
             self.addDocument(ad)
 
+    def getAds(self):
+        """Return a list of ads in XML format."""
+        
+        ids = [id for id in self.db]
+        
+        results = etree.Element("results")
+        for id in ids:
+            if (id.find("_design") != -1):
+                continue
+            
+            result = etree.Element("result")
+            data = self.db[id]
+            result.set("title", data["title"])
+            result.set("content", data["content"])
+            result.set("href", data["href"])
+            results.append(result)
+
+        return results
+            
+
 class Documents(object):
 
     def __init__(self, config = None, db = None):
