@@ -7,6 +7,10 @@ var JJPSPreferences = {
         if (checkbox != null)
             JJPS.enableOverlays = checkbox.checked;
 
+        var checkbox = document.getElementById("JJPSReplaceAds");
+        if (checkbox != null)
+            JJPS.replaceAds = checkbox.checked;
+
         var textbox = document.getElementById("JJPSServerURL");
         if (textbox != null)
             JJPS.serverURL = textbox.value;
@@ -24,6 +28,10 @@ var JJPSPreferences = {
 
     // Take preferences from our instance and populate our dialog window
     populate: function() {
+        var checkbox = document.getElementById("JJPSReplaceAds");
+        if (checkbox != null)
+            checkbox.setAttribute("checked", JJPS.replaceAds);
+
         var checkbox = document.getElementById("JJPSEnableOverlays");
         if (checkbox != null)
             checkbox.setAttribute("checked", JJPS.enableOverlays);

@@ -32,6 +32,9 @@
                     <hbox>
                         <checkbox tooltiptext="&JJPS.preferences.enableOverlaysTooltip;" label="&JJPS.preferences.enableOverlays;" checked="true" id="JJPSEnableOverlays" />                    
                     </hbox>
+                    <hbox>
+                        <checkbox tooltiptext="&JJPS.preferences.replaceAdsTooltip;" label="&JJPS.preferences.replaceAds;" checked="true" id="JJPSReplaceAds" />                    
+                    </hbox>
 
                 </groupbox>
 

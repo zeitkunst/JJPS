@@ -176,7 +176,7 @@
 
 #JJPSMenuUL .subpanel li {
     float: none !important;
-    display: block !important;
+    display: block;
     padding: 0em !important;
     margin: 0em !important;
     overflow: hidden !important;

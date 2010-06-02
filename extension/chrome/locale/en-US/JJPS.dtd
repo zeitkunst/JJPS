@@ -10,6 +10,8 @@
 <!ENTITY JJPS.preferences.standardTab "Standard">
 <!ENTITY JJPS.preferences.enableOverlays "Enable Overlays">
 <!ENTITY JJPS.preferences.enableOverlaysTooltip "Enable the informational overlays.">
+<!ENTITY JJPS.preferences.replaceAds "Replace Ads">
+<!ENTITY JJPS.preferences.replaceAdsTooltip "Try and replace ads on certain journal websites.">
 
 <!ENTITY JJPS.preferences.standardGroup "Standard Options">
 <!ENTITY JJPS.preferences.advancedTab "Advanced">

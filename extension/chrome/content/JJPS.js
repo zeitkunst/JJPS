@@ -712,6 +712,11 @@ var JJPS = {
 
     // Fire off the request to replace the ads
     _replaceAds: function() {
+        JJPS._readPrefs();
+        if (!(JJPS.replaceAds)) {
+            return;
+        }
+
         // Replace ads
         JJPS.adRequest = JJPS._getRequest();
         JJPS.adRequest.open("GET", JJPS.serverURL + "ads", true);
@@ -1267,7 +1272,7 @@ var JJPS = {
 
         // ClickValue
         if (clickValue != "") {
-            JJPS.doc.getElementById("JJPSClickValueValue").innerHTML = clickValue;
+            JJPS.doc.getElementById("JJPSClickValueValue").innerHTML = "$" + clickValue;
             JJPS.doc.getElementById("JJPSClickValue").style.display = "block";
         } else {
             JJPS.doc.getElementById("JJPSClickValue").style.display = "none";
@@ -1477,6 +1482,7 @@ var JJPS = {
     _readPrefs: function() {
         var prefs = this._getPrefs();
         this.enableOverlays = prefs.getBoolPref("enableOverlays");
+        this.replaceAds = prefs.getBoolPref("replaceAds");
         this.serverURL = prefs.getCharPref("serverURL");
         this.showMarquee = prefs.getBoolPref("showMarquee");
         this.reverseFrobination = prefs.getBoolPref("reverseFrobination");
@@ -1486,6 +1492,7 @@ var JJPS = {
         var prefs = this._getPrefs();
 
         prefs.setBoolPref("enableOverlays", this.enableOverlays);
+        prefs.setBoolPref("replaceAds", this.replaceAds);
         prefs.setCharPref("serverURL", this.serverURL);
         prefs.setBoolPref("showMarquee", this.showMarquee);
         prefs.setBoolPref("reverseFrobination", this.reverseFrobination);
