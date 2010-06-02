@@ -29,9 +29,12 @@
                 <vbox>
                 <groupbox id="JJPSStandardGroupbox">
                     <caption label="&JJPS.preferences.standardGroup;"/>
+                    <hbox>
+                        <checkbox tooltiptext="&JJPS.preferences.enableOverlaysTooltip;" label="&JJPS.preferences.enableOverlays;" checked="true" id="JJPSEnableOverlays" />                    
+                    </hbox>
+
                 </groupbox>
 
-                    <label id="JJPSStandard" value="standard" />                
                 </vbox>            
             </tabpanel>        
             <tabpanel>

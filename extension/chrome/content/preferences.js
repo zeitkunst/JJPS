@@ -3,6 +3,10 @@ window.addEventListener("load", function() { JJPSPreferences.populate(); }, fals
 var JJPSPreferences = {
     // Go through each of the preferences and save them
     save: function() {
+        var checkbox = document.getElementById("JJPSEnableOverlays");
+        if (checkbox != null)
+            JJPS.enableOverlays = checkbox.checked;
+
         var textbox = document.getElementById("JJPSServerURL");
         if (textbox != null)
             JJPS.serverURL = textbox.value;
@@ -20,6 +24,10 @@ var JJPSPreferences = {
 
     // Take preferences from our instance and populate our dialog window
     populate: function() {
+        var checkbox = document.getElementById("JJPSEnableOverlays");
+        if (checkbox != null)
+            checkbox.setAttribute("checked", JJPS.enableOverlays);
+
         textbox = document.getElementById("JJPSServerURL");
         if (textbox != null)
             textbox.setAttribute("value", JJPS.serverURL);

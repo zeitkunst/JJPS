@@ -1,95 +1,15 @@
 
-#JJPSRadioLabel {
-    font-weight: bold;
-    text-align: center;
-    font-family: "Lucida Grande", "Helvetica Neue", "Helvetica", "Verdana", "Arial", sans-serif;
-    color: #ef2121;
-    font-size: 2em;
-    margin-bottom: 1em;
-    padding: 3px;
-    border: 1px solid #000;
-    -moz-border-radius: 5px;
-    background-color: #eee;
-    opacity: 0.8;
+#JJPSToolbarButton {
+    list-style-image: url("chrome://JJPS/skin/icon24.png");
+    display: -moz-box !important;
+}   
 
+toolbar[iconsize="small"] #JJPSToolbarButton {
+    list-style-image: url("chrome://JJPS/skin/icon16.png");
 }
 
-#JJPSRadioCurrentLabel, #JJPSRadioNextLabel {
-    font-weight: bold;
-}
-
-#JJPSRadioCurrent, #JJPSRadioNext {
-    text-align: right;
-}
-
-#JJPSRadioBox {
-    padding: 3px;
-    border: 1px solid #000;
-    -moz-border-radius: 5px;
-    background-color: #eee;
-    opacity: 0.8;
-}
-
-/* Stealing from Zotero at the moment */
-#JJPSStatusBarIcon
-{
-    width: 55px;
-    margin: 0 0 -1px; /* For Fitts's law (on OS X, at least) */
-    padding: 0 0 1px;
-    list-style-image: url(chrome://JJPS/skin/JJPSStatusBarIcon2.png);
-}
-
-#JJPSDeckButtons {
-}
-
-#JJPSDeckButtonsLabel {
-    font-weight: bold;
-}
-
-#JJPSRightDeck {
-    min-height: 50px; 
-    overflow: auto;
-    background: url(chrome://JJPS/skin/JJPSOwlTree.png) no-repeat;
-}
-
-#JJPSRightDeck tabpanels {
-    border: none;
-}
-
-#JJPSRightDeck tabpanels, #JJPSRightDeck tabpanel, #JJPSRightDeck tabbox, #JJPSRightDeck hbox {
-    background-color: transparent;
-}
-
-#JJPSFactorsBox {
-    overflow: auto;
-}
-
-#JJPSFactorsBox groupbox {
-    float: left;
-    max-width: 250px;
-    border: 1px solid #000;
-    -moz-border-radius: 5px;
-    background-color: #eee;
-    opacity: 0.8;
-}
-
-#JJPSOwnershipBox {
-}
-
-#JJPSFrobpactBox {
-}
-
-caption#JJPSFrobpactFactor, caption#JJPSEigenfrobFactor, caption#JJPSFrobfluence, caption#JJPSSJR, caption#JJPSHIndex, caption#JJPSClickValue {
-    font-weight: bold;
-    font-size: 1.2em;
-    color: #ef2121;
-}
-
-#JJPSFrobpactFactorValue, #JJPSEigenfrobFactorValue, #JJPSFrobfluenceValue, #JJPSSJRValue, #JJPSHIndexValue, #JJPSClickValueValue {
-    font-weight: bold;
-    font-size: 3em;
+#JJPSToolsMenu {
+    list-style-image: url("chrome://JJPS/skin/icon16.png");
 }
 
 
-#JJPSOwnershipGraphImage {
-}

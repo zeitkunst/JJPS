@@ -149,6 +149,9 @@ class DocumentBase(object):
 class JournalDocuments(DocumentBase):
     """Methods for processing the journal documents database."""
 
+    ppcData = None
+    ppcXML = None
+
     def __init__(self, config = None, dbName = "jjps_journals", hashKeys = ["journalName", "ownerName"]):
         super(JournalDocuments, self).__init__(config = config, hashKeys = hashKeys)
 
@@ -240,6 +243,42 @@ class JournalDocuments(DocumentBase):
             self.addDocument(data)
 
             count += 1
+
+    def getPPCData(self, sortBy = "price", numItems = 10):
+        """Get a set of PPC data for use in the ads.  Run only once per object initialization."""
+
+        if (self.ppcXML is None):
+            self.ppcData = []
+
+            for result in self.db.view("_design/ppc/_view/ppcData"):
+                self.ppcData.append(result["value"])
+            
+            if (sortBy == "price"):
+                self.ppcData = sorted(self.ppcData, key = operator.itemgetter(3), reverse = True)
+            elif (sortBy == "click"):
+                self.ppcData = sorted(self.ppcData, key = operator.itemgetter(2), reverse = True)
+            elif (sortBy == "volume"):
+                self.ppcData = sorted(self.ppcData, key = operator.itemgetter(4), reverse = True)
+            else:
+                self.ppcData = sorted(self.ppcData, key = operator.itemgetter(3,2), reverse = True)
+
+            self.ppcData = self.ppcData[0:numItems]
+
+            journals = etree.Element("journals")
+            journals.set("type", sortBy)
+
+            for item in self.ppcData:
+                journal = etree.Element("journal")
+                journal.set("journalName", item[0])
+                journal.set("ownerName", item[1])
+                journal.set("click", str(item[2]))
+                journal.set("price", str(item[3]))
+                journal.set("volume", str(item[4]))
+                journals.append(journal)
+
+            self.ppcXML = journals
+
+        return self.ppcXML
 
 class PPCDocuments(DocumentBase):
     """Methods for processing ppc database."""
@@ -349,7 +388,7 @@ class PPCDocuments(DocumentBase):
         
         return total
     
-    def getTrendingWordsByPrice(self, num = 20):
+    def getTrendingWordsByPrice(self, num = 40):
         """Get a list of the top trending words, sorted by price."""
         results = []
 
@@ -361,8 +400,8 @@ class PPCDocuments(DocumentBase):
 
         count = 0
         
-        words = []
         words = etree.Element("words")
+        words.set("type", "price")
         for result in results:
             if (result[2] == "no data"):
                 continue
@@ -379,7 +418,7 @@ class PPCDocuments(DocumentBase):
 
         return words
 
-    def getTrendingWordsByVolume(self, num = 20):
+    def getTrendingWordsByVolume(self, num = 40):
         """Get a list of the top trending words, sorted by volume."""
         results = []
 
@@ -391,12 +430,17 @@ class PPCDocuments(DocumentBase):
 
         count = 0
         
-        words = []
+        words = etree.Element("words")
+        words.set("type", "volume")
         for result in results:
             if (result[1] == "no data"):
                 continue
-            
-            words.append(result)
+
+            word = etree.Element("word")
+            word.set("name", result[0])
+            word.set("price", result[2])
+            words.append(word)
+
             count += 1
 
             if (count == num):
@@ -493,7 +537,12 @@ class AdsDocuments(DocumentBase):
             data = self.db[id]
             result.set("title", data["title"])
             result.set("content", data["content"])
-            result.set("href", data["href"])
+            # Shorten href if needed
+            if (len(data["href"]) > 14):
+                href = data["href"][0:14] + "..."
+            else:
+                href = data["href"]
+            result.set("href", href)
             results.append(result)
 
         return results

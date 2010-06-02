@@ -4,6 +4,7 @@ const DEFAULT_JJPSPANE_HEIGHT = 300;
 
 var JJPS = {
     preferences: null,
+    previousState: null,
     adRequest: null,
     request: null,
     programRequest: null,
@@ -271,6 +272,13 @@ var JJPS = {
     onPageLoad: function(aEvent) {
         // reload our preferences
         JJPS._readPrefs();
+        
+        updateJJPSButton();
+
+        // If we don't enable the overlays, just return immediately
+        if (!(JJPS.enableOverlays)) {
+            return;
+        }
 
         // Load jquery into the page
         $jq = jQuery.noConflict();
@@ -321,7 +329,6 @@ var JJPS = {
         siteName = JJPS.regExps[siteIndex][0];
         siteMethod = JJPS.regExps[siteIndex][2];
         siteMethod(JJPS.doc);
-       
     },
 
     _processGoogleScholar: function(doc) {
@@ -329,6 +336,50 @@ var JJPS = {
         JJPS._replaceAds();
     },
 
+    // Return an array with a random sample of integers from a set of options
+    _randomSample: function(totalOptions, numSamples) {
+        var resultArray = new Array();
+
+        // If we're trying to get more than we have...
+        if (numSamples > totalOptions) {
+
+            for (var i = 0; i <= totalOptions; i++) {
+                resultArray.push(i);
+            }
+
+            return resultArray;
+        }
+
+        // Otherwise, select only a subset
+        var resultArray = new Array();
+        counter = numSamples;
+
+        while (numSamples > 0) {
+            var index = Math.floor(totalOptions * Math.random());
+
+            if (!(JJPS._existsInArray(resultArray, index))) {
+                resultArray.push(index);
+                numSamples--;
+            }
+        }
+
+        return resultArray;
+
+    },
+
+    // Helper function to see if a value exists in the array
+    _existsInArray: function(a, v) {
+        for (var i = 0; i < a.length; i++) {
+            if (a[i] == v) {
+                return true;
+            }
+        }
+
+        return false;
+
+    },
+
+    // Process our ajax ad result
     _processAdResults: function() {
         if (JJPS.adRequest.readyState < 4) {
             return;
@@ -337,6 +388,8 @@ var JJPS = {
         var results = JJPS.adRequest.responseXML;
         var resultNodes = results.getElementsByTagName("result");
         numNodes = resultNodes.length;
+        
+        numChosenNodes = JJPS._randomSample(numNodes, 3);
 
         // Create containing div and sponsored links div
         // TODO
@@ -360,6 +413,7 @@ var JJPS = {
         ol.style.className = "nobr";
 
         // Go through each item in the result and create an ad
+        var liNodes = new Array();
         for (index = 0; index < numNodes; index++) {
 
             var currentResult = resultNodes[index];
@@ -381,8 +435,8 @@ var JJPS = {
             li = JJPS.doc.createElement("li");
             li.style.listStyleImage = "none";
             li.style.listStyleType = "none";
-            li.style.margin = "12px 0pt 0pt";
-            li.style.width = "25%";
+            li.style.margin = "12px 10px 12px 0px";
+            li.style.width = "100px";
             li.style.cssFloat = "left";
             li.style.lineHeight = "1.2";
             li.style.textAlign = "left";
@@ -399,6 +453,7 @@ var JJPS = {
             li.appendChild(h3);
             li.innerHTML = li.innerHTML + content;
             li.appendChild(cite);
+            liNodes.push(li);
             ol.appendChild(li);
         }
 
@@ -881,6 +936,7 @@ var JJPS = {
 
         // Get the trending words
         var trendingWords = results.getElementsByTagName("words")[0];
+        var trendingWordsType = trendingWords.getAttribute("type");
         
         overlayDiv = JJPS.doc.createElement("div");
         overlayDiv.id = "JJPSTicker";
@@ -1081,6 +1137,10 @@ var JJPS = {
         // Ads
         adParent = JJPS.doc.createElement("div");
         adParent.id = "JJPSHeaderAdParent";
+        adType = JJPS.doc.createElement("div");
+        adType.id = "JJPSHeaderAdDivType";
+        adType.innerHTML = "Trending " + trendingWordsType;
+        adParent.appendChild(adType);
         adDiv = JJPS.doc.createElement("div");
         adDiv.id = "JJPSHeaderAdDiv";
         adDiv.style.display = "none";
@@ -1336,16 +1396,11 @@ var JJPS = {
             return;
         }
         var results = JJPS.programRequest.responseXML;
-        description = document.getElementById("JJPSPaneCaption");
-        currentLabel = document.getElementById("JJPSRadioCurrent");
-        nextLabel = document.getElementById("JJPSRadioNext");
         current = results.getElementsByTagName("current")[0];
         next = results.getElementsByTagName("next")[0];
         displayString = "Current Program: " + current.firstChild.nodeValue + "\r\n";
         displayString += "Next Program: " + next.firstChild.nodeValue + "\r\n";
         //description.value = displayString
-        currentLabel.value = current.firstChild.nodeValue;
-        nextLabel.value = next.firstChild.nodeValue;
 
         currentHeader = JJPS.doc.getElementById("JJPSRadioInfoCurrent");
         currentHeader.innerHTML = "<strong>Current Program</strong>: " + current.firstChild.nodeValue;
@@ -1386,6 +1441,7 @@ var JJPS = {
 
     _readPrefs: function() {
         var prefs = this._getPrefs();
+        this.enableOverlays = prefs.getBoolPref("enableOverlays");
         this.serverURL = prefs.getCharPref("serverURL");
         this.showMarquee = prefs.getBoolPref("showMarquee");
         this.reverseFrobination = prefs.getBoolPref("reverseFrobination");
@@ -1394,6 +1450,7 @@ var JJPS = {
     _savePrefs: function() {
         var prefs = this._getPrefs();
 
+        prefs.setBoolPref("enableOverlays", this.enableOverlays);
         prefs.setCharPref("serverURL", this.serverURL);
         prefs.setBoolPref("showMarquee", this.showMarquee);
         prefs.setBoolPref("reverseFrobination", this.reverseFrobination);
@@ -1407,6 +1464,66 @@ String.prototype.trim = function() {
 // Show Preferences Dialog
 function showJJPSPreferencesDialog(){
     window.open("chrome://JJPS/content/options.xul", "JJPSPreferences", "chrome,dialog,centerscreen,alwaysRaised");
+}
+
+function updateJJPSButton() {
+    JJPS._readPrefs();
+    currentState = JJPS.enableOverlays;
+    var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+    var enumerator = wm.getEnumerator("navigator:browser");
+
+    if (currentState == false) {
+        buttonStyle = "url('chrome://JJPS/skin/icon24Disabled.png')";
+    } else {
+        buttonStyle = "url('chrome://JJPS/skin/icon24.png')";
+    }
+                         
+    while(enumerator.hasMoreElements()) {
+        var win = enumerator.getNext();
+        buttonNode = win.document.getElementById("JJPSToolbarButton");
+        if (buttonNode != null) {
+            buttonNode.style.listStyleImage = buttonStyle;
+        }
+    }
+}
+
+function toggleJJPS() {
+    currentState = JJPS.enableOverlays;
+    var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+    var enumerator = wm.getEnumerator("navigator:browser");
+
+    if (currentState == false) {
+        if (JJPS.previousState == null) {
+            JJPS.enableOverlays = true;
+        } else {
+            JJPS.enableOverlays = JJPS.previousState;
+        }
+        buttonNode = document.getElementById("JJPSToolbarButton");
+        if (buttonNode != null) {
+            buttonStyle = "url('chrome://JJPS/skin/icon24.png')";
+        }
+    }  else {
+        if (JJPS.previousState == null) {
+            JJPS.enableOverlays = false;
+        } else {
+            JJPS.enableOverlays = JJPS.previousState;
+        }
+        buttonNode = document.getElementById("JJPSToolbarButton");
+        if (buttonNode != null) {
+            buttonStyle = "url('chrome://JJPS/skin/icon24Disabled.png')";
+        }
+    }
+
+    while (enumerator.hasMoreElements()) {
+        var win = enumerator.getNext();
+        buttonNode = win.document.getElementById("JJPSToolbarButton");
+        if (buttonNode != null) {
+            buttonNode.style.listStyleImage = buttonStyle;
+        }
+    }
+
+    JJPS.previousState = currentState;
+    JJPS._savePrefs();
 }
 
 function getElementsByClassName(domElement, className) {

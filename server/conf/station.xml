@@ -80,7 +80,7 @@
             <archives>
             </archives>
         </program>    
-        <program id="ProgramTwo" processed="1">
+        <program id="ProgramTwo" processed="0">
             <name>Program Two</name>        
             <hostedBy>
                 <person ref="PersonOne"/>            

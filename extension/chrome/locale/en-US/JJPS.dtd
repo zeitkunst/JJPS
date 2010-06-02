@@ -1,10 +1,16 @@
-<!ENTITY JJPS.menuItem "JJPS Preferences">
+<!ENTITY JJPS.browser.menuItem "JJPS Preferences">
+<!ENTITY JJPS.browser.toolbarLabel "JJPS">
+<!ENTITY JJPS.browser.toolbarTooltip "Push to enable or disable JJPS">
+
 <!ENTITY JJPS.radio "JJPS Radio">
 <!ENTITY JJPS.radio.button "Open radio stream">
 <!ENTITY JJPS.current.program "Current Program: ">
 <!ENTITY JJPS.upcoming.program "Upcoming Program: ">
 <!ENTITY JJPS.preferences.dialog.title "JJPS Preferences">
 <!ENTITY JJPS.preferences.standardTab "Standard">
+<!ENTITY JJPS.preferences.enableOverlays "Enable Overlays">
+<!ENTITY JJPS.preferences.enableOverlaysTooltip "Enable the informational overlays.">
+
 <!ENTITY JJPS.preferences.standardGroup "Standard Options">
 <!ENTITY JJPS.preferences.advancedTab "Advanced">
 <!ENTITY JJPS.preferences.aboutTab "About">

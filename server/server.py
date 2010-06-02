@@ -6,8 +6,8 @@
 # Please see http://.org/license.
 # Just a test
 
-import cPickle
 import os
+import random
 import sys
 import urllib
 import logging
@@ -23,7 +23,7 @@ from lxml import etree
 # My own library imports
 from JJPS.Station import Station
 from JJPS.Model import Model 
-from JJPS.Documents import Documents, VoteDocuments, PPCDocuments, AdsDocuments
+from JJPS.Documents import Documents, VoteDocuments, PPCDocuments, AdsDocuments, JournalDocuments
 
 import serverConfig
 
@@ -139,8 +139,17 @@ class APIJournal:
             journalsXML = station.journalModel.getJournalInfo(journalName)
 
             # Get the top trending words
-            words = station.ppcDocuments.getTrendingWordsByPrice()
+            if (random.random() >= 0.5):
+                words = station.ppcDocuments.getTrendingWordsByPrice()
+            else:
+                words = station.ppcDocuments.getTrendingWordsByVolume()
             journalsXML.append(words)
+            
+            # TODO
+            # This doesn't work as desired because of the code in getPPCData...need to rewrite there
+            options = ["price", "click", "volume"]
+            value = random.randint(0, len(options) - 1)
+            journalsXML.append(station.journalDocuments.getPPCData(sortBy = options[value]))
 
             web.header("Content-Type", "text/xml; charset=utf-8")
             web.header('Content-Encoding', 'utf-8')
@@ -369,6 +378,7 @@ class StationSingleton(object):
             StationSingleton.station.voteDocuments = VoteDocuments(config = StationSingleton.station.config, dbName = "jjps_votes")
             StationSingleton.station.ppcDocuments = PPCDocuments(config = StationSingleton.station.config)
             StationSingleton.station.adsDocuments = AdsDocuments(config = StationSingleton.station.config)
+            StationSingleton.station.journalDocuments = JournalDocuments(config = StationSingleton.station.config)
         return StationSingleton.station
     getStation = staticmethod(getStation)
 

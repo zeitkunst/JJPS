@@ -7,170 +7,17 @@
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
     <script type="application/x-javascript" src="chrome://JJPS/content/jquery.js"/>
-    <!--<script type="application/x-javascript" src="chrome://JJPS/content/jquery.marquee.js"/>-->
     <script src="chrome://JJPS/content/JJPS.js"/>
 
-    <menupopup id="menu_ToolsPopup">
-        <menuitem id="JJPSToolsMenu" class="menuitem-iconic"                label="&JJPS.menuItem;" 
-                accesskey = "J"
-                    oncommand="showJJPSPreferencesDialog();"
-                    insertafter="javascriptConsole,devToolsSeparator" />
-    </menupopup>
-
     <toolbarpalette id="BrowserToolbarPalette">
-        <toolbarbutton id="JJPSToolbarButton" class=""
-            label="JJPS"
-            oncommand="JJPS.toggleDisplay();"/>
+        <toolbarbutton orient="vertical" id="JJPSToolbarButton"             class="toolbarbutton-class" label="&JJPS.browser.toolbarLabel;" tooltiptext="&JJPS.browser.toolbarTooltip;" oncommand="toggleJJPS();" />
     </toolbarpalette>
 
-    <vbox id="appcontent">
-        <splitter id="JJPSSplitter" resizebefore="closet" resizeafter="closest" hidden="false" onmouseup="JJPS.updatePaneHeight()">
-            <grippy />
-        </splitter>
-        <hbox id="JJPSPane" persist="savedHeight" hidden="true">
-            <hbox>
-                <vbox id="JJPSRadioPane" persist="width" maxwidth="100px" flex="1">
-                    <label id="JJPSRadioLabel" value="&JJPS.radio;" />
-                    <vbox id="JJPSRadioBox">
-                    <hbox>
-                        <label id="JJPSRadioCurrentLabel" value="&JJPS.current.program;"/>
-                        <label id="JJPSRadioCurrent" value="" />
-                    </hbox>
-                    <hbox>
-                        <label id="JJPSRadioNextLabel" value="&JJPS.upcoming.program;"/>
-                        <label id="JJPSRadioNext" value="" />
-                    </hbox>
-                    <hbox pack="center">
-                        <button id="JJPSRadioButton" label="&JJPS.radio.button;" oncommand="window.open('http://localhost:8000/JJPS.m3u');" />                    
-                    </hbox>
-                    </vbox>
-                </vbox>        
-            </hbox>
-            <splitter id="JJPSMiddleSplitter" resizebefore="closet" resizeafter="closest" hidden="false">
-                <grippy />
-            </splitter>
-            <vbox style="min-height: 50px; overflow: auto;">
-            <hbox id="JJPSDeckButtons">
-                <label id="JJPSDeckButtonsLabel" value="Info Options" />
-                <button id="JJPSImpactSwitch" label="Impact Factor" oncommand="document.getElementById('JJPSRightDeck').selectedIndex = 0;" />                    
-                <button id="JJPSOwnershipSwitch" label="Ownership Graph" oncommand="document.getElementById('JJPSRightDeck').selectedIndex = 1;" />                    
-                <button id="JJPSSocialSwitch" label="Social Networking" oncommand="document.getElementById('JJPSRightDeck').selectedIndex = 2;" />                    
-            </hbox>
-            <hbox>
-            <deck id="JJPSRightDeck" selectedIndex="0">
-                <vbox id="JJPSFactorsBox" pack="start">
-                    <groupbox id="JJPSFrobpactBox" hidden="true">
-                        <caption id="JJPSFrobpactFactor" label="Frobpact Factor" />
-                        <label id="JJPSFrobpactFactorValue" value="" />
-                    
-                    </groupbox>
-                    <groupbox id="JJPSEigenfrobBox" hidden="true">
-                        <caption id="JJPSEigenfrobFactor" label="Eigenfrob Factor" />
-                        <label id="JJPSEigenfrobFactorValue" value="" />
-                    
-                    </groupbox>
-                    <groupbox id="JJPSFrobfluenceBox" hidden="true">
-                        <caption id="JJPSFrobfluence" label="Frobfluence" />
-                        <label id="JJPSFrobfluenceValue" value="" />
-                    </groupbox>
-                    <groupbox id="JJPSSJRBox" hidden="true">
-                        <caption id="JJPSSJR" label="SJR" />
-                        <label id="JJPSSJRValue" value="" />
-                    </groupbox>
-                    <groupbox id="JJPSHIndexBox" hidden="true">
-                        <caption id="JJPSHIndex" label="hIndex" />
-                        <label id="JJPSHIndexValue" value="" />
-                    </groupbox>
-                    <groupbox id="JJPSClickValueBox" hidden="true">
-                        <caption id="JJPSClickValue" label="Click Value" />
-                        <label id="JJPSClickValueValue" value="" />
-                    </groupbox>
-                </vbox>
-                <hbox id="JJPSOwnershipBox" pack="start" align="start">
-                    <label id="JJPSNoGraph" value="No ownership graph available" hidden="false" />
-                    <image id="JJPSOwnershipGraphImage" src="" hidden="true" />
-                </hbox>
-                <vbox id="JJPSSocialBox" pack="start" align="start">
-
-                    <button id="JJPSVoteButton" label="Vote for Article" oncommand="" />
-                    <button id="JJPSUploadTextButton" label="Upload Article Text" oncommand="" />
-                    <button id="JJPSCopyInfoButton" label="Copy Journal Info" oncommand="JJPS.copyToClipboard()" />                    
-                </vbox>
-
-            </deck>
-            </hbox>
-            </vbox>
-            <!--
-            <hbox id="JJPSRightPane">
-                <tabbox width="100%" height="100%">
-                    <tabs>
-                        <tab label="Impact Factors" />        
-                        <tab label="Ownership Graphs" />        
-                        <tab label="Owned Journals" />        
-                        <tab label="Social Network Factors" />        
-                    </tabs>    
-                    <tabpanels>
-                        <tabpanel id="JJPSFactorsBox">
-                        <vbox pack="start">
-                            <groupbox id="JJPSFrobpactBox" hidden="true">
-                                <caption id="JJPSFrobpactFactor" label="Frobpact Factor" />
-                                <label id="JJPSFrobpactFactorValue" value="" />
-                            
-                            </groupbox>
-                            <groupbox id="JJPSEigenfrobBox" hidden="true">
-                                <caption id="JJPSEigenfrobFactor" label="Eigenfrob Factor" />
-                                <label id="JJPSEigenfrobFactorValue" value="" />
-                            
-                            </groupbox>
-                            <groupbox id="JJPSFrobfluenceBox" hidden="true">
-                                <caption id="JJPSFrobfluence" label="Frobfluence" />
-                                <label id="JJPSFrobfluenceValue" value="" />
-                            </groupbox>
-                            <groupbox id="JJPSSJRBox" hidden="true">
-                                <caption id="JJPSSJR" label="SJR" />
-                                <label id="JJPSSJRValue" value="" />
-                            </groupbox>
-                            <groupbox id="JJPSHIndexBox" hidden="true">
-                                <caption id="JJPSHIndex" label="hIndex" />
-                                <label id="JJPSHIndexValue" value="" />
-                            </groupbox>
-                            <groupbox id="JJPSClickValueBox" hidden="true">
-                                <caption id="JJPSClickValue" label="Click Value" />
-                                <label id="JJPSClickValueValue" value="" />
-                            </groupbox>
-                        </vbox>
-
-                        </tabpanel>        
-
-                        <tabpanel>
-                            <hbox id="JJPSOwnershipBox" pack="start" align="start">
-                                <label id="JJPSNoGraph" value="No ownership graph available" hidden="false" />
-                                <image id="JJPSOwnershipGraphImage" src="" hidden="true" />
-                            </hbox>
-                        </tabpanel>        
-
-                        <tabpanel>
-                        </tabpanel>        
-
-                        <tabpanel>
-
-                            <hbox pack="center">
-                                <button id="JJPSCopyInfoButton" label="Copy Journal Info" oncommand="JJPS.copyToClipboard()" />                    
-                            </hbox>
-                        </tabpanel>        
-                    </tabpanels>
-                </tabbox>
-            </hbox>
-
-            -->
-        </hbox>
-    </vbox>
-
-    <!-- id has to be "status-bar" -->        
-    <statusbar id="status-bar">
-            <!-- class has to be "statusbarpanel-iconic -->
-            <statusbarpanel id="JJPSStatusBarIcon" hidden="false"
-                class="statusbarpanel-iconic" height="0" onclick="JJPS.toggleDisplay();"/>
-    </statusbar>
+    <menupopup id="menu_ToolsPopup">
+        <menuitem id="JJPSToolsMenu" class="menuitem-iconic"                label="&JJPS.browser.menuItem;" 
+        accesskey = "J"
+        oncommand="showJJPSPreferencesDialog();"
+        insertafter="javascriptConsole,devToolsSeparator" />
+    </menupopup>
 
 </overlay>
