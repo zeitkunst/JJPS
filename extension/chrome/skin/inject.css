@@ -236,6 +236,7 @@
     height: 32px !important;
     float: left !important;
     border-left: 1px solid #565656 !important;
+    font-size: 10px !important;
 }
 
 #JJPSHeaderResponseDiv {
