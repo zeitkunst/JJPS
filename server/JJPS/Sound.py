@@ -11,15 +11,15 @@ import shutil
 import subprocess
 import tempfile
 import time
-import urllib
 
-from BeautifulSoup import BeautifulSoup
-import feedparser
+from lxml import etree
 from mpd import MPDClient
-import couchdb
 import nltk
 
 # Local imports
+from Companies import Companies
+from Documents import PPCDocuments
+from Model import Model
 import Log
 
 # The mapping from program IDs to processing code
@@ -180,69 +180,84 @@ class Process(object):
    
     # Processing the news
     def NewsProgram(self):
-        quotesURL = "http://download.finance.yahoo.com/d/quotes.csv?s=ENL+RUK&f=snl1d1t1c1ohgv&e=.csv"
-        quotesCSV = urllib.urlopen(quotesURL)
-        
-        reader = csv.reader(quotesCSV)
-        
+        """Make a news program."""
+        newsString = ""
         currentTime = time.strftime("%A, %d %B, %Y")
-        newsString = "This is the news for " + currentTime + "\n\n"
+        newsString += "This is the news for " + currentTime + "\n\n"
+      
+        # For later headlines and summaries
+        # TODO
+        # make configurable somewhere?
+        interestingCompanies = ["Sage Publications", "Springer Verlag", "Taylor and Francis", "MIT Press", "Nature Publishing", "Emerald Group Publishing", "Bentham Science Publishers", "Maney Publishing"]
 
-        newsString += "And now, for the markets.\n\n"
+        # Get the news data for the companies with stock symbols
+        newsData = {}
+        c = Companies(config = self.config)
         
-        for row in reader:
-            code = row[0]
-            name = row[1]
-            price = row[2]
-            date = row[3]
-            timeTraded = row[4]
-            change = row[5]
-            volume = row[9]
-            newsString += "%s, with stock code %s, had a price of %s at %s on a change of %s and volume of %s" % (name, code, str(price), timeTraded, str(change), str(volume))
-            newsString += "\n\n"
+        for company in c.companyDict.keys():
+            newsData[company] = c.getCompanyInfo(company, numEntries = 5)
+
+        newsString += "We start, as always, with the markets.\n\n"
+        
+        for company in newsData.keys():
+            data = newsData[company]
+            stocks = data["stocks"]
+            for stock in stocks:
+                name = stock[0]
+                code = stock[1]
+                price = stock[2]
+                change = stock[3]
+                date = stock[4]
+                timeTraded = stock[5]
+                volume = stock[6]
+                newsString += "%s, with stock code %s, had a price of %s at %s on a change of %s and volume of %s" % (name, code, str(price), timeTraded, str(change), str(volume))
+                newsString += "\n\n"
         
         newsString += "And now, for the news.\n\n"
         
-        #d = feedparser.parse("http://news.google.com/news?pz=1&cf=all&ned=us&hl=en&q=reed+elsevier&cf=all&output=rss") 
-        d = feedparser.parse("http://finance.yahoo.com/rss/headline?s=ENL") 
-        entries = d['entries'][0:9]
+        # Now add the other companies
+        for company in interestingCompanies:
+            newsData[company] = c.getCompanyInfo(company, numEntries = 5)
         
-        for entry in d['entries']:
-            title = entry['title']
-            newsString += "%s\n\n" % title
-            summary = entry['summary']
-            #soup = BeautifulSoup(entry['summary'])
-            #print soup.contents[0]
-            #summary = soup.getText()
-            newsString += "%s\n\n" % summary
-       
-        tempFH, tempFilename = tempfile.mkstemp(suffix = ".txt", prefix = "JJPS")
-        tempFP = os.fdopen(tempFH, "wb")
-        tempFP.write(newsString.encode("ascii", "ignore"))
-        tempFP.close()
+        # And create our strings
+        for company in newsData.keys():
+            newsString += "This is the news for %s\n\n" % company 
 
-        text2wavePath = self.config.get("Sound", "text2wavePath")
-        ffmpegPath = self.config.get("Sound", "ffmpegPath")
-        outputPath = self.config.get("Sound", "outputPath")
-        id3tagPath = self.config.get("Sound", "id3tagPath")
-       
-        # TODO
-        # make voice a configuration variable
-        commandTTS = """%s -eval "(voice_cmu_us_slt_arctic_hts)" %s""" % (text2wavePath, tempFilename)
-        commandConversion = """%s -y -i - %s/news.mp3 """ % (ffmpegPath, outputPath)
+            items = zip(newsData[company]["headlines"], newsData[company]["summaries"])
 
-        # TODO
-        # Need to figure out why I can't choose a particular voice
-        processTTS = subprocess.Popen([text2wavePath, tempFilename], shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+            for item in items:
+                newsString += "The headline is %s.\n\n%s\n\n\n" % (item[0], item[1])
+        
+        # And finally, the trending words
+        newsString += "And finally, the top trending words by price, taken from the words in the journal names and their owners in our database of over 16000 journals.\n\n"
+        p = PPCDocuments(config = self.config)
+        pXML = p.getTrendingWordsByPrice()
+        for element in list(pXML):
+            name = element.get("name")
+            price = element.get("price")
+            newsString += "%s has a price of %s cents.\n" % (name, price) 
+        
+        self._makeTTSFileChunks(voice = None, text = newsString, title = "News")
 
-        processConversion = subprocess.Popen([ffmpegPath, "-y", "-i", "-", outputPath + "/news.mp3"], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+    def Genealogies(self):
+        """Genealogy of a particular owner."""
 
-        # Pass the TTS output to the communicate input
-        processConversion.communicate(processTTS.communicate()[0])
+        model = Model(config = self.config)
 
-        processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='News'", "--year=2010", "--comment='Visit http://journalofjournalperformancestudies.org for more information.'", outputPath + "/news.mp3"], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-        # Cleanup
-        os.remove(tempFilename)
+        options = ["Elsevier", "SagePublications", "Springer", "JohnWileyAndSons", "TaylorAndFrancis"]
+
+        # Inefficient, I know...
+        company = random.choice(options)
+        self.logger.debug("Genealogies: Getting owner info for %s" % company)
+        dataXML = etree.fromstring(model.getJournalsOwnedBy(company))
+        
+        ownerText = "Welcome to Genealogies, where we let you know how journals are related to owners are related to parents.  Listen as the list continues on forever...\n\n"
+        for item in list(dataXML):
+            parent = item.get("parent")
+            journal = item.get("journal")
+            ownerText += "%s owns %s that owns %s.\n\n" % (company, parent, journal)
+
+        self._makeTTSFileChunks(voice = None, text = ownerText, title = "Genealogies")
 
     def ProgramOne(self):
         self.DummyProgram("Program One")
@@ -374,6 +389,7 @@ class Process(object):
         self.logger.debug("TTS Chunks: Tokenizing input")
         sentences = nltk.sent_tokenize(text)
         
+        mp3Filenames = []
         if (len(sentences) > chunkSize):
             numSentences = len(sentences)
 
@@ -381,9 +397,8 @@ class Process(object):
             endSentence = chunkSize - 1
             
             # Get the total number of times we should run this chunk process
-            numChunks = math.ceil(float(numSentences)/float(chunkSize))
+            numChunks = int(math.ceil(float(numSentences)/float(chunkSize)))
 
-            mp3Filenames = []
             for index in xrange(numChunks):
                 startSentence = index*chunkSize
                 endSentence = min((index + 1)*chunkSize - 1, numSentences)
@@ -417,6 +432,34 @@ class Process(object):
 
                 mp3Filenames.append(tempfile.tempdir + "/%s.mp3" % titleNospacesChunk)
             
+        else:
+            # Create temp file to hold text
+            tempFH, tempFilename = tempfile.mkstemp(suffix = ".txt", prefix = "JJPS")
+            tempFP = os.fdopen(tempFH, "wb")
+            tempFP.write(text.encode("ascii", "ignore"))
+            tempFP.close()
+
+            # Create no spaces version of show name with trailing zeros
+            titleNospaces = title.replace(" ", "").replace("'", "")
+            
+
+            # TODO
+            # Need to figure out why I can't choose a particular voice
+            self.logger.debug("TTS Chunks: Starting TTS and MP3 encoding processes for show %s" % (title))
+            processTTS = subprocess.Popen([text2wavePath, tempFilename], shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+    
+            processConversion = subprocess.Popen([ffmpegPath, "-y", "-i", "-", tempfile.tempdir + "/%s.mp3" % titleNospaces], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+    
+            # Pass the TTS output to the communicate input
+            processConversion.communicate(processTTS.communicate()[0])
+
+            # Cleanup
+            os.remove(tempFilename)
+
+            mp3Filenames.append(tempfile.tempdir + "/%s.mp3" % titleNospaces)
+        
+        # Finish cleaning up the mp3 files
+        if (len(mp3Filenames) != 1):
             # Wrap MP3 files
             self.logger.debug("TTS Chunks: Wrapping files")
             processCall = [mp3wrapPath, outputPath + "/%s.mp3" % titleNospaces]
@@ -424,19 +467,22 @@ class Process(object):
             
             # Use call so that we don't immediately go to move command below
             processMP3Wrap = subprocess.call(processCall, shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-
+    
             # Unfortunately mp3wrap adds an annoying suffix to every file
             # We need to move the file to get rid of it
             shutil.move(outputPath + "/%s_MP3WRAP.mp3" % titleNospaces, outputPath + "/%s.mp3" % titleNospaces)
+        else:
+            shutil.copy(mp3Filenames[0], outputPath + "/%s.mp3" % titleNospaces)
 
-            # Tag files
-            self.logger.debug("TTS Chunks: Tagging file")
-            processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='%s'" % title, "--year=2010", "--comment='Visit http://journalofjournalperformancestudies.org for more information.'", outputPath + "/%s.mp3" % titleNospaces], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        # Tag files
+        self.logger.debug("TTS Chunks: Tagging file")
+        processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='%s'" % title, "--year=2010", "--comment='Visit http://journalofjournalperformancestudies.org for more information.'", outputPath + "/%s.mp3" % titleNospaces], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
-            # Cleaning up
-            self.logger.debug("Cleaning up")
-            for file in mp3Filenames:
-                os.remove(file)
+        # Cleaning up
+        self.logger.debug("Cleaning up")
+        for file in mp3Filenames:
+            os.remove(file)
+
 
     def Telegraph(self):
         # Get Paths to programs we're going to use

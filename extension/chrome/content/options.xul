@@ -63,14 +63,25 @@
             </vbox>
             </tabpanel>
             <tabpanel>
-                <vbox>
-                    <hbox>
-                        <label value="About" />                    
-                    </hbox>
-                    <hbox>
-                        <textbox multiline="true" rows="10" readonly="true" value="&JJPS.preferences.info;" />                    
-                    </hbox>
-                </vbox>            
+    <vbox>
+    <groupbox id="JJPSAboutGroupbox">
+        <hbox pack="center">
+            <image onclick="window.open('http://journalofjournalperformancestudies.org');" width="196" height="196" src="chrome://JJPS/skin/JJPSLogo.png"/>
+        </hbox>
+    </groupbox>
+    <hbox>
+        <text value="&JJPS.preferences.FAQLink;" class="JJPSurl" onclick="window.open('http://journalofjournalperformancestudies.org/FAQ');"/>
+    </hbox>
+    <hbox>
+        <textbox multiline="true" rows="10" readonly="true" id="JJPSInfo" value="&JJPS.preferences.info;" />
+        <spacer flex="1" />
+    </hbox>
+    <!--
+    <hbox>
+        <text value="&JJPS.preferences.statementLink;" class="JJPSurl" onclick="window.open('http://journalofjournalperformancestudies.org/statement');"/>
+    </hbox>
+    -->
+    </vbox>
             </tabpanel>
         </tabpanels>
     </tabbox>

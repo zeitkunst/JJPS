@@ -8,7 +8,6 @@ from lxml import etree
 import RDF
 import simplejson as json
 import networkx as nx
-import matplotlib.pyplot as plt
 from BeautifulSoup import BeautifulSoup
 
 # Local imports
@@ -36,9 +35,7 @@ class Model(object):
         else:
             self.ontologyPath = RDF.Uri(self.config.get("Model", "owlPath"))
         self.storagePath = self.config.get("Model", "storagePath")
-        #self.storage = RDF.Storage(storage_name = "sqlite", name=self.storagePath, options_string="synchronous='normal'")
         self.storage = RDF.HashStorage(self.storagePath, options="hash-type='bdb'") 
-        #self.storage = RDF.Storage(storage_name = "mysql", name = "JJPS", options_string = "host='localhost', database='JJPS', user='JJPS', password='jjps314'")
         self.model = RDF.Model(self.storage)
         self.parser = RDF.Parser()
 
@@ -749,6 +746,8 @@ WHERE {
 
     def createImageOfGraph(self, g, iterations = 5, filename = None, figsize = (7, 3), graphParams = {"node_size": 0, "alpha": 0.4, "edge_color": 'r', "font_size": 10}):
         """Create an image of the graph g with the given parameters.  Save it in the designated directory."""
+
+        import matplotlib.pyplot as plt
         try:
             pos = nx.spring_layout(g, iterations = iterations)
         except ZeroDivisionError:

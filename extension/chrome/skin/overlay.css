@@ -12,4 +12,19 @@ toolbar[iconsize="small"] #JJPSToolbarButton {
     list-style-image: url("chrome://JJPS/skin/icon16.png");
 }
 
+.JJPSurl {
+    color: #0000ef;
+    text-decoration: underline;
+    font-weight: bolder;
+}
 
+#JJPSInfo {
+    width: 28em;
+    margin: 0em;
+    margin-top: 1em;
+    padding: 0em;
+    font-family: serif;
+    border: none;
+    background-color: transparent;
+    -moz-appearance: none;
+}
