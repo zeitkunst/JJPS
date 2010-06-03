@@ -1051,26 +1051,67 @@ var JJPS = {
             overlayDiv.appendChild(headlinesDiv);
             overlayDiv.style.height = "40px"; 
 
-            // Try and setup a basic headline switching method
-            if (JJPS.headlineSwitchInterval != null) {
-                clearInterval(JJPS.headlineSwitchInterval);
-            }
-            JJPS.headlineSwitchInterval = setInterval(function() {
-                // Cycle to next index
-    
-                show = getElementsByClassName(JJPS.doc, "JJPSNewsItemShow")[0];
-                hide = getElementsByClassName(JJPS.doc, "JJPSNewsItemHide");
-                numItems = hide.length;
-    
-                if (JJPS.newsItemIndex >= numItems) {
-                    JJPS.newsItemIndex = 0;
+
+            // Add in the marquee, if needed
+            if (JJPS.showMarquee) {
+                // Try and setup a basic headline switching method
+                if (JJPS.headlineSwitchInterval != null) {
+                    clearInterval(JJPS.headlineSwitchInterval);
                 }
+                JJPS.headlineSwitchInterval = setInterval(function() {
+                    // Cycle to next index
+        
+                    show = getElementsByClassName(JJPS.doc, "JJPSNewsItemShow")[0];
+                    hide = getElementsByClassName(JJPS.doc, "JJPSNewsItemHide");
+                    numItems = hide.length;
+        
+                    if (JJPS.newsItemIndex >= numItems) {
+                        JJPS.newsItemIndex = 0;
+                    }
+        
+                    show.className = "JJPSNewsItemHide";
+                    hide[JJPS.newsItemIndex].className = "JJPSNewsItemShow";
+                    hide[JJPS.newsItemIndex].style.width = "200%";
+                    hide[JJPS.newsItemIndex].style.textAlign = "center";
+                    $jq = jQuery.noConflict();
+
+                    // Top marquee
+                    var marquee = $jq(".JJPSNewsItemShow", JJPS.doc);
+                    var reset = function() {
+                        $jq(this, JJPS.doc).css("margin-left", "0%");
+                        $jq(this, JJPS.doc).animate({ marginLeft: "-100%" }, 12000, 'linear', reset);
+                    };
+        
+                    reset.call(marquee);
+
+                    JJPS.newsItemIndex += 1;
+        
+                }, 10000);
     
-                show.className = "JJPSNewsItemHide";
-                hide[JJPS.newsItemIndex].className = "JJPSNewsItemShow";
-                JJPS.newsItemIndex += 1;
-    
-            }, 12000);
+            } else {
+                // Otherwise, just cycle through headlines
+                // Try and setup a basic headline switching method
+                if (JJPS.headlineSwitchInterval != null) {
+                    clearInterval(JJPS.headlineSwitchInterval);
+                }
+                JJPS.headlineSwitchInterval = setInterval(function() {
+                    // Cycle to next index
+        
+                    show = getElementsByClassName(JJPS.doc, "JJPSNewsItemShow")[0];
+                    hide = getElementsByClassName(JJPS.doc, "JJPSNewsItemHide");
+                    numItems = hide.length;
+        
+                    if (JJPS.newsItemIndex >= numItems) {
+                        JJPS.newsItemIndex = 0;
+                    }
+        
+                    show.className = "JJPSNewsItemHide";
+                    hide[JJPS.newsItemIndex].className = "JJPSNewsItemShow";
+                    JJPS.newsItemIndex += 1;
+        
+                }, 10000);
+
+            }
 
         }
 

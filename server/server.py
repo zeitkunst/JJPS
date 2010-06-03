@@ -145,7 +145,6 @@ class APIJournal:
                 words = station.ppcDocuments.getTrendingWordsByVolume()
             journalsXML.append(words)
             
-
             web.header("Content-Type", "text/xml; charset=utf-8")
             web.header('Content-Encoding', 'utf-8')
             return etree.tostring(journalsXML)
