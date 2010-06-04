@@ -32,8 +32,9 @@ version = "0.01"
 urls = (
     # Front-end URIs
     '/', 'index',
-    '/schedule', 'schedule',
-    '/programs/(.*?)', 'ViewProgram',
+    '/radio', 'radioIndex',
+    '/radio/schedule', 'schedule',
+    '/radio/programs/(.*?)', 'ViewProgram',
     # API URIs
     '/API', 'APIInfo',
     '/API/ownership/(.*?)', 'APIOwnership',
@@ -78,6 +79,24 @@ class Log(WsgiLog):
 
 class index:
     def GET(self):
+#        station = StationSingleton.getStation()
+#        station.reloadXML()
+#        currentProgram, nextProgram = station.getCurrentAndNextProgram()
+#
+#        currentProgramName = currentProgram["programName"]
+#        currentProgramRef = currentProgram["programRef"]
+#
+#        nextProgramName = nextProgram["programName"]
+#        nextProgramRef = nextProgram["programRef"]
+#
+#        currentNextHTML = """<p>On Air: <a href="/radio/programs/%s">%s</a></p>
+#        <p>Coming Up: <a href="/radio/programs/%s">%s</a></p>
+#        """ % (currentProgramRef, currentProgramName, nextProgramRef, nextProgramName)
+
+        return render.index("<p>This is a test</p>")
+
+class radioIndex:
+    def GET(self):
         station = StationSingleton.getStation()
         station.reloadXML()
         currentProgram, nextProgram = station.getCurrentAndNextProgram()
@@ -88,11 +107,11 @@ class index:
         nextProgramName = nextProgram["programName"]
         nextProgramRef = nextProgram["programRef"]
 
-        currentNextHTML = """<p>On Air: <a href="/programs/%s">%s</a></p>
-        <p>Coming Up: <a href="/programs/%s">%s</a></p>
+        currentNextHTML = """<p>On Air: <a href="/radio/programs/%s">%s</a></p>
+        <p>Coming Up: <a href="/radio/programs/%s">%s</a></p>
         """ % (currentProgramRef, currentProgramName, nextProgramRef, nextProgramName)
 
-        return render.index(currentNextHTML, "<p>This is a test</p>")
+        return render.radioIndex(currentNextHTML, "<p>This is a test</p>")
 
 class schedule:
     def GET(self):

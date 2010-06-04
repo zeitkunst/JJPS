@@ -131,13 +131,14 @@ class Station(object):
         timeDiv.set("id", "timeDiv")
         timeDiv.set("style", "width: 50px; float: left;")
         blankP = etree.Element("p")
-        blankP.set("style", "min-height: 2em;")
+        blankP.text = "    "
+        #blankP.set("style", "min-height: 2em;")
         timeDiv.append(blankP)
     
         for hour in xrange(0, 24):
             hourP = etree.Element("p")
             hourP.text = "%02d:00" % hour
-            hourP.set("style", "min-height: %spx" % str(int(60 * HOUR_PIXEL_CONVERSION)))
+            #hourP.set("style", "min-height: %spx" % str(int(60 * HOUR_PIXEL_CONVERSION)))
             timeDiv.append(hourP)
     
         scheduleDiv.append(timeDiv)
@@ -155,7 +156,7 @@ class Station(object):
     
             dayNameH2 = etree.Element("h2")
             dayNameH2.text = day.capitalize()
-            dayNameH2.set("style", "min-height: 2em;")
+            #dayNameH2.set("style", "min-height: 2em;")
             dayDiv.append(dayNameH2)
     
             startTimes = currentDaySchedule.keys()
@@ -184,6 +185,8 @@ class Station(object):
                 duration = time2 - time1
                 # Get duration in minutes
                 totalMinutes = (duration.seconds)/60
+                totalHours = int(round(float(totalMinutes)/float(60)))
+                
                 totalMinutes = totalMinutes * HOUR_PIXEL_CONVERSION
     
                 programDiv = etree.Element("div")
@@ -191,17 +194,22 @@ class Station(object):
                 programRef = scheduleDict[day][startTime]["programRef"]
                 programNameID = programName.replace(" ", "_")
                 programDiv.set("id", programNameID)
+                
+                # length to css class mapping
+                classMapping = ["oneHour", "twoHours", "threeHours", "fourHours", "fiveHours", "sixHours"]
 
+                hourClass = classMapping[int(totalHours) - 1]
+                programDiv.set("class", hourClass)
                 if highlightProgram:
-                    programDiv.set("class", "programItem highlightProgram")
+                    programDiv.set("class", "%s programItem highlightProgram" % hourClass)
                 else:
-                    programDiv.set("class", "programItem")
-                programDiv.set("style", "min-height: %spx" % str(int(totalMinutes)))
+                    programDiv.set("class", "%s programItem" % hourClass)
+                #programDiv.set("style", "min-height: %spx" % str(int(totalMinutes)))
     
                 programTitleH3 = etree.Element("h3")
                 programTitleA = etree.Element("a")
                 programTitleA.text = programName
-                programTitleA.set("href", "/programs/" + programRef)
+                programTitleA.set("href", "/radio/programs/" + programRef)
                 programTitleH3.append(programTitleA)
                 programDiv.append(programTitleH3)
     
