@@ -3,8 +3,9 @@
         <sunday>
             <slot startTime="00:00" endTime="02:59" program="GrainCombine"/>
             <slot startTime="03:00" endTime="05:59" program="Telegraph"/>
-            <slot startTime="06:00" endTime="11:59" program="ProgramTwo"/>
-            <slot startTime="12:00" endTime="13:59" program="RandomVocalPlayback"/>
+            <slot startTime="06:00" endTime="07:59" program="RecitationHour"/>
+            <slot startTime="08:00" endTime="11:59" program="ProgramTwo"/>
+            <slot startTime="12:00" endTime="13:59" program="RecitationHour"/>
             <slot startTime="14:00" endTime="16:59" program="ProgramThree"/>
             <slot startTime="17:00" endTime="17:59" program="ProgramOne"/>
             <slot startTime="18:00" endTime="18:59" program="NewsProgram"/>
@@ -14,8 +15,10 @@
         <monday>
             <slot startTime="00:00" endTime="02:59" program="GrainCombine"/>
             <slot startTime="03:00" endTime="05:59" program="Telegraph"/>
-            <slot startTime="06:00" endTime="11:59" program="ProgramTwo"/>
-            <slot startTime="12:00" endTime="17:59" program="ProgramThree"/>
+            <slot startTime="06:00" endTime="07:59" program="RecitationHour"/>
+            <slot startTime="08:00" endTime="11:59" program="ProgramTwo"/>
+            <slot startTime="12:00" endTime="13:59" program="RecitationHour"/>
+            <slot startTime="14:00" endTime="17:59" program="ProgramThree"/>
             <slot startTime="18:00" endTime="18:59" program="NewsProgram"/>
             <slot startTime="19:00" endTime="23:59" program="ProgramFour"/>
        
@@ -23,8 +26,10 @@
         <tuesday>
             <slot startTime="00:00" endTime="02:59" program="GrainCombine"/>
             <slot startTime="03:00" endTime="05:59" program="Telegraph"/>
-            <slot startTime="06:00" endTime="11:59" program="ProgramTwo"/>
-            <slot startTime="12:00" endTime="17:59" program="ProgramThree"/>
+            <slot startTime="06:00" endTime="07:59" program="RecitationHour"/>
+            <slot startTime="08:00" endTime="11:59" program="ProgramTwo"/>
+            <slot startTime="12:00" endTime="13:59" program="RecitationHour"/>
+            <slot startTime="14:00" endTime="17:59" program="ProgramThree"/>
             <slot startTime="18:00" endTime="18:59" program="NewsProgram"/>
             <slot startTime="19:00" endTime="20:59" program="CutupHour"/>
             <slot startTime="21:00" endTime="23:59" program="ProgramFour"/>
@@ -32,7 +37,8 @@
         <wednesday>
             <slot startTime="00:00" endTime="02:59" program="GrainCombine"/>
             <slot startTime="03:00" endTime="05:59" program="Telegraph"/>
-            <slot startTime="06:00" endTime="11:59" program="ProgramTwo"/>
+            <slot startTime="06:00" endTime="07:59" program="RecitationHour"/>
+            <slot startTime="08:00" endTime="11:59" program="ProgramTwo"/>
             <slot startTime="12:00" endTime="13:59" program="WhatsTheFrequencyKenneth"/>
             <slot startTime="14:00" endTime="17:59" program="ProgramThree"/>
             <slot startTime="18:00" endTime="18:59" program="NewsProgram"/>
@@ -43,7 +49,8 @@
         <thursday>
             <slot startTime="00:00" endTime="02:59" program="GrainCombine"/>
             <slot startTime="03:00" endTime="05:59" program="Telegraph"/>
-            <slot startTime="06:00" endTime="11:59" program="ProgramTwo"/>
+            <slot startTime="06:00" endTime="07:59" program="RecitationHour"/>
+            <slot startTime="08:00" endTime="11:59" program="ProgramTwo"/>
             <slot startTime="12:00" endTime="13:59" program="WhatsTheFrequencyKenneth"/>
             <slot startTime="14:00" endTime="15:59" program="Genealogies"/>
             <slot startTime="16:00" endTime="17:59" program="ProgramThree"/>
@@ -54,17 +61,21 @@
         <friday>
             <slot startTime="00:00" endTime="02:59" program="GrainCombine"/>
             <slot startTime="03:00" endTime="05:59" program="Telegraph"/>
-            <slot startTime="06:00" endTime="09:59" program="ProgramTwo"/>
+            <slot startTime="06:00" endTime="07:59" program="RecitationHour"/>
+            <slot startTime="08:00" endTime="09:59" program="ProgramTwo"/>
             <slot startTime="10:00" endTime="11:59" program="ProgramFive"/>
-            <slot startTime="12:00" endTime="17:59" program="ProgramThree"/>
+            <slot startTime="12:00" endTime="13:59" program="RecitationHour"/>
+            <slot startTime="14:00" endTime="17:59" program="ProgramThree"/>
             <slot startTime="18:00" endTime="18:59" program="NewsProgram"/>
             <slot startTime="19:00" endTime="23:59" program="ProgramFour"/>
         </friday>
         <saturday>
             <slot startTime="00:00" endTime="02:59" program="GrainCombine"/>
             <slot startTime="03:00" endTime="05:59" program="Telegraph"/>
-            <slot startTime="06:00" endTime="11:59" program="ProgramTwo"/>
-            <slot startTime="12:00" endTime="17:59" program="ProgramThree"/>
+            <slot startTime="06:00" endTime="07:59" program="RecitationHour"/>
+            <slot startTime="08:00" endTime="11:59" program="ProgramTwo"/>
+            <slot startTime="12:00" endTime="13:59" program="RecitationHour"/>
+            <slot startTime="14:00" endTime="17:59" program="ProgramThree"/>
             <slot startTime="18:00" endTime="18:59" program="NewsProgram"/>
             <slot startTime="19:00" endTime="23:59" program="ProgramFour"/>
         </saturday>
@@ -101,7 +112,7 @@
             <archives>
             </archives>
         </program>    
-        <program id="ProgramFour" processed="1">
+        <program id="ProgramFour" processed="0">
             <name>Program Four</name>        
             <hostedBy>
                 <person ref="PersonOne"/>            
@@ -131,13 +142,13 @@
             <archives>
             </archives>
         </program>    
-        <program id="RandomVocalPlayback" processed="0">
-            <name>Article Reading</name>        
+        <program id="RecitationHour" processed="0">
+            <name>Recitation Hour</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
             </hostedBy>
             <description>A reading from one of the articles in our archives...</description>
-            <current href="RandomVocalPlayback.mp3"/>
+            <current href="RecitationHour.mp3"/>
             <archives>
             </archives>
         </program>
@@ -171,7 +182,7 @@
             <archives>
             </archives>
         </program>
-        <program id="GrainCombine" processed="0">
+        <program id="GrainCombine" processed="1">
             <name>Grain Combine</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            

@@ -672,6 +672,7 @@ var JJPS = {
         articleContent = JJPS.doc.getElementById("articleContent");
 
         if (articleContent != null) {
+            alert("here");
             title = getElementsByClassName(articleContent, "articleTitle")[0].innerHTML;
             authors = articleContent.getElementsByTagName("strong")[0].innerHTML;
 

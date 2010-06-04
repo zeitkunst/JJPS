@@ -258,6 +258,102 @@ class Process(object):
             ownerText += "%s owns %s that owns %s.\n\n" % (company, parent, journal)
 
         self._makeTTSFileChunks(voice = None, text = ownerText, title = "Genealogies")
+    
+    def Conjunctional(self):
+        """Reading out only the conjunctions.  Other words are played backwards."""
+        # Get a random document from the database
+        docIDs = [item for item in self.db if item.find("_design") == -1]
+        docID = random.choice(docIDs)
+        data = self.db[docID]
+
+        self.logger.debug("Conjunctional: tokenizing words")
+        # Tokenize our data into an ordered list of words
+        text = data["articleText"]
+        tokens = self._makeTokens(text)
+        
+        # Then, get a syllable mapping
+        self.logger.debug("Conjunctional: counting syllables")
+        from nltk_contrib.readability import syllables_en
+        words = data["tf_idf"].keys()
+        syllables = {}
+        for word in data["tf_idf"].keys():
+            syllables[word] = syllables_en.count(word)
+
+        # Get a list of stopwords
+        stopwords = nltk.corpus.stopwords.words("english")
+
+        self.logger.debug("Conjunctional: creating TTS words")
+        # Get a list of TTSed words to use
+        tempDir = tempfile.mkdtemp()
+        # Bias the words
+        numWords = [(word, tfIdf) for word, tfIdf in data["tf_idf"].items()]
+        numWords = sorted(numWords, key=itemgetter(1), reverse = True)
+        wordList = [word[0] for word in numWords]
+        totalWords = 400
+        wordList = wordList[0:totalWords]
+        wordList.extend(stopwords)
+
+        TTSWords = self.makeTTSWords(tempDir, wordList, numWords = len(wordList))
+        TTSPossibleWords = [word[0] for word in TTSWords]
+
+        self.logger.debug("Conjunctional: creating instruments")
+        
+        instruments = []
+        for word in TTSWords:
+            if (word[0] in stopwords):
+                direction = 1
+            else:
+                direction = -1
+            instr = "instr %d\n"
+            instr += """asig diskin "%s", %d
+outs asig, asig
+    endin\n\n""" % (word[1], direction)
+            instruments.append(instr)
+        
+        # 200 words is about ?
+        chunkSize = 200
+        numChunks = 12
+        numTokens = len(tokens)
+
+        mp3Filenames = []
+        for chunkNumber in xrange(numChunks):
+            startToken = chunkNumber*chunkSize
+            endToken = min((chunkNumber+ 1)*chunkSize - 1, tokens)
+
+            currentTokens = tokens[startToken:endToken]
+
+            # Clear out time and notes before each run
+            time = 0
+            notes = []
+            for token in currentTokens:
+                try:
+                    instrNumber = wordList.index(token)
+                except ValueError:
+                    instrNumber = 0
+    
+                try:
+                    syllableCount = syllables[token]
+                except KeyError:
+                    syllableCount = 0
+    
+                if (instrNumber != 0):
+                    notes.append("i%d %f %f" % (instrNumber, time, syllableCount * 1))
+                time += syllableCount * 1
+    
+            # Give me the csd file, please
+            csdMaker = CsoundProcessor(config = self.config,  orcOptions = {'sr': 16000, 'kr': 1600,    'ksmps': 10, 'nchnls': 2})
+            csd = csdMaker.makeCSD(instruments, "", notes)
+            
+            self.logger.debug("Conjunctional: on chunk %d of %d" % (chunkNumber, numChunks - 1))
+            mp3File = self._makeCsoundChunks(csd, chunkNumber, tempDir = tempDir, resample = 44100)
+            mp3Filenames.append(mp3File)
+
+        # Okay, got all of our mp3 files, let's finish wrapping them            
+        self.logger.debug("Conjunctional: wrapping mp3")
+        self._wrapMp3Files(mp3Filenames, "Conjunctional")
+
+        # And finally, cleanup
+        shutil.rmtree(tempDir)
 
     def ProgramOne(self):
         self.DummyProgram("Program One")
@@ -274,18 +370,26 @@ class Process(object):
     def ProgramFive(self):
         self.DummyProgram("Program Five")
 
-    def RandomVocalPlayback(self):
-        self.logger.info("Random Vocal Playback: starting processing...")
+    def RecitationHour(self):
+        self.logger.info("Recitation Hour: starting processing...")
         # Get list of documents
         docIDs = [item for item in self.db if item.find("_design") == -1]
         docID = random.choice(docIDs)
-        self.logger.debug("Random Vocal Playback: TTS")
-        self._makeTTSFileChunks(voice = None, text = self.db[docID]["articleText"], title = "Random Vocal Playback")
+        doc = self.db[docID]
+        title = doc["title"]
+        try:
+            journalName = doc["journal"]
+        except KeyError:
+            journalName = "nowhere"
+        authors = doc["authors"].replace(",", "and ")
+        text = doc["articleText"]
+        self.logger.debug("Recitation Hour: TTS")
+        self._makeTTSFileChunks(voice = None, text = "Now, %s from %s by %s.  %s" % (title, journalName, authors, text), title = "Recitation Hour")
         
-        codedText = self.createTextTransmission(self.db[docID]["articleText"])
-        self.archiveShow("RandomVocalPlayback", codedText)
+        codedText = self.createTextTransmission(text)
+        self.archiveShow("RecitationHour", codedText)
 
-        self.logger.info("Random Vocal Playback: done")
+        self.logger.info("Recitation Hour: done")
 
     def CutupHour(self):
         self.logger.info("Cutup Hour: starting processing...")
@@ -709,7 +813,7 @@ class Process(object):
         return csd
 
 
-    def _makeCsoundChunks(self, csd, chunkNumber, tempDir = None, useStdout = False):
+    def _makeCsoundChunks(self, csd, chunkNumber, tempDir = None, useStdout = False, resample = False):
         # Write csd file
         if (tempDir is None):
             # TODO
@@ -737,7 +841,11 @@ class Process(object):
             # TODO
             # Getting rid of the stdout redirect makes the command work...why?
             processCsound = subprocess.call([csoundPath, "-d", "-o", outputPathWav, "-W", csdPath], shell=False, stdin = subprocess.PIPE)
-            processConversion = subprocess.call([ffmpegPath, "-y", "-i", outputPathWav, outputPathMp3], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+            if resample:
+                processConversion = subprocess.call([ffmpegPath, "-y", "-ar", str(resample), "-i", outputPathWav, outputPathMp3], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+                pass
+            else:
+                processConversion = subprocess.call([ffmpegPath, "-y", "-i", outputPathWav, outputPathMp3], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
             
             # Cleanup
             os.remove(outputPathWav)

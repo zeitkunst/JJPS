@@ -3,6 +3,7 @@ import cPickle
 import csv
 import glob
 import os
+import re
 
 from lxml import etree
 import RDF
@@ -70,6 +71,13 @@ class Model(object):
             else:
                 price = item[16]
             prices[issn] = (price, '')
+
+        # Wiley-Blackwell
+        issnRE = re.compile("\d{4}-\d{4}")
+        reader = csv.reader(open("data/journalPrices/Wiley-Blackwell_2010_Journals_price_list.csv"))
+        for line in reader:
+            if (issnRE.match(line[1])):
+                prices[line[1]] = (line[4], '')
 
         self.prices = prices
 
@@ -238,7 +246,7 @@ class Model(object):
 
     def getJournalInfo(self, journalName, returnFormat = "xml"):
         """Return the information about a particular journal."""
-
+        
         # Format the journal name so that we can find it in our model
         journalNameFormatted = journalName.lower().replace("&amp;", "and").replace(" ", "_")
 
@@ -647,6 +655,12 @@ WHERE {
     
         self.getSubscriptionPrices()
         self.addJournalsToModel(masterJournalList)
+
+        sjr = self.getSJRData()
+        self.addSJRInfoToModel(sjr)
+
+        frobInfo = self.getFrobInfo()
+        self.addFrobInfoToModel(frobInfo)
     
         self.writeModel()
 
