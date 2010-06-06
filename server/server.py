@@ -73,6 +73,7 @@ else:
 
 render = web.template.render('templates/', base = 'layout', cache = serverConfig.cache)
 renderAdmin = web.template.render('templates/', base = 'layoutAdmin', cache = serverConfig.cache)
+renderRadio = web.template.render('templates/', base = 'layoutRadio', cache = serverConfig.cache)
 #renderAdmin = web.template.render('templates/', base = 'layoutAdmin', cache = config.cache)
 
 class Log(WsgiLog):
@@ -124,7 +125,7 @@ class index:
 
             actualPostE = etree.Element("div")
             actualPostE.set("class", "post prepend-1 span-10")
-            h2E = etree.Element("h2")
+            h2E = etree.Element("h3")
             h2E.text = item["title"]
             actualPostE.append(h2E)
             
@@ -169,19 +170,19 @@ class radioIndex:
 
         nextProgramName = nextProgram["programName"]
         nextProgramRef = nextProgram["programRef"]
+        
+        current = """<h1>On Air</h1><p><a href="/radio/programs/%s">%s</a></p>""" % (currentProgramRef, currentProgramName)
+        next  = """<h1>Next</h1><p><a href="/radio/programs/%s">%s</a></p>
+        """ % (nextProgramRef, nextProgramName)
 
-        currentNextHTML = """<p>On Air: <a href="/radio/programs/%s">%s</a></p>
-        <p>Coming Up: <a href="/radio/programs/%s">%s</a></p>
-        """ % (currentProgramRef, currentProgramName, nextProgramRef, nextProgramName)
-
-        return render.radioIndex(currentNextHTML, "<p>This is a test</p>")
+        return renderRadio.radioIndex(current, next)
 
 class schedule:
     def GET(self):
         station = StationSingleton.getStation()
         station.reloadXML()
         scheduleHTML = station.getScheduleHTML()
-        return render.schedule(scheduleHTML)
+        return renderRadio.schedule(scheduleHTML)
 
 
 class viewPost:
@@ -456,8 +457,8 @@ class ViewProgram:
 
         station = StationSingleton.getStation()
         station.reloadXML()
-        programHTML = station.getProgramInfoHTML(programRef)
-        return render.schedule(programHTML)
+        programTitle, programPersons, programDescription = station.getProgramInfoHTML(programRef)
+        return renderRadio.program(programTitle, programPersons, programDescription)
 
 # Our admin pages
 class adminIndex:

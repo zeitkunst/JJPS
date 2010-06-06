@@ -1,0 +1,37 @@
+$def with (title, persons, desc)
+$var title: Program Info|| Journal of Journal Performance Studies
+<div class="span-24 last">
+    <div id="menu" class="prepend-5 span-5 append-1">
+        <div class="menuItem">
+            <h1><a href="/radio/schedule">Schedule</a></h1>
+        </div>
+    </div>
+    <div id="menu" class="span-5 append-1">
+        <div class="menuItem menuHighlighted">
+            <h1><a href="/radio/programs">Programs</a></h1>
+        </div>
+    </div>
+
+    <div id="menu" class="span-5 append-3 append-bottom last">
+        <div class="menuItem">
+            <h1><a href="/radio/technical">Technical</a></h1>
+        </div>
+    </div>
+</div>
+<div class="span-24 last prepend-top">
+    <div class="span-5 append-1">
+        <div class="item">
+            $:title
+        </div>
+    </div>
+    <div class="span-5 append-1">
+        <div class="item">
+            $:persons
+        </div>
+    </div>
+    <div class="span-10 append-2 last append-bottom">
+        <div class="item">
+            $:desc
+        </div>
+    </div>
+</div>

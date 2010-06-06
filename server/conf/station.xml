@@ -82,7 +82,7 @@
     </schedule>
 
     <programs>
-        <program id="ProgramOne" processed="0">
+        <program id="ProgramOne" processed="1">
             <name>Program One</name>        
             <hostedBy>
                 <person ref="PersonOne"/>            
@@ -182,7 +182,7 @@
             <archives>
             </archives>
         </program>
-        <program id="GrainCombine" processed="1">
+        <program id="GrainCombine" processed="0">
             <name>Grain Combine</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            

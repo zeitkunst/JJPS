@@ -1,6 +1,10 @@
 
-body {
-    /*background: url("/static/images/site/textBackground.png") repeat;*/
+body#radio {
+    background: url("/static/images/site/diagonalBackground.png") repeat;
+}
+
+#footer {
+    font-size: smaller;
 }
 
 div.JJPSTitle {
@@ -46,11 +50,93 @@ div#posts h1 {
     border-bottom: 3px solid #d90000;
 }
 
+body#radio .menuItem, body#radio .item {
+    min-height: 100px;
+    background-color: #ccc;
+    margin-bottom: 8px;
+}
+
+div#current, div#next {
+    height: 100px;
+    background-color: #d90000;
+}
+
+.menuItem h1, .item h1, .item h2, .item p {
+    padding: 8px;
+}
+
+.menuItem a {
+    text-decoration: none;
+    display: block;
+    color: black;
+}
+
+.menuItem a:hover {
+    background-color: #d90000;
+    color: #dedede;
+}
+
+.menuHighlighted {
+    background-color: #d90000 !important;
+}
+
+.menuHighlighted a {
+    color: #dedede !important;
+}
+
+#current h1, #next h1 {
+    padding: 8px;
+    color: #dedede;
+}
+
+#current p, #next p {
+    padding-left: 8px;
+
+}
+
+#current p a, #next p a {
+    text-decoration: none;
+    font-size: 1.3em;
+    font-weight: bold;
+    background-color: #dedede;
+    color: black;
+}
+
+#current p a:hover, #next p a:hover {
+    background-color: #d90000;
+    color: #dedede;
+}
+
+#JJPSRadioFooterImage, #JJPSRadioFooterText {
+    position: fixed;
+    bottom: 0em;
+    left: 0em;
+    width: 100%;
+}
+
+#JJPSRadioFooterText {
+    background: url('/static/images/site/JJPSRadioBottomBackground.png') repeat-x;
+    height: 100px;
+}
+
+#JJPSRadioFooterText p {
+    margin-top: 70px;
+    margin-left: 95px;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #dedede;
+}
+
 /* Each hour is 50px tall with 4 px bottom margin */
+#timeDiv p.blankHeader {
+    height: 25px;
+}
+
 #timeDiv p {
     height: 50px;
     margin-bottom: 4px;
 }
+
 #scheduleDiv {
     width: 100%;
     float: left;
@@ -63,15 +149,29 @@ div#posts h1 {
     margin-right: 4px;
 }
 
-#scheduleDiv .dayClass h2 {
-    height: 50px;
+#scheduleDiv .dayClass h3 {
+    height: 25px;
     margin-bottom: 4px;
     font-weight: bold;
     text-align: center;
 }
 
+#scheduleDiv h4 a {
+    font-weight: bold;
+    padding: 4px;
+    text-decoration: none;
+    display: block;
+    color: black;
+}
+
+#scheduleDiv h4 a:hover {
+    background-color: #d90000;
+    color: #dedede;
+
+}
+
 #scheduleDiv .programItem {
-    background-color: #ccc;
+    background-color: #dedede;
 }
 
 #scheduleDiv .oneHour {
@@ -105,5 +205,9 @@ div#posts h1 {
 }
 
 #scheduleDiv .highlightProgram {
-    background-color: #aaa;
+    background-color: #d90000;
+}
+
+#scheduleDiv .highlightProgram a {
+    color: #dedede;
 }

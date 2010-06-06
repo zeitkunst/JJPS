@@ -131,6 +131,7 @@ class Station(object):
         timeDiv.set("id", "timeDiv")
         timeDiv.set("style", "width: 50px; float: left;")
         blankP = etree.Element("p")
+        blankP.set("class", "blankHeader")
         blankP.text = "    "
         #blankP.set("style", "min-height: 2em;")
         timeDiv.append(blankP)
@@ -154,10 +155,10 @@ class Station(object):
             dayDiv.set("id", day + "Div")
             dayDiv.set("class", "dayClass")
     
-            dayNameH2 = etree.Element("h2")
-            dayNameH2.text = day.capitalize()
+            dayNameH3 = etree.Element("h3")
+            dayNameH3.text = day.capitalize()
             #dayNameH2.set("style", "min-height: 2em;")
-            dayDiv.append(dayNameH2)
+            dayDiv.append(dayNameH3)
     
             startTimes = currentDaySchedule.keys()
             startTimes.sort()
@@ -193,7 +194,7 @@ class Station(object):
                 programName = scheduleDict[day][startTime]["programName"]
                 programRef = scheduleDict[day][startTime]["programRef"]
                 programNameID = programName.replace(" ", "_")
-                programDiv.set("id", programNameID)
+                programDiv.set("class", programNameID)
                 
                 # length to css class mapping
                 classMapping = ["oneHour", "twoHours", "threeHours", "fourHours", "fiveHours", "sixHours"]
@@ -206,12 +207,12 @@ class Station(object):
                     programDiv.set("class", "%s programItem" % hourClass)
                 #programDiv.set("style", "min-height: %spx" % str(int(totalMinutes)))
     
-                programTitleH3 = etree.Element("h3")
+                programTitleH4 = etree.Element("h4")
                 programTitleA = etree.Element("a")
                 programTitleA.text = programName
                 programTitleA.set("href", "/radio/programs/" + programRef)
-                programTitleH3.append(programTitleA)
-                programDiv.append(programTitleH3)
+                programTitleH4.append(programTitleA)
+                programDiv.append(programTitleH4)
     
                 dayDiv.append(programDiv)
     
@@ -268,9 +269,9 @@ class Station(object):
         programDiv.set("id", programNameID)
         programDiv.set("class", "programItem")
     
-        programTitleH3 = etree.Element("h3")
-        programTitleH3.text = programName
-        programDiv.append(programTitleH3)
+        programTitleH1 = etree.Element("h1")
+        programTitleH1.text = programName
+        programDiv.append(programTitleH1)
 
         hostedBy = programDict["programHostedBy"]
         programPersonsDiv = etree.Element("div")
@@ -279,9 +280,9 @@ class Station(object):
         for person in hostedBy.keys():
             # TODO
             # Make link to person's page
-            personP = etree.Element("p")
-            personP.text = person
-            programPersonsDiv.append(personP)
+            personH2 = etree.Element("h2")
+            personH2.text = person
+            programPersonsDiv.append(personH2)
 
         programDiv.append(programPersonsDiv)
 
@@ -290,7 +291,7 @@ class Station(object):
         programDescP.text = programDescription
         programDiv.append(programDescP)
 
-        return lxml.html.tostring(programDiv)
+        return (lxml.html.tostring(programTitleH1), lxml.html.tostring(programPersonsDiv), lxml.html.tostring(programDescP))
 
     def getProgramIDsAndNames(self):
         """Return a list of program IDs and names for construction of a select box on the station website."""

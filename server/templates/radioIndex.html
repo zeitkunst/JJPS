@@ -1,4 +1,32 @@
-$def with (currentNext, frontmatter)
+$def with (current, next)
 $var title: Radio || Journal of Journal Performance Studies
-$:currentNext
-$:frontmatter
+<div class="span-24 last" style="height: 500px; padding-top:100px">
+    <div class="span-5 append-1">
+        <div class="menuItem">
+            <h1><a href="/JJPS.m3u">Listen Live</a></h1>
+        </div>
+    </div>
+    <div id="menu" class="span-5 append-1">
+        <div class="menuItem">
+            <h1><a href="/radio/schedule">Schedule</a></h1>
+        </div>
+        <div class="menuItem">
+            <h1><a href="/radio/programs">Programs</a></h1>
+        </div>
+        <div class="menuItem">
+            <h1><a href="/radio/technical">Technical</a></h1>
+        </div>
+    </div>
+
+    <div class="span-5 append-1">
+        <div id="current">
+            $:current
+        </div>
+    </div>
+    <div class="span-5 last">
+        <div id="next">
+            $:next
+        </div>
+    </div>
+</div>
+
