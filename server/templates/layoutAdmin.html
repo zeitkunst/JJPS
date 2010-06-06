@@ -4,11 +4,17 @@ $def with (content)
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 
+    <!-- Blueprint templates -->
+    <link rel="stylesheet" href="/static/blueprint/screen.css" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="/static/blueprint/print.css" type="text/css" media="print">  
+    <!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+
     <link rel="stylesheet" type="text/css" href="/static/JJPS.css"/>
     <link rel="stylesheet" type="text/css" media="print" href="/static/JJPSPrint.css" />
 
-    <link rel="alternate" type="application/rss+xml" title="MAICgregator RSS" href="/feed/rss" />
+    <link rel="alternate" type="application/rss+xml" title="JJPS RSS" href="/feed/rss" />
 
+    <script type="text/javascript" src="/static/js/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="/static/JJPS.js"></script>
     <title>$content.title</title>
 </head>

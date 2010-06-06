@@ -8,10 +8,13 @@
 
 import os
 import random
+import re
+from StringIO import StringIO
 import sys
 import urllib
 import logging
 import hashlib
+import time
 
 
 import simplejson as json
@@ -19,6 +22,7 @@ import web
 from wsgilog import WsgiLog, LogIO
 from webob.acceptparse import Accept
 from lxml import etree
+import textile
 
 # My own library imports
 from JJPS.Station import Station
@@ -32,6 +36,7 @@ version = "0.01"
 urls = (
     # Front-end URIs
     '/', 'index',
+    '/extension', 'extensionIndex',
     '/radio', 'radioIndex',
     '/radio/schedule', 'schedule',
     '/radio/programs/(.*?)', 'ViewProgram',
@@ -47,12 +52,19 @@ urls = (
     # Admin URIs
     '/admin', 'adminIndex',
     '/admin/', 'adminIndex',
+    '/admin/view', 'adminView',
+    '/admin/viewComments', 'adminViewComments',
+    '/post/(.*?)', 'viewPost',
+    '/admin/edit/(.*?)', 'adminEdit',
+    '/admin/editComment/(.*?)', 'adminEditComment',
+    '/admin/index', 'adminIndex',
+    '/admin/post', 'adminPost',
     '/admin/logout', 'adminLogout',
     '/admin/shows', 'adminShows'
 )
 
 app = web.application(urls, globals())
-webDB = web.database(dbn='mysql', db='JJPS', user='JJPS', pw='jjps314')
+webDB = web.database(dbn='sqlite', db='data/JJPSSite.db')
 if web.config.get('_session') is None:
     session = web.session.Session(app, web.session.DiskStore('sessions'),  initializer = {'loggedIn': False})
     web.config._session = session
@@ -79,21 +91,72 @@ class Log(WsgiLog):
 
 class index:
     def GET(self):
-#        station = StationSingleton.getStation()
-#        station.reloadXML()
-#        currentProgram, nextProgram = station.getCurrentAndNextProgram()
-#
-#        currentProgramName = currentProgram["programName"]
-#        currentProgramRef = currentProgram["programRef"]
-#
-#        nextProgramName = nextProgram["programName"]
-#        nextProgramRef = nextProgram["programRef"]
-#
-#        currentNextHTML = """<p>On Air: <a href="/radio/programs/%s">%s</a></p>
-#        <p>Coming Up: <a href="/radio/programs/%s">%s</a></p>
-#        """ % (currentProgramRef, currentProgramName, nextProgramRef, nextProgramName)
+        results = webDB.select("posts", limit=10, order="datetime DESC")
+        posts = ""
+        postsE = etree.Element("div")
+        postsE.set("id", "posts")
+        postsE.set("class", "span-24 last")
+        h1E = etree.Element("h1")
+        h1E.text = "Recent News"
+        h1E.set("class", "prepend-8 span-16 last append-bottom")
+        postsE.append(h1E)
+        posts += "<div id='posts'>"
+        for item in results:
+            postID = item["pid"]
+            posts += "<div id=\"post" + str(postID) + "\">\n"
+            posts += "<h2>" + item["title"] + "</h2>\n"
+            posts += "<div class=\"post\">\n"
+            posts += "<div>" + textile.textile(item["content"]) + "</div>\n"
+            datetime = item['datetime']
+            timeTuple = time.localtime(datetime)
+            timeFormatted = time.strftime("%a, %d %b %Y %H:%M:%S", timeTuple)
+            posts += "<p>Posted on " + timeFormatted + "</p>\n"
+            posts += "<p><a href=\"/post/" + str(postID) + "\" title=\"comment  on post\">Comments</a></p>\n"
+            posts += "</div>\n"
+            posts += "</div>\n"
+            postE = etree.Element("div")
+            postE.set("id", "post" + str(postID))
+            postE.set("class", "prepend-3 span-21 append-bottom last")
+            pE = etree.Element("p")
+            pE.set("class", "date span-4")
+            pE.text = "Posted on " + timeFormatted
+            postE.append(pE)
 
-        return render.index("<p>This is a test</p>")
+            actualPostE = etree.Element("div")
+            actualPostE.set("class", "post prepend-1 span-10")
+            h2E = etree.Element("h2")
+            h2E.text = item["title"]
+            actualPostE.append(h2E)
+            
+            # TODO
+            # this is really too much...
+            contentE = etree.Element("div")
+            content = textile.textile(item["content"]).replace("\n", "")
+            parser = etree.HTMLParser()
+            tree = etree.parse(StringIO(content), parser)
+            for child in tree.getroot():
+                contentE.append(child)
+
+            aE = etree.Element("a")
+            aE.set("href", "/post/" + str(postID))
+            aE.set("title", "Comment on post")
+            aE.text = "Comments"
+            pE = etree.Element("p")
+            pE.append(aE)
+            contentE.append(aE)
+            actualPostE.append(contentE)
+            postE.append(actualPostE)
+            postsE.append(postE)
+
+        posts += "</div>"
+        
+        etree.tostring(postsE)
+        #return render.index(posts)
+        return render.index(etree.tostring(postsE, pretty_print = True, method="html"))
+
+class extensionIndex:
+    def GET(self):
+        return render.extensionIndex("<p>This is a test</p>")
 
 class radioIndex:
     def GET(self):
@@ -119,6 +182,48 @@ class schedule:
         station.reloadXML()
         scheduleHTML = station.getScheduleHTML()
         return render.schedule(scheduleHTML)
+
+
+class viewPost:
+    def GET(self, postID):
+        dbVars = dict(postID = postID)
+        results = webDB.select("posts", dbVars, where="pid = $postID", order="datetime DESC")
+        post = ""
+        for item in results:
+            postTitle = item["title"]
+            post += "<h2>" + item["title"] + "</h2>\n"
+            post += "<div>" + textile.textile(item["content"]) + "</div>\n"
+            post += "<p>Posted on " + str(item["datetime"]) + "</p>\n"
+
+        results = webDB.select("comments", dbVars, where="pid = $postID", order="datetime DESC")
+        comments = []
+        for item in results:
+            comments.append(item)
+        return render.post(postID, postTitle, post, comments)
+
+    def POST(self, postID):
+        form = web.input()
+
+        if (form['human'].lower().find("maicgregator") == -1):
+            return "NotHuman"
+
+        if ((form['commentTitle'] != "") and (form['commentText'] != "") and (form['commentName'] != "")):
+            sequenceID = webDB.insert("comments", title=form['commentTitle'], content=form['commentText'], handle=form['commentName'], pid=form['postID'], datetime=web.SQLLiteral("NOW()"))
+
+        dbVars = dict(postID = postID)
+        results = webDB.select("posts", dbVars, where="pid = $postID", order="datetime DESC")
+        post = ""
+        for item in results:
+            postTitle = item["title"]
+            post += "<h2>" + item["title"] + "</h2>\n"
+            post += "<div>" + textile.textile(item["content"]) + "</div>\n"
+            post += "<p>Posted on " + str(item["datetime"]) + "</p>\n"
+
+        results = webDB.select("comments", dbVars, where="pid = $postID", order="datetime DESC")
+        comments = []
+        for item in results:
+            comments.append(item)
+        return render.post(postID, postTitle, post, comments)
 
 # API Handlers
 class APIInfo:
@@ -361,8 +466,9 @@ class adminIndex:
 
     def POST(self):
         form = web.input()
-        result = webDB.query( "select * from users where username = '%s' and    password = '%s'" % (form['username'], hashlib.sha256(form['password']).         hexdigest()))
-        if len(result)>0:
+        results = webDB.query( "select * from users where username = '%s' and password = '%s'" % (form['username'], hashlib.sha256(form['password']).         hexdigest()))
+        for result in results:
+            # if we get a result, then we ought to be logged in
             session.loggedIn = True
             session.username = form['username']
         return renderAdmin.adminIndex(session)
@@ -384,6 +490,114 @@ class adminShows:
         menu += "</select>"
         return renderAdmin.adminShows(menu)
 
+class adminPost:
+    def GET(self):
+        if (session.loggedIn == False):
+            web.redirect(serverConfig.baseURI + "admin")
+        return renderAdmin.adminPost(session, False)
+
+    def POST(self):
+        if (session.loggedIn == False):
+            web.redirect(serverConfig.baseURI + "admin")
+
+        form = web.input()
+        sequenceID = webDB.insert("posts", title=form['title'], content=form['content'], datetime=time.time(), username=session.username)
+        return renderAdmin.adminPost(session, True)
+
+class adminView:
+    def GET(self):
+        if (session.loggedIn == False):
+            web.redirect(serverConfig.baseURI + "admin")
+        results = webDB.select("posts", order="datetime DESC")
+        items = []
+        for result in results:
+            item = []
+            item.append(result['pid'])
+            item.append(result['title'])
+            item.append(result['content'])
+            datetime = result['datetime']
+            timeTuple = time.localtime(datetime)
+            timeFormatted = time.strftime("%a, %d %b %Y %H:%M:%S", timeTuple)
+            item.append(timeFormatted)
+            items.append(item)
+        return renderAdmin.adminView(items)
+
+class adminViewComments:
+    def GET(self):
+        if (session.loggedIn == False):
+            web.redirect(serverConfig.baseURI + "admin")
+        results = webDB.select("comments", order="datetime DESC")
+        items = []
+        for result in results:
+            item = []
+            item.append(result['cid'])
+            item.append(result['title'])
+            item.append(result['content'])
+            item.append(result['datetime'])
+            items.append(item)
+        return renderAdmin.adminViewComments(items)
+
+class adminEdit:
+
+    def GET(self, postID):
+        if (session.loggedIn == False):
+            web.redirect(serverConfig.baseURI + "admin")
+        dbVars = dict(postID = postID)
+        results = webDB.select("posts", dbVars, where="pid = $postID", order="datetime DESC")
+        item = []
+        for result in results:
+            item.append(result['pid'])
+            item.append(result['title'])
+            item.append(result['content'])
+            item.append(result['datetime'])
+
+        return renderAdmin.adminEdit(item)
+
+    def POST(self, postID):
+        if (session.loggedIn == False):
+            web.redirect(serverConfig.baseURI + "admin")
+        
+        form = web.input()
+        print form
+        if form.has_key('submitButton'):
+            numRows = webDB.update("posts", "pid = " + postID, title=form['title'], content=form['content'], datetime=time.time(), username=session.username)
+        elif form.has_key('deleteButton'):
+            numRows = webDB.delete("posts", where="pid = " + postID)
+        web.redirect(serverConfig.baseURI + "admin/view")
+
+class adminEditComment:
+
+    def GET(self, commentID):
+        if (session.loggedIn == False):
+            web.redirect(serverConfig.baseURI + "admin")
+        dbVars = dict(commentID = commentID)
+        results = webDB.select("comments", dbVars, where="cid = $commentID", order="datetime DESC")
+        item = []
+        for result in results:
+            item.append(result['cid'])
+            item.append(result['pid'])
+            item.append(result['title'])
+            item.append(result['content'])
+            item.append(result['datetime'])
+
+        dbVars = dict(postID = item[1])
+        results = webDB.select("posts", dbVars, where="pid = $postID", order="datetime DESC")
+        for result in results:
+            item.append(result["title"])
+
+        return renderAdmin.adminEditComment(item)
+
+    def POST(self, commentID):
+        if (session.loggedIn == False):
+            web.redirect(serverConfig.baseURI + "admin")
+        
+        form = web.input()
+        print form
+        if form.has_key('submitButton'):
+            numRows = webDB.update("comments", "cid = " + commentID, title=form['title'], content=form['content'], datetime=web.SQLLiteral("NOW()"))
+        elif form.has_key('deleteButton'):
+            numRows = webDB.delete("comments", where="cid = " + commentID)
+        web.redirect(serverConfig.baseURI + "admin/viewComments")
 
 # The singleton object for our station, so that we're not opening a million of them for each request
 class StationSingleton(object):

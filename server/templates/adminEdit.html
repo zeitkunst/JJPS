@@ -1,0 +1,14 @@
+$def with (post)
+$var title: MAICgregator edit posts 
+<h1>MAICgregator Edit Posts</h1>
+<form method="post" action="/admin/edit/$post[0]">
+<fieldset>
+<input type="hidden" name="postID" value="$post[0]"/><br/>
+<p><label>Title</label>
+    <input type="text" name="title" value="$post[1]"/></p>
+<p><label>Content</label>
+    <textarea name="content" rows="20" cols="40">$post[2]</textarea></p>
+<p><input type="submit" name="submitButton" value="Update Post" />
+<input type="submit" name="deleteButton" value="Delete Post" /></p>
+</fieldset>
+</form>

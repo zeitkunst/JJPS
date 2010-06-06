@@ -102,7 +102,7 @@
             <archives>
             </archives>
         </program>    
-        <program id="ProgramThree" processed="1">
+        <program id="ProgramThree" processed="0">
             <name>Program Three</name>        
             <hostedBy>
                 <person ref="PersonOne"/>            
@@ -132,7 +132,7 @@
             <archives>
             </archives>
         </program>    
-        <program id="NewsProgram" processed="1">
+        <program id="NewsProgram" processed="0">
             <name>News</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
@@ -182,7 +182,7 @@
             <archives>
             </archives>
         </program>
-        <program id="GrainCombine" processed="0">
+        <program id="GrainCombine" processed="1">
             <name>Grain Combine</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            

@@ -4,30 +4,36 @@ $def with (content)
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 
+    <!-- Blueprint templates -->
+    <link rel="stylesheet" href="/static/blueprint/screen.css" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="/static/blueprint/print.css" type="text/css" media="print">  
+    <link rel="stylesheet" href="/static/blueprint/src/typography.css" type="text/css" media="screen,projection">  
+    <!--[if lt IE 8]><link rel="stylesheet" href="/static/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+
     <link rel="stylesheet" type="text/css" href="/static/JJPS.css"/>
     <link rel="stylesheet" type="text/css" media="print" href="/static/JJPSPrint.css" />
 
-    <link rel="alternate" type="application/rss+xml" title="MAICgregator RSS" href="/feed/rss" />
+    <link rel="alternate" type="application/rss+xml" title="JJPS RSS" href="/feed/rss" />
 
+    <script type="text/javascript" src="/static/js/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="/static/JJPS.js"></script>
     <title>$content.title</title>
 </head>
 <body>
-<div id="menu">
-    <ul>
-        <li><a href="/" title="homepage">home</a></li>
-        <li><a href="/radio/schedule" title="schedule">schedule</a></li>
-    </ul>
-</div>
-<div id="content">
+<div class="container showgrid" id="content">
     $:content
-    <div id="footer">
-        <p>Copyleft, <a href="/license">with restrictions</a>, 2010</p>
-        <p>info --at-- journalofjournalperformancestudies ---dot--- org</p>
-        <p>Journal of Journal Performance Studies is a 2009 commission of New Radio and Performing Arts, Inc., (aka Ether-Ore) for its  Turbulence web site.  It was made possible with funding from the Jerome Foundation.</p>
-    </div>
 </div>
 
+<div style="background-color: #bbb">
+    <div class="container">
+    
+    <div id="footer" class="span-24 last">
+        <p class="prepend-top prepend-4 span-4">Copyleft, <a href="/license">with restrictions</a>, 2010</p>
+        <p class="prepend-top prepend-1 span-4 append-1">info --at-- journalofjournalperformancestudies ---dot--- org</p>
+        <p class="prepend-top prepend-1 span-4 append-7 last">Journal of Journal Performance Studies is a 2009 commission of New Radio and Performing Arts, Inc., (aka Ether-Ore) for its  Turbulence web site.  It was made possible with funding from the Jerome Foundation.</p>
+    </div>
+    </div>
+</div>
 </body>
 </html>
 

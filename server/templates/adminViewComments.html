@@ -1,0 +1,12 @@
+$def with (comments)
+$var title: MAICgregator view comments 
+<h1>MAICgregator View Comments</h1>
+<table>
+    <tr>
+        <th>Comment Title</th>
+        <th>Comment Date</th>
+    </tr>
+$for comment in comments:
+    <tr><td><a href="/admin/editComment/$comment[0]">$comment[1]</a></td><td>$comment[3]</td></tr>
+</table>
+

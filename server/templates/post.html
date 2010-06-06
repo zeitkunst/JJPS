@@ -1,0 +1,28 @@
+$def with (postID, postTitle, postData, comments)
+$var title: $postTitle || MAICgregator
+$:postData
+<h2>Comments</h2>
+$for comment in comments:
+    <div class="comment">
+        <div class="commentInfo">
+            <p>$comment["handle"]</p>
+            <p>$comment["datetime"]</p>
+        </div>
+        <div class="commentText">
+            <h3>$comment["title"]</h3>
+            $:comment["content"]
+        </div>
+    </div>
+<div style="clear: both;"></div>
+<div class="postComment">
+    <h3>Submit comment</h3>
+    <form method="POST" action="/post/$postID">
+        <fieldset>
+            <input type="hidden" value="$postID" name="postID"/>
+            <p><label>Comment title</label><input type="text" name="commentTitle" id="commentTitle"/></p>
+            <p><label>Name</label><input type="text" name="commentName" id="commentName"/></p>
+            <p><label>Comment</label><br/><textarea name="commentText" id="commentText" rows="10" cols="45"></textarea></p>
+            <p><label>What is the name of this site (to prevent spamming)?</label><input type="text" name="human" id="humanComment" /></p>
+            <p><input type="submit" value="Submit comment" name="commentSubmitButton" id="commentSubmitButton"/></p>
+        </fieldset>
+</div>

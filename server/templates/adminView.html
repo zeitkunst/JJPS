@@ -1,0 +1,12 @@
+$def with (posts)
+$var title: MAICgregator view posts 
+<h1>MAICgregator View Posts</h1>
+<table>
+    <tr>
+        <th>Post Title</th>
+        <th>Post Date</th>
+    </tr>
+$for post in posts:
+    <tr><td><a href="/admin/edit/$post[0]">$post[1]</a></td><td>$post[3]</td></tr>
+</table>
+

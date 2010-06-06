@@ -1,0 +1,15 @@
+$def with (comment)
+$var title: MAICgregator edit comments 
+<h1>MAICgregator Edit Comments</h1>
+<p>For post: <a href="/post/$comment[1]">$comment[5]</a></p>
+<form method="post" action="/admin/editComment/$comment[0]">
+<fieldset>
+<input type="hidden" name="commentID" value="$comment[0]"/><br/>
+<p><label>Title</label>
+    <input type="text" name="title" value="$comment[2]"/></p>
+<p><label>Content</label>
+    <textarea name="content" rows="20" cols="40">$comment[3]</textarea></p>
+<p><input type="submit" name="submitButton" value="Update Comment" />
+<input type="submit" name="deleteButton" value="Delete Comment" /></p>
+</fieldset>
+</form>
