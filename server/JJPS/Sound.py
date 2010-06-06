@@ -239,6 +239,8 @@ class Process(object):
         
         self._makeTTSFileChunks(voice = None, text = newsString, title = "News")
 
+        self.archiveShow("NewsProgram", playlist = newsString)
+
     def Genealogies(self):
         """Genealogy of a particular owner."""
 
@@ -387,7 +389,7 @@ outs asig, asig
         self._makeTTSFileChunks(voice = None, text = "Now, %s from %s by %s.  %s" % (title, journalName, authors, text), title = "Recitation Hour")
         
         codedText = self.createTextTransmission(text)
-        self.archiveShow("RecitationHour", codedText)
+        self.archiveShow("RecitationHour", playlist = codedText)
 
         self.logger.info("Recitation Hour: done")
 
@@ -402,6 +404,8 @@ outs asig, asig
         cutupSentences = []
         for docID in docIDs:
             sentences = nltk.sent_tokenize(self.db[docID]["articleText"])
+            if (numSentencesToGet >= len(sentences)):
+                numSentencesToGet = len(sentences)
             cutupSentences.extend(random.sample(sentences, numSentencesToGet))
         
         random.shuffle(cutupSentences)
@@ -411,7 +415,7 @@ outs asig, asig
         self.logger.debug("Cutup Hour: TTS")
         self._makeTTSFileChunks(voice = None, text = text, title = "Cutup Hour")
 
-        self.archiveShow("CutupHour", text)
+        self.archiveShow("CutupHour", playlist = text)
         self.logger.info("Cutup Hour: done")
 
     def WhatsTheFrequencyKenneth(self):
@@ -438,7 +442,7 @@ outs asig, asig
         self.logger.debug("What's the Frequency Kenneth: TTS")
         self._makeTTSFileChunks(voice = None, text = text, title = "What's the Frequency Kenneth")
 
-        self.archiveShow("CutupHour", text)
+        self.archiveShow("WhatstheFrequencyKenneth", playlist = text)
         self.logger.info("What's the Frequency Kenneth: done")
 
 
@@ -931,7 +935,7 @@ outs asig, asig
 
         os.remove(tempFilename)
 
-    def archiveShow(self, programRef, playlist):
+    def archiveShow(self, programRef, playlist = None):
         """Archive the show materials for the given show.  The writing of the archive materials to the station XML file occurs when we switch programs.  We know that we can always copy the given programRef.mp3 file to the archive directory as we always overwrite it on each process run."""
         archivePath = self.config.get("Sound", "archivePath")
         programArchivePath = os.path.join(archivePath, programRef)
@@ -949,10 +953,11 @@ outs asig, asig
         # Copy the mp3 file to the archive directory
         shutil.copy2(os.path.join(outputPath, programRef + ".mp3"), os.path.join(programArchivePath, programRef + "Current.mp3"))
 
-        # Write the playlist to the archive directory
-        fp = codecs.open(os.path.join(programArchivePath, programRef + "CurrentPlaylist.txt"), "w", "utf-8")
-        fp.write(playlist)
-        fp.close()
+        if (playlist is not None):
+            # Write the playlist to the archive directory
+            fp = codecs.open(os.path.join(programArchivePath, programRef + "CurrentPlaylist.txt"), "w", "utf-8")
+            fp.write(playlist)
+            fp.close()
 
 
 

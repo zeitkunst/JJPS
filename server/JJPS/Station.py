@@ -1,9 +1,9 @@
 import ConfigParser
 import datetime, time
-import logging
+import os
+import shutil
 
 import lxml
-from lxml.html import builder as E
 from lxml import etree
 import mpd
 import couchdb
@@ -67,6 +67,57 @@ class Station(object):
         fp.write(etree.tostring(self.stationTree))
         fp.close()
 
+    def archiveProgram(self, programName):
+        """Archive the program."""
+        self.logger.debug("Archiving %s" % programName)
+
+        xpathString = "//JJPS:program[@id='%s']/JJPS:archives" % programName 
+        archives = self.stationTree.xpath(xpathString, namespaces = NAMESPACES)[0]
+        xpathString = "//JJPS:program[@id='%s']/JJPS:archives/JJPS:archive" % programName 
+        archiveList = self.stationTree.xpath(xpathString, namespaces = NAMESPACES)
+
+        numArchives = self.config.get("Station", "numArchives")
+        archivePath = self.config.get("Sound", "archivePath")
+
+        # TODO
+        # fix for when we have switched programs after midnight, but the program took place the day before...
+        today = time.strftime("%Y%m%d")
+        
+        mp3PathSrc = os.path.join(archivePath, programName, programName + "Current" + ".mp3")
+        mp3PathDest = os.path.join(archivePath, programName, programName + "_" + today + ".mp3")
+        try:
+            os.stat(mp3PathSrc)
+        except OSError:
+            self.logger.error("MP3 file doesn't exist; need to setup archiving for this show: %s" % programName)
+            return
+
+        shutil.move(mp3PathSrc, mp3PathDest)
+        ns = "{%s}" % NAMESPACES["JJPS"]
+        archive = etree.Element(ns + "archive", nsmap = NAMESPACES)
+        archive.set("date", today)
+        archive.set("href", programName + "_" + today + ".mp3")
+        archive.set("hidden", "0")
+
+        try:
+            playlistSrc = os.path.join(archivePath, programName, programName + "CurrentPlaylist" + ".txt")
+            playlistDest = os.path.join(archivePath, programName, programName + "Playlist" + "_" + today + ".txt")
+            os.stat(playlistSrc)
+            shutil.move(playlistSrc, playlistDest)
+            archive.set("playlistHref", programName + "Playlist" + "_" + today + ".txt")
+        except OSError:
+            archive.set("playlistHref", "")
+       
+        # Cull archives if necessary
+        if (len(archiveList) >= int(numArchives)):
+            self.logger.debug("Culling archives for %s" % programName)
+            archives.remove(archiveList[0])
+        archives.append(archive)
+
+        # Write out XML file
+        fp = open(self.config.get("Station", "xmlPath"), "w")
+        fp.write(etree.tostring(self.stationTree))
+        fp.close()
+
     def restartStream(self):
         currentProgram, nextProgram = self.getCurrentAndNextProgram()
         self.soundStream.restart(currentProgram)
@@ -80,12 +131,6 @@ class Station(object):
         #self.scheduleHTML = self.constructScheduleHTML(self.scheduleDict, days=["sunday"])
         self.scheduleHTML = self.constructScheduleHTML(self.scheduleDict)
         return self.scheduleHTML
-
-    def archiveProgram(self, programRef):
-        """Archive the given program."""
-        # TODO
-        # Go through the archives for the given programRef and set the hidden attribute to 0 for the latest archive
-        pass
 
     def constructScheduleDict(self, days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]):
     
@@ -218,7 +263,7 @@ class Station(object):
     
             scheduleDiv.append(dayDiv)
     
-        return lxml.html.tostring(scheduleDiv)
+        return etree.tostring(scheduleDiv)
 
     def getProgramInfoDict(self, programRef):
         programDict = {}
@@ -258,6 +303,52 @@ class Station(object):
         
         return programDict
 
+    def getProgramArchivesList(self, programRef):
+        """Get the archives for the given program"""
+
+        programArchivesList = []
+        xpathString = "//JJPS:program[@id='%s']/JJPS:archives/JJPS:archive" % programRef
+        archiveList = self.stationTree.xpath(xpathString, namespaces = NAMESPACES)
+        stem = "/static/archives/" + programRef + "/"
+
+        for archive in archiveList:
+            programArchivesList.append([archive.get("date"), stem + archive.get("href"), stem + archive.get("playlistHref")])
+
+        return programArchivesList
+    
+    def getProgramArchivesHTML(self, programRef):
+        """Get an HTML formatted version of the archives."""
+        
+        programArchivesList = self.getProgramArchivesList(programRef)
+
+        if (len(programArchivesList) == 0):
+            return None
+
+        div = etree.Element("div")
+        div.set("id", "archives")
+        
+        for archive in programArchivesList:
+            date = archive[0]
+            mp3 = archive[1]
+            playlist = archive[2]
+            timeTuple = time.strptime(date, "%Y%m%d")
+            archiveDate = time.strftime("%d %B %Y", timeTuple)
+            p = etree.Element("p")
+            p.text = archiveDate + ": "
+            a = etree.Element("a")
+            a.set("href", mp3)
+            a.text = "MP3 Archive"
+            a.tail = ", "
+            p.append(a)
+            # TODO
+            # Deal with the case when we don't have a playlist
+            a = etree.Element("a")
+            a.set("href", playlist)
+            a.text = "Playlist"
+            p.append(a)
+            div.append(p)
+
+        return etree.tostring(div)
 
     def getProgramInfoHTML(self, programRef):
         # Retrieve information about a particular program and format it for HTML display
@@ -291,7 +382,7 @@ class Station(object):
         programDescP.text = programDescription
         programDiv.append(programDescP)
 
-        return (lxml.html.tostring(programTitleH1), lxml.html.tostring(programPersonsDiv), lxml.html.tostring(programDescP))
+        return (etree.tostring(programTitleH1), etree.tostring(programPersonsDiv), etree.tostring(programDescP))
 
     def getProgramIDsAndNames(self):
         """Return a list of program IDs and names for construction of a select box on the station website."""

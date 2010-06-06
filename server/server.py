@@ -458,7 +458,10 @@ class ViewProgram:
         station = StationSingleton.getStation()
         station.reloadXML()
         programTitle, programPersons, programDescription = station.getProgramInfoHTML(programRef)
-        return renderRadio.program(programTitle, programPersons, programDescription)
+        programArchives = station.getProgramArchivesHTML(programRef)
+        if (programArchives is None):
+            programArchives = ""
+        return renderRadio.program(programTitle, programPersons, programDescription, programArchives)
 
 # Our admin pages
 class adminIndex:

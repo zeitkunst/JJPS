@@ -102,12 +102,25 @@ div#current, div#next {
     color: black;
 }
 
-#current p a:hover, #next p a:hover {
+#JJPSRadioFooterText p a {
+    text-decoration: none;
+    font-weight: bold;
+    background-color: #dedede;
+    color: black;
+}
+
+#JJPSRadioFooterText p a:hover, #current p a:hover, #next p a:hover {
     background-color: #d90000;
     color: #dedede;
 }
 
-#JJPSRadioFooterImage, #JJPSRadioFooterText {
+#JJPSRadioFooterImage {
+    position: fixed;
+    bottom: 0em;
+    left: 0em;
+}
+
+#JJPSRadioFooterText {
     position: fixed;
     bottom: 0em;
     left: 0em;

@@ -12,6 +12,7 @@ if __name__ == "__main__":
 
     if (currentPlayingProgram != currentProgram["programRef"]):
         station.switchProgram()
+        station.archiveProgram(currentPlayingProgram)
         station.config.set("Stream", "currentPlayingProgram", currentProgram["programRef"])
         station.archiveProgram(currentPlayingProgram)
         fp = open(configFile, "w")

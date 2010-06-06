@@ -82,7 +82,7 @@
     </schedule>
 
     <programs>
-        <program id="ProgramOne" processed="1">
+        <program id="ProgramOne" processed="0">
             <name>Program One</name>        
             <hostedBy>
                 <person ref="PersonOne"/>            
@@ -150,9 +150,9 @@
             <description>A reading from one of the articles in our archives...</description>
             <current href="RecitationHour.mp3"/>
             <archives>
-            </archives>
+            <archive date="20100606" href="RecitationHour_20100606.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100606.txt"/></archives>
         </program>
-        <program id="CutupHour" processed="0">
+        <program id="CutupHour" processed="1">
             <name>Cut-up Hour</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
@@ -160,6 +160,7 @@
             <description>Doing cut-ups is easy digitally!</description>
             <current href="CutupHour.mp3"/>
             <archives>
+                <archive date="20100606" href="CutupHour_20100606.mp3" hidden="0" playlistHref="CutupHourPlaylist_20100606.txt"/>
             </archives>
         </program>
         <program id="WhatsTheFrequencyKenneth" processed="0">

@@ -1,4 +1,4 @@
-$def with (title, persons, desc)
+$def with (title, persons, desc, archives)
 $var title: Program Info|| Journal of Journal Performance Studies
 <div class="span-24 last">
     <div id="menu" class="prepend-5 span-5 append-1">
@@ -31,7 +31,11 @@ $var title: Program Info|| Journal of Journal Performance Studies
     </div>
     <div class="span-10 append-2 last append-bottom">
         <div class="item">
+            <h2>Description</h2>
             $:desc
+            <h2>Archives</h2>
+            $:archives
+
         </div>
     </div>
 </div>
