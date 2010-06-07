@@ -655,14 +655,17 @@ WHERE {
     
         self.getSubscriptionPrices()
         self.addJournalsToModel(masterJournalList)
+        self.model.sync()
 
         sjr = self.getSJRData()
         self.addSJRInfoToModel(sjr)
+        self.model.sync()
 
         frobInfo = self.getFrobInfo()
         self.addFrobInfoToModel(frobInfo)
+        self.model.sync()
     
-        self.writeModel()
+        #self.writeModel()
 
     def createGraphForTopLevelOwner(self, topLevelOwner):
         """Create a dot format network file for the given owner.  At the moment this only works for top-level owners already instantiated in our ontology file."""
@@ -678,7 +681,7 @@ WHERE {
                 jjps:%s jjps:hasOrganizationName ?ownerName .
             } """ % (jjpsURI, topLevelOwner, topLevelOwner)
         subClass = RDF.Query(subClassQuery.encode("ascii"), query_language="sparql")
-
+        
         results = subClass.execute(self.model)
         subsidiaries = []
 

@@ -303,6 +303,45 @@ class Station(object):
         
         return programDict
 
+    def getAllProgramsList(self):
+        """Get all of the programs, sorted by programRef"""
+        programRefs = []
+
+        xpathString = "//JJPS:program"
+        programs = self.stationTree.xpath(xpathString, namespaces = NAMESPACES)
+
+        for program in programs:
+            xpathString = "JJPS:name"
+            name = program.xpath(xpathString, namespaces = NAMESPACES)[0]
+
+            id = program.get("id")
+            programRefs.append((id, name.text))
+        programRefs.sort()
+
+        return programRefs
+    
+    def getAllProgramsHTML(self):
+        """Get all of the programs, HTML formatted."""
+
+        programRefs = self.getAllProgramsList()
+
+        div = etree.Element("div")
+        div.set("id", "menu")
+        div.set("class", "prepend-11 span-5 append-8 last")
+
+        for programRef in programRefs:
+            divM = etree.Element("div")
+            divM.set("class", "menuItem")
+            h1 = etree.Element("h1")
+            a = etree.Element("a")
+            a.set("href", "/radio/programs/" + programRef[0])
+            a.text = programRef[1]
+            h1.append(a)
+            divM.append(h1)
+            div.append(divM)
+
+        return etree.tostring(div, pretty_print = True)
+
     def getProgramArchivesList(self, programRef):
         """Get the archives for the given program"""
 

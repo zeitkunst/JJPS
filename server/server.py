@@ -38,8 +38,11 @@ urls = (
     '/', 'index',
     '/extension', 'extensionIndex',
     '/radio', 'radioIndex',
+    '/radio/', 'radioIndex',
     '/radio/schedule', 'schedule',
+    '/radio/schedule/', 'schedule',
     '/radio/programs/(.*?)', 'ViewProgram',
+    '/radio/programs', 'ViewProgramList',
     # API URIs
     '/API', 'APIInfo',
     '/API/ownership/(.*?)', 'APIOwnership',
@@ -452,6 +455,9 @@ class APIPrograms:
 
 class ViewProgram:
     def GET(self, programRef):
+        if (len(programRef) == 0):
+            return web.redirect(serverConfig.baseURI + "radio/programs")
+
         # Get the flavor of a potential response
         HTTP_ACCEPT = web.ctx.env.get("HTTP_ACCEPT")
 
@@ -462,6 +468,14 @@ class ViewProgram:
         if (programArchives is None):
             programArchives = ""
         return renderRadio.program(programTitle, programPersons, programDescription, programArchives)
+
+class ViewProgramList:
+    def GET(self):
+        station = StationSingleton.getStation()
+        station.reloadXML()
+        programs = station.getAllProgramsHTML()
+        return renderRadio.programs(programs)
+
 
 # Our admin pages
 class adminIndex:
