@@ -181,6 +181,7 @@ class Process(object):
     # Processing the news
     def NewsProgram(self):
         """Make a news program."""
+        self.logger.info("News Program: Making the News")
         newsString = ""
         currentTime = time.strftime("%A, %d %B, %Y")
         newsString += "This is the news for " + currentTime + "\n\n"
@@ -239,7 +240,74 @@ class Process(object):
         
         self._makeTTSFileChunks(voice = None, text = newsString, title = "News")
 
-        self.archiveShow("NewsProgram", playlist = newsString)
+        self.archiveShow("News", playlist = newsString)
+
+    # TODO
+    # better name :-)
+    def Noise(self):
+        """Taking the model files and turning them into noise!"""
+        self.logger.info("Starting processing for Noise")
+        soxPath = self.config.get("Sound", "soxPath")
+        ffmpegPath = self.config.get("Sound", "ffmpegPath")
+        outputPath = self.config.get("Sound", "outputPath")
+        id3tagPath = self.config.get("Sound", "id3tagPath")
+
+        stem = self.config.get("Model", "storagePath")
+        dataPath = self.config.get("Model", "dataPath")
+        suffixes = ["-po2s.db", "-so2p.db", "-sp2o.db"]
+        sampwidths = [1, 2, 4]
+
+        tempDir = tempfile.mkdtemp()
+
+        waveFiles = []
+        
+        count = 0
+        for suffix in suffixes:
+            fp = open(stem + suffix, "r")
+            data = fp.read()
+            fp.close()
+            for sampwidth in sampwidths:
+                waveFiles.append(self._makeWaveFile(data, tempDir, filename = "wave" + str(count), sampwidth = sampwidth))
+                count += 1
+
+        # Add in output.rdf
+        fp = open(os.path.join(dataPath, "output.rdf"), "rb")
+        data = fp.read()
+        fp.close()
+
+        for sampwidth in sampwidths:
+            waveFiles.append(self._makeWaveFile(data, tempDir, filename = "rdf" + str(count), sampwidth = sampwidth))
+            count += 1
+
+        # Add 2s padding at end of each file
+        newWaveFiles = []
+        self.logger.debug("Noise: Padding input files")
+        for file in waveFiles:
+            processPad = subprocess.call([soxPath, os.path.join(tempDir, file), os.path.join(tempDir, "pad_" + file), "pad", "0", "2"], shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+            newWaveFiles.append(os.path.join(tempDir, "pad_" + file))
+
+        # Reorder
+        random.shuffle(newWaveFiles)
+        
+        # Concatenate
+        self.logger.debug("Noise: Concatenating files")
+        command = [soxPath]
+        for file in newWaveFiles:
+            command.append(file)
+        command.append(os.path.join(tempDir, "output.wav"))
+        # Do the concatenation
+        processConcat = subprocess.call(command, shell=False)
+
+        # Convert
+        programRef = "Noise"
+        outputFilename = os.path.join(tempDir, "output.wav")
+        processConversion = subprocess.call([ffmpegPath, "-y", "-i", outputFilename, outputPath + "/%s.mp3" % programRef], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+
+        # Tag
+        processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='%s'" % programRef, "--year=2010", "--comment='Visit http://journalofjournalperformancestudies.org for more information.'", outputPath + "/%s.mp3" % programRef], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+
+        # And finally, cleanup
+        #shutil.rmtree(tempDir)
 
     def Genealogies(self):
         """Genealogy of a particular owner."""
@@ -260,6 +328,7 @@ class Process(object):
             ownerText += "%s owns %s that owns %s.\n\n" % (company, parent, journal)
 
         self._makeTTSFileChunks(voice = None, text = ownerText, title = "Genealogies")
+        self.archiveShow("Genealogies", playlist = ownerText)
     
     def Conjunctional(self):
         """Reading out only the conjunctions.  Other words are played backwards."""
@@ -481,6 +550,20 @@ outs asig, asig
         # Cleanup
         os.remove(tempFilename)
 
+    def _makeWaveFile(self, data, tempDir, filename = "test", nchannels = 2, sampwidth = 1, framerate = 44100):
+        """Make a wave file in the given temp directory."""
+        import wave
+
+        filename = filename + ".wav"
+        w = wave.open(os.path.join(tempDir, filename), "wb")
+        w.setnchannels(nchannels)
+        w.setsampwidth(sampwidth)
+        w.setframerate(framerate)
+        w.writeframes(data)
+        w.close()
+
+        return filename
+
     def _makeTTSFileChunks(self, voice = None, text = "JJPS Radio", title = "Show"):
         # TODO
         # Make platform-agnostic with os.path.join
@@ -655,6 +738,7 @@ outs asig, asig
         # Okay, got all of our mp3 files, let's finish wrapping them            
         self.logger.debug("Telegraph: wrapping mp3")
         self._wrapMp3Files(mp3Filenames, "Telegraph")
+        self.archiveShow("Telegraph", playlist = csd)
 
         # Close our PDF file
         pdfFP.close()
@@ -665,6 +749,7 @@ outs asig, asig
         data = self.db[docID]
 
         self.logger.debug("Grain Combine: tokenizing words")
+
         # Tokenize our data into an ordered list of words
         text = data["articleText"]
         tokens = self._makeTokens(text)
@@ -672,6 +757,8 @@ outs asig, asig
         # Then, get a syllable mapping
         self.logger.debug("Grain Combine: counting syllables")
         from nltk_contrib.readability import syllables_en
+        # TODO
+        # Deal with when we don't have tf_idf...we (nearly) always should, but we should loop until we can get a working id
         words = data["tf_idf"].keys()
         syllables = {}
         for word in data["tf_idf"].keys():
@@ -679,6 +766,9 @@ outs asig, asig
 
         # our instrument
         instrumentList = ["grainSimple.instr"]
+        
+        # All of our notes
+        allNotes = []
 
         self.logger.debug("Grain Combine: creating TTS words")
         # Get a list of TTSed words to use
@@ -744,7 +834,7 @@ outs asig, asig
                     # i1 0 12 1000 1 5 10.1 200 200 0.1 0.1
                     notes.append("i1 %f %f 5000 %d 5 0.1 200 200 %f %f" % (time, syllableCount * 1, TTSWord + 100, tf, tf))
                 except ValueError:
-                    notes.append("i1 %f %f 2500 %d 5 0.1 200 200 %f %f" % (time, 1 + syllableCount * 1, 1, 0.01, 0.01))
+                    notes.append("i1 %f %f 4500 %d 5 0.1 200 200 %f %f" % (time, 1 + syllableCount * 1, 1, 0.01, 0.01))
                 time += syllableCount * 1
     
             # Give me the csd file, please
@@ -759,6 +849,10 @@ outs asig, asig
         # Okay, got all of our mp3 files, let's finish wrapping them            
         self.logger.debug("Grain Combine: wrapping mp3")
         self._wrapMp3Files(mp3Filenames, "Grain Combine")
+
+        # TODO
+        # Only archiving one chunk of the grain csd now...
+        self.archiveShow("GrainCombine", playlist = csd)
 
     def Feldman(self):
         """In the sparse style of Morton Feldman"""

@@ -1,6 +1,6 @@
 
 body#radio {
-    background: url("/static/images/site/diagonalBackground.png") repeat;
+    background: url("/static/images/site/diagonalBackground.png") repeat fixed;
 }
 
 #footer {

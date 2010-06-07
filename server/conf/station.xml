@@ -20,7 +20,8 @@
             <slot startTime="12:00" endTime="13:59" program="RecitationHour"/>
             <slot startTime="14:00" endTime="17:59" program="ProgramThree"/>
             <slot startTime="18:00" endTime="18:59" program="NewsProgram"/>
-            <slot startTime="19:00" endTime="23:59" program="ProgramFour"/>
+            <slot startTime="19:00" endTime="19:59" program="Noise"/>
+            <slot startTime="20:00" endTime="23:59" program="ProgramFour"/>
        
         </monday>
         <tuesday>
@@ -67,7 +68,8 @@
             <slot startTime="12:00" endTime="13:59" program="RecitationHour"/>
             <slot startTime="14:00" endTime="17:59" program="ProgramThree"/>
             <slot startTime="18:00" endTime="18:59" program="NewsProgram"/>
-            <slot startTime="19:00" endTime="23:59" program="ProgramFour"/>
+            <slot startTime="19:00" endTime="19:59" program="Noise"/>
+            <slot startTime="20:00" endTime="23:59" program="ProgramFour"/>
         </friday>
         <saturday>
             <slot startTime="00:00" endTime="02:59" program="GrainCombine"/>
@@ -138,7 +140,7 @@
                 <person ref="PersonTwo"/>            
             </hostedBy>
             <description>All the news that's fit to hear!</description>
-            <current href="news.mp3"/>
+            <current href="News.mp3"/>
             <archives>
             </archives>
         </program>    
@@ -152,7 +154,7 @@
             <archives>
             <archive date="20100606" href="RecitationHour_20100606.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100606.txt"/></archives>
         </program>
-        <program id="CutupHour" processed="1">
+        <program id="CutupHour" processed="0">
             <name>Cut-up Hour</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
@@ -161,7 +163,7 @@
             <current href="CutupHour.mp3"/>
             <archives>
                 <archive date="20100606" href="CutupHour_20100606.mp3" hidden="0" playlistHref="CutupHourPlaylist_20100606.txt"/>
-            </archives>
+            <archive date="20100606" href="CutupHour_20100606.mp3" hidden="0" playlistHref="CutupHourPlaylist_20100606.txt"/></archives>
         </program>
         <program id="WhatsTheFrequencyKenneth" processed="0">
             <name>What's the Frequency Kenneth?</name>        
@@ -198,8 +200,18 @@
             <hostedBy>
                 <person ref="PersonTwo"/>            
             </hostedBy>
-            <description>Who begat whom?.</description>
+            <description>Who begat whom?</description>
             <current href="Genealogies.mp3"/>
+            <archives>
+            </archives>
+        </program>
+        <program id="Noise" processed="0">
+            <name>Noise</name>        
+            <hostedBy>
+                <person ref="PersonTwo"/>            
+            </hostedBy>
+            <description>The sound of data...</description>
+            <current href="Noise.mp3"/>
             <archives>
             </archives>
         </program>
