@@ -1,0 +1,9 @@
+			instr %d
+aleft, aright           reverbsc    gareverb1, gareverb2, gkReverbscFeedback, 15000.0
+aleft                   =           gkMasterLevel * (gareverb1 + aleft * 0.8)
+aright                  =           gkMasterLevel * (gareverb2 + aright * 0.8)
+			outs        aleft, aright
+gareverb1               =           0
+gareverb2               =           0
+			endin
+

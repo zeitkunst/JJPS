@@ -27,7 +27,7 @@ import textile
 # My own library imports
 from JJPS.Station import Station
 from JJPS.Model import Model 
-from JJPS.Documents import Documents, VoteDocuments, PPCDocuments, AdsDocuments, JournalDocuments
+from JJPS.Documents import ArticleDocuments, VoteDocuments, PPCDocuments, AdsDocuments, JournalDocuments
 
 import serverConfig
 
@@ -625,7 +625,7 @@ class StationSingleton(object):
         if StationSingleton.station == None:
             StationSingleton.station = Station(configFile = "JJPSConfig.ini")
             StationSingleton.station.journalModel = Model(config = StationSingleton.station.config)
-            StationSingleton.station.documents = Documents(config = StationSingleton.station.config)
+            StationSingleton.station.articleDocuments = ArticleDocuments(config = StationSingleton.station.config)
             # TODO
             # Make name configurable?
             StationSingleton.station.voteDocuments = VoteDocuments(config = StationSingleton.station.config, dbName = "jjps_votes")

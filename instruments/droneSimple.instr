@@ -1,0 +1,35 @@
+
+gkReverbscFeedback      init        0.9
+gkMasterLevel           init        1.0
+
+gareverb1               init        0
+gareverb2               init        0
+
+    instr %d
+idur    =   p3
+iamp    =   p4
+icps    =   p5
+ifn     =   p6
+ipan    =   p7
+is1     =   p8
+is2     =   p9
+is3     =   p10
+is4     =   p11
+iattack =   0.3 * idur
+isustain    = 0.5 * idur
+irelease    = 0.2 * idur
+
+
+ksweep  transeg is1, idur * (0.33), 2.0, is2, idur*0.33, 2.0, is3, idur*0.33, 2.0, is4
+alfo    poscil iamp, ksweep, 1
+alfo    = (alfo * 0.5) + 1000
+asignal    poscil alfo, icps, ifn
+asignal     distort asignal, 1.0, 3
+aenv    expseg 0.01, iattack, 1.0, isustain, 0.8, irelease, 0.01
+asignal = asignal * aenv
+aleft, aright           pan2        asignal , ipan
+    outs    asignal, asignal
+gareverb1               =           gareverb1 + aleft
+gareverb2               =           gareverb1 + aright
+    endin
+

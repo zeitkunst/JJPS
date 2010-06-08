@@ -18,7 +18,7 @@ import nltk
 
 # Local imports
 from Companies import Companies
-from Documents import PPCDocuments
+from Documents import ArticleDocuments, PPCDocuments
 from Model import Model
 import Log
 
@@ -110,6 +110,8 @@ class Process(object):
     def __init__(self, config = None, db = None):
         self.config = config
 
+        self.articleDocuments = ArticleDocuments(config = config)
+
         if db is not None:
             self.db = db
 
@@ -177,7 +179,120 @@ class Process(object):
     # The default action
     def Default(self):
         pass
-   
+    
+    # TODO
+    # better name :-)
+    def Drone(self):
+        """A drone-style program."""
+        
+        docID = self.articleDocuments.docIDs[7]
+        data = self.articleDocuments.get(docID)
+        text = data["articleText"]
+        tf_idf = data["tf_idf"]
+
+        # Do all of our computations first
+        sentences = nltk.sent_tokenize(text)
+
+        tokens = []
+        for sentence in sentences:
+            tokens.append(self._makeTokens(sentence))
+        
+        allSyllables = []
+        numChunks = 4
+        for tokenSet in tokens:
+            if (len(tokenSet) < numChunks):
+                continue
+
+            chunkSize = int(math.floor(len(tokenSet)/3.0))
+            remainder = len(tokenSet) % (numChunks - 1)
+
+            syllables = []
+            from nltk_contrib.readability import syllables_en
+            for i in xrange(numChunks):
+                if (i == (numChunks - 1)):
+                    words = tokenSet[i*chunkSize:(i*chunkSize) + remainder]
+                else:
+                    words = tokenSet[i*chunkSize:(i + 1)*chunkSize]
+                
+                num = 0
+                for word in words:
+                    num += syllables_en.count(word)
+                
+                if (num == 0.0):
+                    syllables.append(0.1)
+                else:
+                    syllables.append(num / 4.0)
+            maxValue = max(syllables)
+            allSyllables.append([syllable / maxValue for syllable in syllables])
+        
+        sentenceLengths = []
+        for tokenSet in tokens:
+            if (len(tokenSet) < numChunks):
+                continue
+            else:
+                sentenceLengths.append(len(tokenSet))
+        
+        avgTFIDF = []
+        for tokenSet in tokens:
+
+            if (len(tokenSet) < numChunks):
+                continue
+
+            counter = 0
+            
+            total = 0
+            for word in tokenSet:
+                try:
+                    total += math.log(tf_idf[word])
+                    counter += 1
+                except KeyError:
+                    pass
+            
+            try:
+                value = (-1.0 * (float(total) / counter))
+            except ZeroDivisionError:
+                value = (-1.0 * (-11.0))
+            avgTFIDF.append(value * 9)
+    
+        # Then start making the csd
+
+        # our instrument
+        instrumentList = ["droneSimple.instr", "droneReverb.instr"]
+        fTables = []
+        fTables.append("f1 0 65536 10 1")
+        fTables.append("f   2       0           65536       10      3   0   1   0   0   2")
+        fTables.append("f   3       0           65536       13      1   1   0   3   0   2")
+
+        notes = []
+        timer = 0
+        values = zip(allSyllables, sentenceLengths, avgTFIDF)
+        for value in values:
+            s1, s2, s3, s4 = value[0]
+            noteDur = value[1] * 2.0
+            freq = value[2]
+
+            notes.append("i1  %f %f 1000 %f 2 0.0 %f %f %f %f" % (timer, noteDur, freq, s1, s2, s3, s4))
+            notes.append("i1  %f %f 1000 %f 2 0.8 %f %f %f %f" % (timer, noteDur, freq, s1, s2, s3, s4))
+            notes.append("i1  %f %f 1000 %f 2 -0.8 %f %f %f %f" % (timer, noteDur, freq, s1, s2, s3, s4))
+            timer += value[1] * 0.9
+        
+        notes.append("i2 0 -1")
+        # Give me the csd file, please
+        tempDir = tempfile.mkdtemp()
+        csdMaker = CsoundProcessor(config = self.config)
+        instruments = csdMaker.loadInstruments(instrumentList, instrumentPrefix = csdMaker.instrumentPrefix)
+        csd = csdMaker.makeCSD(instruments, fTables, notes)
+        
+        mp3Filenames = []
+        chunkNumber = 0
+        mp3File = self._makeCsoundChunks(csd, 0, tempDir = tempDir)
+        mp3Filenames.append(mp3File)
+
+        # Okay, got all of our mp3 files, let's finish wrapping them            
+        self.logger.debug("Drone: wrapping mp3")
+        self._wrapMp3Files(mp3Filenames, "Drone")
+
+
     # Processing the news
     def NewsProgram(self):
         """Make a news program."""
@@ -306,8 +421,10 @@ class Process(object):
         # Tag
         processTag = subprocess.Popen([id3tagPath, "--artist='Journal of Journal Performance Studies'", "--album='Journal of Journal Performance Studies'", "--song='%s'" % programRef, "--year=2010", "--comment='Visit http://journalofjournalperformancestudies.org for more information.'", outputPath + "/%s.mp3" % programRef], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
+        self.archiveShow("Noise", playlist = None)
+
         # And finally, cleanup
-        #shutil.rmtree(tempDir)
+        shutil.rmtree(tempDir)
 
     def Genealogies(self):
         """Genealogy of a particular owner."""
@@ -333,9 +450,9 @@ class Process(object):
     def Conjunctional(self):
         """Reading out only the conjunctions.  Other words are played backwards."""
         # Get a random document from the database
-        docIDs = [item for item in self.db if item.find("_design") == -1]
-        docID = random.choice(docIDs)
-        data = self.db[docID]
+        #docIDs = [item for item in self.db if item.find("_design") == -1]
+        docID = random.choice(self.articleDocuments.docIDs)
+        data = self.articleDocuments.get(docID)
 
         self.logger.debug("Conjunctional: tokenizing words")
         # Tokenize our data into an ordered list of words
@@ -444,9 +561,10 @@ outs asig, asig
     def RecitationHour(self):
         self.logger.info("Recitation Hour: starting processing...")
         # Get list of documents
-        docIDs = [item for item in self.db if item.find("_design") == -1]
-        docID = random.choice(docIDs)
-        doc = self.db[docID]
+        #docIDs = [item for item in self.db if item.find("_design") == -1]
+        docID = random.choice(self.articleDocuments.docIDs)
+        #doc = self.db[docID]
+        doc = self.articleDocuments.get(docID)
         title = doc["title"]
         try:
             journalName = doc["journal"]
@@ -465,14 +583,16 @@ outs asig, asig
     def CutupHour(self):
         self.logger.info("Cutup Hour: starting processing...")
 
-        docIDs = [item for item in self.db if item.find("_design") == -1]
+        #docIDs = [item for item in self.db if item.find("_design") == -1]
+        docIDs = self.articleDocuments.docIDs
         totalNumSentences = 350
         numSentencesToGet = int(totalNumSentences)/int(len(docIDs))
         
         self.logger.debug("Cutup Hour: getting fragments")
         cutupSentences = []
         for docID in docIDs:
-            sentences = nltk.sent_tokenize(self.db[docID]["articleText"])
+            doc = self.articleDocuments.get(docID)
+            sentences = nltk.sent_tokenize(doc["articleText"])
             if (numSentencesToGet >= len(sentences)):
                 numSentencesToGet = len(sentences)
             cutupSentences.extend(random.sample(sentences, numSentencesToGet))
@@ -490,11 +610,13 @@ outs asig, asig
     def WhatsTheFrequencyKenneth(self):
         self.logger.info("What's the Frequency Kenneth: starting processing...")
         
-        docIDs = [item for item in self.db if item.find("_design") == -1]
+        #docIDs = [item for item in self.db if item.find("_design") == -1]
+        docIDs = self.articleDocuments.docIDs
         
         docID = random.choice(docIDs)
         self.logger.debug("What's the Frequency Kenneth: calculating the number of words")
-        data = self.db[docID]
+        #data = self.db[docID]
+        data = self.articleDocuments.get(docID)
         numWords = [(word, round(data["numTokens"] * tf)) for word, tf in data["tf"].items()]
         numWords = sorted(numWords, key=itemgetter(1), reverse = True)
 
@@ -744,9 +866,10 @@ outs asig, asig
         pdfFP.close()
 
     def GrainCombine(self):
-        docIDs = [item for item in self.db if item.find("_design") == -1]
+        #docIDs = [item for item in self.db if item.find("_design") == -1]
+        docIDs = self.articleDocuments.docIDs
         docID = random.choice(docIDs)
-        data = self.db[docID]
+        data = self.articleDocuments.get(docID)
 
         self.logger.debug("Grain Combine: tokenizing words")
 
@@ -858,9 +981,11 @@ outs asig, asig
         """In the sparse style of Morton Feldman"""
 
         # Get random text from database
-        docIDs = [item for item in self.db if item.find("_design") == -1]
+        #docIDs = [item for item in self.db if item.find("_design") == -1]
+        docIDs = self.articleDocuments.docIDs
         docID = random.choice(docIDs)
-        data = self.db[docID]
+        #data = self.db[docID]
+        data = self.articleDocuments.get(docID)
 
         tokens = self._makeTokens(data["articleText"], clean = False)
 

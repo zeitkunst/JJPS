@@ -42,6 +42,11 @@ class DocumentBase(object):
                     doc = self.db[result]
                     self.db.delete(doc)
 
+    def get(self, docID):
+        """Return a document with the given ID."""
+
+        return self.db[docID]
+
     def addDocument(self, dataDict, showName = False):
         """Add the document in dataDict to the database.  Create an ID based on the hash of the title and author values."""
         
@@ -543,18 +548,22 @@ class AdsDocuments(DocumentBase):
         return results
             
 
-class Documents(object):
+class ArticleDocuments(DocumentBase):
 
-    def __init__(self, config = None, db = None):
-        self.config = config
+    def __init__(self, config = None, dbName = "jjps_test"):
+        super(ArticleDocuments, self).__init__(config = config)
 
-        self.logger = Log.getLogger(config = self.config)
+        self.dbServer = couchdb.Server(self.config.get("Database", "host"))
         
-        if (db is not None):
-            self.db = db
+        # Setup the db
+        if (dbName is not None):
+            self.db = self.dbServer[dbName]
         else:
-            self.dbServer = couchdb.Server(self.config.get("Database", "host"))
-            self.db = self.dbServer[self.config.get("Database", "name")]
+            raise Exception("Need to provide db name")
+       
+        # Get a list of IDs
+        self.docIDs = [item for item in self.db if item.find("_design") == -1]
+
 
     def preprocessWebData(self, dataDict):
         """Preprocess the web-based data in dataDict."""
@@ -682,74 +691,3 @@ class Documents(object):
                 if (result.find("_design") == -1):
                     doc = self.db[result]
                     self.db.delete(doc)
-
-    def addDocument(self, dataDict):
-        """Add the document in dataDict to the database.  Create an ID based on the hash of the title and author values."""
-        
-        # Create an id based on the hash of the title and author
-
-        id = hashlib.sha256(dataDict["title"].encode("ascii", "ignore") + dataDict["authors"].encode("ascii", "ignore")).hexdigest()
-
-        dataDict["_id"] = id
-        self.logger.debug("Adding document \"%s\" to the database" % dataDict["title"])
-        try:
-            id, rev = self.db.save(dataDict)
-        except couchdb.http.ResourceConflict:
-            document = self.db[id]
-            rev = document["_rev"]
-            dataDict["_rev"] = rev
-            self.db.save(dataDict)
-
-
-    def computeTF(self, recompute = True):
-        """Compute the TF for every document in the database.  Optionally, don't recompute."""
-
-        ifMap = """function(doc) { 
-        if (!('tf' in doc)) 
-            emit(doc._id, null); 
-        }"""
-
-        if recompute:
-            results = self.db
-        else:
-            results = self.db.query(ifMap)
-
-        self.logger.debug("Computing TF")
-        #for result in db.query(ifMap):
-        for result in results:
-            if (result.find("_design") != -1):
-                continue
-            doc = self.db[result]
-            self.logger.debug("Computing TF: Working on \"%s\"" % doc["title"])
-            tokens = Text.tokenize(doc['articleText'])
-            numTokens = len(tokens)
-            doc['numTokens'] = numTokens
-            doc['tf'] = Text.get_term_freq(tokens)
-            self.addDocument(doc)
-
-
-    def computeTFIDF(self):
-        """Run the TF-IDF computation."""
-
-        self.logger.debug("Computing IDF")
-        # The number of documents in the database (exclude design docs).
-        for result in self.db.view('_design/test/_view/all_docs_count'):
-            num_docs = result.value
-        
-        # Document frequency.  Number of documents a term appears in.
-        self.logger.debug("Computing document frequency")
-        df = {}
-        for result in self.db.view('_design/test/_view/docfreq', group=True):
-            df[result.key] = log(float(num_docs)/float(result.value))    
-
-        self.logger.debug("Computing TF-IDF")
-        # Compute tf-idf for each document.
-        for result in self.db.query('''function(doc) { if (!('tf_idf' in doc)) emit(doc._id, null); }'''):
-            doc = self.db[result.key]
-            self.logger.debug("Computing TF-IDF: Working on \"%s\"" % doc["title"])
-            tf = doc['tf']
-            tf_idf = {}
-            for k, v in tf.items(): # By construction, there should never be KeyError's here
-                tf_idf[k] = v * df[k]
-            doc['tf_idf'] = tf_idf
-            self.addDocument(doc)
