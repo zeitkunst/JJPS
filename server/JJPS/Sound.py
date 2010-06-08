@@ -223,7 +223,7 @@ class Process(object):
                 else:
                     syllables.append(num / 4.0)
             maxValue = max(syllables)
-            allSyllables.append([syllable / maxValue for syllable in syllables])
+            allSyllables.append([syllable / (maxValue * 2.0) for syllable in syllables])
         
         sentenceLengths = []
         for tokenSet in tokens:
@@ -260,7 +260,8 @@ class Process(object):
         instrumentList = ["droneSimple.instr", "droneReverb.instr"]
         fTables = []
         fTables.append("f1 0 65536 10 1")
-        fTables.append("f   2       0           65536       10      3   0   1   0   0   2")
+        #fTables.append("f   2       0           65536       10      3   0   1   0   0   2")
+        fTables.append("f   2       0           65536       10      5   2   7   3   1   2")
         fTables.append("f   3       0           65536       13      1   1   0   3   0   2")
 
         notes = []
@@ -271,9 +272,9 @@ class Process(object):
             noteDur = value[1] * 2.0
             freq = value[2]
 
-            notes.append("i1  %f %f 1000 %f 2 0.0 %f %f %f %f" % (timer, noteDur, freq, s1, s2, s3, s4))
+            notes.append("i1  %f %f 100 %f 2 0.5 %f %f %f %f" % (timer, noteDur, freq, s1, s2, s3, s4))
             notes.append("i1  %f %f 1000 %f 2 0.8 %f %f %f %f" % (timer, noteDur, freq, s1, s2, s3, s4))
-            notes.append("i1  %f %f 1000 %f 2 -0.8 %f %f %f %f" % (timer, noteDur, freq, s1, s2, s3, s4))
+            notes.append("i1  %f %f 1000 %f 2 0.2 %f %f %f %f" % (timer, noteDur, freq, s1, s2, s3, s4))
             timer += value[1] * 0.9
         
         notes.append("i2 0 -1")

@@ -5,6 +5,7 @@ gkMasterLevel           init        1.0
 gareverb1               init        0
 gareverb2               init        0
 
+; based on drone.py from csound distribution
     instr %d
 idur    =   p3
 iamp    =   p4
@@ -28,7 +29,7 @@ asignal     distort asignal, 1.0, 3
 aenv    expseg 0.01, iattack, 1.0, isustain, 0.8, irelease, 0.01
 asignal = asignal * aenv
 aleft, aright           pan2        asignal , ipan
-    outs    asignal, asignal
+    outs    aleft, aright
 gareverb1               =           gareverb1 + aleft
 gareverb2               =           gareverb1 + aright
     endin
