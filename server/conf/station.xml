@@ -7,7 +7,7 @@
             <slot startTime="08:00" endTime="11:59" program="ProgramTwo"/>
             <slot startTime="12:00" endTime="13:59" program="RecitationHour"/>
             <slot startTime="14:00" endTime="16:59" program="ProgramThree"/>
-            <slot startTime="17:00" endTime="17:59" program="ProgramOne"/>
+            <slot startTime="17:00" endTime="17:59" program="CopyHour"/>
             <slot startTime="18:00" endTime="18:59" program="NewsProgram"/>
             <slot startTime="19:00" endTime="19:59" program="CutupHour"/>
             <slot startTime="20:00" endTime="23:59" program="Drone"/>
@@ -31,7 +31,8 @@
             <slot startTime="06:00" endTime="07:59" program="RecitationHour"/>
             <slot startTime="08:00" endTime="11:59" program="ProgramTwo"/>
             <slot startTime="12:00" endTime="13:59" program="RecitationHour"/>
-            <slot startTime="14:00" endTime="17:59" program="ProgramThree"/>
+            <slot startTime="14:00" endTime="14:59" program="CopyHour"/>
+            <slot startTime="15:00" endTime="17:59" program="ProgramThree"/>
             <slot startTime="18:00" endTime="18:59" program="NewsProgram"/>
             <slot startTime="19:00" endTime="20:59" program="CutupHour"/>
             <slot startTime="21:00" endTime="23:59" program="ProgramFour"/>
@@ -68,7 +69,8 @@
             <slot startTime="08:00" endTime="09:59" program="ProgramTwo"/>
             <slot startTime="10:00" endTime="11:59" program="ProgramFive"/>
             <slot startTime="12:00" endTime="13:59" program="RecitationHour"/>
-            <slot startTime="14:00" endTime="17:59" program="ProgramThree"/>
+            <slot startTime="14:00" endTime="14:59" program="CopyHour"/>
+            <slot startTime="15:00" endTime="17:59" program="ProgramThree"/>
             <slot startTime="18:00" endTime="18:59" program="NewsProgram"/>
             <slot startTime="19:00" endTime="19:59" program="Noise"/>
             <slot startTime="20:00" endTime="23:59" program="Drone"/>
@@ -156,7 +158,7 @@
             <archives>
             <archive date="20100606" href="RecitationHour_20100606.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100606.txt"/><archive date="20100608" href="RecitationHour_20100608.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100608.txt"/></archives>
         </program>
-        <program id="CutupHour" processed="0">
+        <program id="CutupHour" processed="1">
             <name>Cut-up Hour</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
@@ -195,7 +197,7 @@
             <description>Concrete combination of grains.</description>
             <current href="GrainCombine.mp3"/>
             <archives>
-            <archive date="20100607" href="GrainCombine_20100607.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100607.txt"/><archive date="20100608" href="GrainCombine_20100608.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100608.txt"/></archives>
+            <archive date="20100607" href="GrainCombine_20100607.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100607.txt"/><archive date="20100608" href="GrainCombine_20100608.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100608.txt"/><archive date="20100609" href="GrainCombine_20100609.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100609.txt"/></archives>
         </program>
         <program id="Genealogies" processed="0">
             <name>Genealogies</name>        
@@ -217,7 +219,7 @@
             <archives>
             </archives>
         </program>
-        <program id="Conjunctional" processed="1">
+        <program id="Conjunctional" processed="0">
             <name>Conjunctional</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
@@ -234,6 +236,16 @@
             </hostedBy>
             <description>Droning, drone drone drone</description>
             <current href="Drone.mp3"/>
+            <archives>
+            </archives>
+        </program>
+        <program id="CopyHour" processed="0">
+            <name>Copy Hour</name>        
+            <hostedBy>
+                <person ref="PersonTwo"/>            
+            </hostedBy>
+            <description>Whose rights are these anyway?</description>
+            <current href="CopyHour.mp3"/>
             <archives>
             </archives>
         </program>

@@ -1,5 +1,6 @@
 """Dealing with documents in couchdb"""
 
+import codecs
 import csv
 import hashlib
 from math import log
@@ -47,7 +48,7 @@ class DocumentBase(object):
 
         return self.db[docID]
 
-    def addDocument(self, dataDict, showName = False):
+    def addDocument(self, dataDict, showName = False, fp = None):
         """Add the document in dataDict to the database.  Create an ID based on the hash of the title and author values."""
         
         # Create an id based on the hash of the title and author
@@ -66,6 +67,11 @@ class DocumentBase(object):
             rev = document["_rev"]
             dataDict["_rev"] = rev
             self.db.save(dataDict)
+        
+        # Try and add the attachment, if given
+        if (fp is not None):
+            doc = self.db[id]
+            self.db.put_attachment(doc, fp)
 
     def addDocumentByName(self, name, dataDict):
         """Add the document in dataDict to the database.  Name of document is given by method argument."""
@@ -150,6 +156,84 @@ class DocumentBase(object):
         wordFreq.reverse()
 
         return wordFreq
+
+    def preprocessPDFData(self, text):
+        """Preprocess the pdftotext data before we add it to the database."""
+
+        newlines = []
+        for line in text:
+            if (line[0] == "\x0C"):
+                if (len(line) >= 150):
+                    newlines.append(line)
+            else:
+                newlines.append(line)
+        
+        textNew = "".join(newlines)
+        textNew = textNew.replace(".", ". ")
+        textNew = textNew.replace(",", ", ")
+        return textNew.decode("utf-8")
+
+    def addBibtexArticles(self, bibtexPath = None, desiredArticles = [], numArticles = 20, pdfHome = "/home/nknouf/Papers/Database"):
+        """Add a random subset of bibtex articles to the database, in addition to the desired articles given in the list."""
+        
+        if (bibtexPath is None):
+            return
+
+        parser = bibtex.Parser()
+        self.logger.debug("Reading in bibtex file %s" % bibtexPath)
+        bib_data = parser.parse_file(bibtexPath)
+        entryKeys = bib_data.entries.keys()
+        
+        articleKeys = []
+        for key in entryKeys:
+            if (bib_data.entries[key].type == "article"):
+                articleKeys.append(key)
+                pass
+
+        if (numArticles > len(articleKeys)):
+            numArticles = len(articleKeys)
+        articleKeys = random.sample(articleKeys, numArticles)
+        articleKeys.extend(desiredArticles)
+
+        for key in articleKeys:
+            dataDict = {}
+            article = bib_data.entries[key]
+            try:
+                file = article.fields["file"]
+            except KeyError:
+                # If no file, continue
+                continue
+            
+            # For the moment, assume all files are PDF (don't try and parse more of the file field)
+            dataDict["file"] = file.split(":")[1]
+
+            # Add other infos to the dataDict
+            dataDict["title"] = article.fields["title"]
+            dataDict["journal"] = article.fields["journal"]
+            dataDict["authors"] = self._getAuthorList(bib_data.entries[key].persons["author"])
+            
+            pdfFile = os.path.join(pdfHome, dataDict["file"])
+            dataDict["articleText"] = self.getArticleText(pdfFile)
+
+            fp = open(pdfFile, "rb")
+            self.addDocument(dataDict, fp = fp)
+            fp.close()
+
+    def getArticleText(self, pdfFile):
+        self.logger.debug("Converting %s to text" % pdfFile)
+        processPDF = subprocess.Popen([self.config.get("Documents", "pdfToTextPath"), "-layout", pdfFile, "-"], shell=False, stdout = subprocess.PIPE)
+        text = processPDF.communicate()[0]
+        
+        return self.preprocessPDFData(text)
+
+    def _getAuthorList(self, authorList):
+        """Return a formatted list of authors based on the info in the bibtex entry."""
+        authorListStr = ""
+        for author in authorList:
+            authorListStr += " ".join(author.first()) + " " + " ".join(author.middle()) + " " + " ".join(author.last()) + ", "
+        
+        # Remove final comma
+        return authorListStr[0: len(authorListStr) - 2]
 
 class JournalDocuments(DocumentBase):
     """Methods for processing the journal documents database."""
@@ -546,7 +630,50 @@ class AdsDocuments(DocumentBase):
             results.append(result)
 
         return results
-            
+
+class CopyrightDocuments(DocumentBase):
+    
+    docs = {"Elsevier": "ElsevierCopyright.txt",
+                 "Taylor and Francis": "TaylorAndFrancisCopyright.txt",
+                "MIT Press Institutional License": "MITPressInstitutionalLicense.txt",
+                 "University of California Press Fair Use Guidelines":"UCPFairUseGuidelines.txt",
+                 "MIT Press Journal Copyright Form": "MITPressJournalCopyrightForm.txt",
+                 "Wiley-Blackwell Copyright Form": "WileyBlackwellCopyright.txt",
+                 "Springer Copyright Agreement": "SpringerCopyright.txt"
+    }
+
+    def __init__(self, config = None, dbName = "jjps_copyright"):
+        super(CopyrightDocuments, self).__init__(config = config, hashKeys = ["title", "title"])
+
+        self.dbServer = couchdb.Server(self.config.get("Database", "host"))
+        
+        # Setup the db
+        if (dbName is not None):
+            self.db = self.dbServer[dbName]
+        else:
+            raise Exception("Need to provide db name")
+       
+        # Get a list of IDs
+        self.docIDs = [item for item in self.db if item.find("_design") == -1]
+
+    def initDatabase(self):
+        """Initialize the copyright database."""
+
+        self.clearDatabase(really = True)
+        
+        dataPath = self.config.get("Model", "dataPath")
+        copyrightFilesPath = os.path.join(dataPath, "journalCopyright")
+
+        for title, filename in self.docs.items():
+            dataDict = {}
+            dataDict["title"] = title
+
+            fp = codecs.open(os.path.join(copyrightFilesPath, filename), "r", "utf-8")
+            dataDict["articleText"] = fp.read()
+            fp.close()
+
+            self.addDocument(dataDict)
+          
 
 class ArticleDocuments(DocumentBase):
 
@@ -608,78 +735,6 @@ class ArticleDocuments(DocumentBase):
 
         return newDataDict
 
-    def preprocessPDFData(self, text):
-        """Preprocess the pdftotext data before we add it to the database."""
-
-        newlines = []
-        for line in text:
-            if (line[0] == "\x0C"):
-                if (len(line) >= 150):
-                    newlines.append(line)
-            else:
-                newlines.append(line)
-        
-        textNew = "".join(newlines)
-        textNew = textNew.replace(".", ". ")
-        textNew = textNew.replace(",", ", ")
-        return textNew.decode("utf-8")
-
-    def addBibtexArticles(self, bibtexPath = None, desiredArticles = [], numArticles = 20, pdfHome = "/home/nknouf/Papers/Database"):
-        """Add a random subset of bibtex articles to the database, in addition to the desired articles given in the list."""
-        
-        if (bibtexPath is None):
-            return
-
-        parser = bibtex.Parser()
-        self.logger.debug("Reading in bibtex file %s" % bibtexPath)
-        bib_data = parser.parse_file(bibtexPath)
-        entryKeys = bib_data.entries.keys()
-        
-        articleKeys = []
-        for key in entryKeys:
-            if (bib_data.entries[key].type == "article"):
-                articleKeys.append(key)
-                pass
-
-        articleKeys = random.sample(articleKeys, numArticles)
-        articleKeys.extend(desiredArticles)
-
-        for key in articleKeys:
-            dataDict = {}
-            article = bib_data.entries[key]
-            try:
-                file = article.fields["file"]
-            except KeyError:
-                # If no file, continue
-                continue
-            
-            # For the moment, assume all files are PDF (don't try and parse more of the file field)
-            dataDict["file"] = file.split(":")[1]
-
-            # Add other infos to the dataDict
-            dataDict["title"] = article.fields["title"]
-            dataDict["journal"] = article.fields["journal"]
-            dataDict["authors"] = self._getAuthorList(bib_data.entries[key].persons["author"])
-
-            dataDict["articleText"] = self.getArticleText(os.path.join(pdfHome, dataDict["file"]))
-
-            self.addDocument(dataDict)
-
-    def getArticleText(self, pdfFile):
-        self.logger.debug("Converting %s to text" % pdfFile)
-        processPDF = subprocess.Popen([self.config.get("Documents", "pdfToTextPath"), "-layout", pdfFile, "-"], shell=False, stdout = subprocess.PIPE)
-        text = processPDF.communicate()[0]
-        
-        return self.preprocessPDFData(text)
-
-    def _getAuthorList(self, authorList):
-        """Return a formatted list of authors based on the info in the bibtex entry."""
-        authorListStr = ""
-        for author in authorList:
-            authorListStr += " ".join(author.first()) + " " + " ".join(author.middle()) + " " + " ".join(author.last()) + ", "
-        
-        # Remove final comma
-        return authorListStr[0: len(authorListStr) - 2]
 
     def clearDatabase(self, really = False):
         """Delete all documents in the database.  Pass really=True to actually do it."""
@@ -691,3 +746,20 @@ class ArticleDocuments(DocumentBase):
                 if (result.find("_design") == -1):
                     doc = self.db[result]
                     self.db.delete(doc)
+
+class OpenAccessDocuments(DocumentBase):
+
+    def __init__(self, config = None, dbName = "jjps_open"):
+        super(OpenAccessDocuments, self).__init__(config = config)
+
+        self.dbServer = couchdb.Server(self.config.get("Database", "host"))
+        
+        # Setup the db
+        if (dbName is not None):
+            self.db = self.dbServer[dbName]
+        else:
+            raise Exception("Need to provide db name")
+       
+        # Get a list of IDs
+        self.docIDs = [item for item in self.db if item.find("_design") == -1]
+

@@ -18,7 +18,7 @@ import nltk
 
 # Local imports
 from Companies import Companies
-from Documents import ArticleDocuments, PPCDocuments
+from Documents import ArticleDocuments, CopyrightDocuments, OpenAccessDocuments, PPCDocuments
 from Model import Model
 import Log
 
@@ -598,6 +598,37 @@ outs asig, asig
 
         self.logger.info("Recitation Hour: done")
 
+    def CopyHour(self):
+        self.logger.info("CopyHour: starting processing...")
+        d = CopyrightDocuments(config = self.config)
+        docID = random.choice(d.docIDs)
+        doc = d.get(docID)
+        title = doc["title"]
+        text = doc["articleText"]
+        self.logger.debug("Copy Hour: TTS")
+        self._makeTTSFileChunks(voice = None, text = "Now on the air: a recitation of copyright agreements.  Make sure your legal-speak to normal-speak dictionary is handy.  Enjoy.  %s.  %s" % (title, text), title = "Copy Hour")
+        
+        self.archiveShow("CopyHour", playlist = text)
+
+        self.logger.info("Copy Hour: done")
+
+    def OpenAccess(self):
+        self.logger.info("OpenAccess: starting processing...")
+        d = OpenAccessDocuments(config = self.config)
+        docID = random.choice(d.docIDs)
+        doc = d.get(docID)
+        title = doc["title"]
+        text = doc["articleText"]
+        journal = doc["journal"]
+        authors = doc["authors"]
+        self.logger.debug("Open Access: TTS")
+        self._makeTTSFileChunks(voice = None, text = "Now on the air: a recitation of articles that are available in open access journals.  These documents are freely available on the internet.  Be sure to visit the site of the journal for more information.  Enjoy.  %s, by %s from %s.  %s" % (title, authors, journal, text), title = "Open Access Hour")
+        
+        self.archiveShow("OpenAccess", playlist = text)
+
+        self.logger.info("Open Access: done")
+
+
     def CutupHour(self):
         self.logger.info("Cutup Hour: starting processing...")
 
@@ -753,7 +784,7 @@ outs asig, asig
                 self.logger.debug("TTS Chunks: Starting TTS and MP3 encoding processes for show %s and chunk %03d of %03d" % (title, index, numChunks-1))
                 processTTS = subprocess.Popen([text2wavePath, tempFilename], shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
         
-                processConversion = subprocess.Popen([ffmpegPath, "-y", "-ar", "44100", "-i", "-", tempfile.tempdir + "/%s.mp3" % titleNospacesChunk], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+                processConversion = subprocess.Popen([ffmpegPath, "-y", "-i", "-", "-ar", "44100", tempfile.tempdir + "/%s.mp3" % titleNospacesChunk], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
         
                 # Pass the TTS output to the communicate input
                 processConversion.communicate(processTTS.communicate()[0])
@@ -817,7 +848,7 @@ outs asig, asig
     def Rhythm(self):
         """Nothing..."""
 
-        docID = self.articleDocuments.docIDs[7]
+        docID = self.articleDocuments.docIDs[18]
         data = self.articleDocuments.get(docID)
         text = data["articleText"]
         tf_idf = data["tf_idf"]
@@ -853,9 +884,8 @@ outs asig, asig
                 allTFIDF.append(-1 * min(tfIdfs))
             allSyllables.append(syllablesSet)
         
-        print allTFIDF
         # our instrument
-        instrumentList = ["drumSimple.instr", "vcoSimple.instr"]
+        instrumentList = ["drumSimple.instr", "bassSimple.instr", "vcoSimple.instr"]
         
         # All of our notes
         allNotes = []
@@ -880,19 +910,19 @@ outs asig, asig
                 continue
 
             avgSyllables = int(float(sum(syllableSet)/numSyllables))
-
+            #notes.append("i2 %f %f 2000 %f" % (timer, 0.5, fundamental * (avgSyllables / prior)))
             
             length = 0
+            notes.append("i2 %f %f 7000" % (timer, 0.5))
             for syllables in syllableSet:
                 noteDuration = float(duration / (syllables * 3))
     
-                for x in xrange(syllables):
+                for x in xrange(syllables*3):
                     #notes.append("i1 %f %f 25000 %d 5 0.1 200 200 %f %f" % (timer, noteDuration, 3, 0.01, 0.01))
                     notes.append("i1 %f %f 1000" % (timer, noteDuration))
                     timer += noteDuration
                     length += noteDuration
-
-            #notes.append("i2 %f %f 2000 %f" % (timer, duration * numSyllables, fundamental * (avgSyllables / prior)))
+            
             prior = avgSyllables
 
         # Give me the csd file, please

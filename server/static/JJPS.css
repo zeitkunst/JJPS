@@ -57,7 +57,7 @@ body#radio .menuItem, body#radio .item {
 }
 
 div#current, div#next {
-    height: 100px;
+    min-height: 100px;
     background-color: #d90000;
 }
 
