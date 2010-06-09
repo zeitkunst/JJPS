@@ -14,6 +14,29 @@
 <!ENTITY JJPS.preferences.replaceAdsTooltip "Try and replace ads on certain journal websites.">
 
 <!ENTITY JJPS.preferences.standardGroup "Standard Options">
+
+
+<!ENTITY JJPS.preferences.sitesTab "Sites">
+<!ENTITY JJPS.preferences.sitesGroup "Enable for...">
+<!ENTITY JJPS.preferences.taylorAndFrancisTooltip "On www.tandf.co.uk">
+<!ENTITY JJPS.preferences.taylorAndFrancis "Taylor &amp; Francis">
+<!ENTITY JJPS.preferences.sagePublicationsTooltip "On sagepub.com">
+<!ENTITY JJPS.preferences.sagePublications "Sage Publications">
+<!ENTITY JJPS.preferences.elsevierTooltip "On sciencedirect.com">
+<!ENTITY JJPS.preferences.elsevier "Elsevier">
+<!ENTITY JJPS.preferences.johnWileyAndSonsTooltip "On interscience.wiley.com">
+<!ENTITY JJPS.preferences.johnWileyAndSons "John Wiley &amp; Sons">
+<!ENTITY JJPS.preferences.springerTooltip "On springerlink.com">
+<!ENTITY JJPS.preferences.springer "Springer">
+<!ENTITY JJPS.preferences.ingentaConnectTooltip "On ingentaconnect.com">
+<!ENTITY JJPS.preferences.ingentaConnect "Ingenta Connect">
+<!ENTITY JJPS.preferences.citeULikeTooltip "On citeulike.org">
+<!ENTITY JJPS.preferences.citeULike "CiteULike">
+<!ENTITY JJPS.preferences.informaWorldTooltip "On informaworld.com">
+<!ENTITY JJPS.preferences.informaWorld "Informa World">
+<!ENTITY JJPS.preferences.googleScholarTooltip "On googlescholar.com">
+<!ENTITY JJPS.preferences.googleScholar "Google Scholar">
+
 <!ENTITY JJPS.preferences.advancedTab "Advanced">
 <!ENTITY JJPS.preferences.aboutTab "About">
 <!ENTITY JJPS.preferences.serverURLGroup "Server Information">

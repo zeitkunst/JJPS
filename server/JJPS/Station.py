@@ -327,7 +327,7 @@ class Station(object):
 
         div = etree.Element("div")
         div.set("id", "menu")
-        div.set("class", "prepend-11 span-5 append-8 last")
+        div.set("class", "prepend-11 span-6 append-7 last")
 
         for programRef in programRefs:
             divM = etree.Element("div")

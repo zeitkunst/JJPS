@@ -332,6 +332,10 @@ var JJPS = {
     },
 
     _processGoogleScholar: function(doc) {
+        if (!(JJPS.googleScholar)) {
+            return;
+        }
+
         // Get the list of results so that we can put our element just before it
         JJPS._replaceAds();
     },
@@ -550,6 +554,10 @@ var JJPS = {
 
     // Process Ingenta Connect
     _processIngentaConnect: function(doc) {
+        if (!(JJPS.ingentaConnect)) {
+            return;
+        }
+
         publisherLogoDiv = doc.getElementById("altLayoutPublisherLogo");
 
         if (publisherLogoDiv != null) {
@@ -568,6 +576,10 @@ var JJPS = {
     },
 
     _processInformaWorld: function(doc) {
+        if (!(JJPS.informaWorld)) {
+            return;
+        }
+
         metahead = doc.getElementById("metahead");
 
         if (metahead != null) {
@@ -593,6 +605,11 @@ var JJPS = {
     // TODO
     // get wiley pricing info
     _processWiley: function(doc) {
+        if (!(JJPS.johnWileyAndSons)) {
+            return;
+        }
+
+
         journalTitleDiv = doc.getElementById("titleHeaderLeft");
 
         if (journalTitleDiv != null) {
@@ -613,6 +630,10 @@ var JJPS = {
 
     // Process Science Direct
     _processScienceDirect: function(doc) {
+        if (!(JJPS.elsevier)) {
+            return;
+        }
+
         journalTitle = "";
 
         journalTitleElements = getElementsByClassName(doc, "pubTitle");
@@ -863,6 +884,10 @@ var JJPS = {
     // TODO
     // get sage pricing info
     _processSagePublications: function(doc) {
+        if (!(JJPS.sagePublications)) {
+            return;
+        }
+
         pageTitle = JJPS.doc.getElementsByTagName("title")[0].innerHTML;
         
         if ((pageTitle.match(/^Browse/) != null) || (pageTitle.match(/^SAGE/) != null) || (pageTitle.match(/^My Marked/) != null)) {
@@ -887,6 +912,10 @@ var JJPS = {
     // TODO
     // get springer pricing info
     _processSpringer: function(doc) {
+        if (!(JJPS.springer)) {
+            return;
+        }
+
         h2Node = getElementsByClassName(doc, "MPReader_Profiles_SpringerLink_Content_PrimitiveHeadingControlName");
         
         if (h2Node != "") {
@@ -913,6 +942,10 @@ var JJPS = {
 
     // Taylor & Francis
     _processTaylorAndFrancis: function(doc) {
+        if (!(JJPS.taylorAndFrancis)) {
+            return;
+        }
+
         var journalProductNode = JJPS.doc.getElementById("productSection");
         var journalH1 = journalProductNode.getElementsByTagName("h1")[0];
 
@@ -931,6 +964,10 @@ var JJPS = {
 
     // TODO
     _processCiteULike: function(doc) {
+        if (!(JJPS.citeULike)) {
+            return;
+        }
+
         citationNode = JJPS.doc.getElementById("citation");
         
         if (citationNode != null) {
@@ -1203,9 +1240,9 @@ var JJPS = {
         menuUL.appendChild(li);
 
         // Upload 
-        var li = JJPS.doc.createElement("li");
-        li.innerHTML = "<a id='JJPSUpload' href='#'>Upload <small>Upload Article</small></a>";
-        menuUL.appendChild(li);
+        //var li = JJPS.doc.createElement("li");
+        //li.innerHTML = "<a id='JJPSUpload' href='#'>Upload <small>Upload Article</small></a>";
+        //menuUL.appendChild(li);
 
         // Copy
         var li = JJPS.doc.createElement("li");
@@ -1525,6 +1562,15 @@ var JJPS = {
         var prefs = this._getPrefs();
         this.enableOverlays = prefs.getBoolPref("enableOverlays");
         this.replaceAds = prefs.getBoolPref("replaceAds");
+        this.citeULike = prefs.getBoolPref("citeULike");
+        this.elsevier = prefs.getBoolPref("elsevier");
+        this.googleScholar = prefs.getBoolPref("googleScholar");
+        this.informaWorld = prefs.getBoolPref("informaWorld");
+        this.ingentaConnect = prefs.getBoolPref("ingentaConnect");
+        this.johnWileyAndSons = prefs.getBoolPref("johnWileyAndSons");
+        this.sagePublications = prefs.getBoolPref("sagePublications");
+        this.springer = prefs.getBoolPref("springer");
+        this.taylorAndFrancis = prefs.getBoolPref("taylorAndFrancis");
         this.serverURL = prefs.getCharPref("serverURL");
         this.showMarquee = prefs.getBoolPref("showMarquee");
         this.reverseFrobination = prefs.getBoolPref("reverseFrobination");
@@ -1535,6 +1581,15 @@ var JJPS = {
 
         prefs.setBoolPref("enableOverlays", this.enableOverlays);
         prefs.setBoolPref("replaceAds", this.replaceAds);
+        prefs.setBoolPref("citeULike", this.citeULike);
+        prefs.setBoolPref("elsevier", this.elsevier);
+        prefs.setBoolPref("googleScholar", this.googleScholar);
+        prefs.setBoolPref("informaWorld", this.informaWorld);
+        prefs.setBoolPref("ingentaConnect", this.ingentaConnect);
+        prefs.setBoolPref("johnWileyAndSons", this.johnWileyAndSons);
+        prefs.setBoolPref("sagePublications", this.sagePublications);
+        prefs.setBoolPref("springer", this.springer);
+        prefs.setBoolPref("taylorAndFrancis", this.taylorAndFrancis);
         prefs.setCharPref("serverURL", this.serverURL);
         prefs.setBoolPref("showMarquee", this.showMarquee);
         prefs.setBoolPref("reverseFrobination", this.reverseFrobination);

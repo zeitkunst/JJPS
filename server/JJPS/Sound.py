@@ -185,7 +185,7 @@ class Process(object):
     def Drone(self):
         """A drone-style program."""
         
-        docID = self.articleDocuments.docIDs[7]
+        docID = self.articleDocuments.docIDs[18]
         data = self.articleDocuments.get(docID)
         text = data["articleText"]
         tf_idf = data["tf_idf"]
@@ -255,6 +255,8 @@ class Process(object):
             avgTFIDF.append(value * 9)
     
         # Then start making the csd
+        tempDir = tempfile.mkdtemp()
+        mp3Filenames = []
 
         # our instrument
         instrumentList = ["droneSimple.instr", "droneReverb.instr"]
@@ -264,34 +266,49 @@ class Process(object):
         fTables.append("f   2       0           65536       10      5   2   7   3   1   2")
         fTables.append("f   3       0           65536       13      1   1   0   3   0   2")
 
-        notes = []
-        timer = 0
-        values = zip(allSyllables, sentenceLengths, avgTFIDF)
-        for value in values:
-            s1, s2, s3, s4 = value[0]
-            noteDur = value[1] * 2.0
-            freq = value[2]
+        # divide the input into 6 parts
+        numParts = 6
+        totalNumbers = min(len(avgTFIDF), 200)
+        partSize = int(round(float(totalNumbers)/numParts))
 
-            notes.append("i1  %f %f 100 %f 2 0.5 %f %f %f %f" % (timer, noteDur, freq, s1, s2, s3, s4))
-            notes.append("i1  %f %f 1000 %f 2 0.8 %f %f %f %f" % (timer, noteDur, freq, s1, s2, s3, s4))
-            notes.append("i1  %f %f 1000 %f 2 0.2 %f %f %f %f" % (timer, noteDur, freq, s1, s2, s3, s4))
-            timer += value[1] * 0.9
-        
-        notes.append("i2 0 -1")
-        # Give me the csd file, please
-        tempDir = tempfile.mkdtemp()
-        csdMaker = CsoundProcessor(config = self.config)
-        instruments = csdMaker.loadInstruments(instrumentList, instrumentPrefix = csdMaker.instrumentPrefix)
-        csd = csdMaker.makeCSD(instruments, fTables, notes)
-        
         mp3Filenames = []
-        chunkNumber = 0
-        mp3File = self._makeCsoundChunks(csd, 0, tempDir = tempDir)
-        mp3Filenames.append(mp3File)
+        values = zip(allSyllables, sentenceLengths, avgTFIDF)
+        for partNumber in xrange(numParts):
+            startNumber = partNumber*partSize
+            endNumber = min((partNumber + 1)*partSize- 1, totalNumbers)
+
+            currentValues = values[startNumber:endNumber]
+
+            notes = []
+            timer = 0
+            for value in currentValues:
+                s1, s2, s3, s4 = value[0]
+                noteDur = value[1] * 2.0
+                freq = value[2]
+    
+                notes.append("i1  %f %f 100 %f 2 0.5 %f %f %f %f" % (timer, noteDur, freq, s1, s2, s3, s4))
+                notes.append("i1  %f %f 1000 %f 2 0.8 %f %f %f %f" % (timer, noteDur, freq, s1, s2, s3, s4))
+                notes.append("i1  %f %f 1000 %f 2 0.2 %f %f %f %f" % (timer, noteDur, freq, s1, s2, s3, s4))
+                timer += value[1] * 0.9
+            
+            notes.append("i2 0 -1")
+
+            # Give me the csd file, please
+            csdMaker = CsoundProcessor(config = self.config)
+            instruments = csdMaker.loadInstruments(instrumentList, instrumentPrefix = csdMaker.instrumentPrefix)
+            csd = csdMaker.makeCSD(instruments, fTables, notes)
+            
+            chunkNumber = 0
+            self.logger.debug("Drone: Working on part %d of %d" % (partNumber, numParts - 1))
+            mp3File = self._makeCsoundChunks(csd, partNumber, tempDir = tempDir)
+            mp3Filenames.append(mp3File)
 
         # Okay, got all of our mp3 files, let's finish wrapping them            
         self.logger.debug("Drone: wrapping mp3")
         self._wrapMp3Files(mp3Filenames, "Drone")
+
+        # And finally, cleanup
+        shutil.rmtree(tempDir)
 
 
     # Processing the news
@@ -736,7 +753,7 @@ outs asig, asig
                 self.logger.debug("TTS Chunks: Starting TTS and MP3 encoding processes for show %s and chunk %03d of %03d" % (title, index, numChunks-1))
                 processTTS = subprocess.Popen([text2wavePath, tempFilename], shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
         
-                processConversion = subprocess.Popen([ffmpegPath, "-y", "-i", "-", tempfile.tempdir + "/%s.mp3" % titleNospacesChunk], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+                processConversion = subprocess.Popen([ffmpegPath, "-y", "-ar", "44100", "-i", "-", tempfile.tempdir + "/%s.mp3" % titleNospacesChunk], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
         
                 # Pass the TTS output to the communicate input
                 processConversion.communicate(processTTS.communicate()[0])
@@ -762,7 +779,7 @@ outs asig, asig
             self.logger.debug("TTS Chunks: Starting TTS and MP3 encoding processes for show %s" % (title))
             processTTS = subprocess.Popen([text2wavePath, tempFilename], shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
     
-            processConversion = subprocess.Popen([ffmpegPath, "-y", "-i", "-", tempfile.tempdir + "/%s.mp3" % titleNospaces], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+            processConversion = subprocess.Popen([ffmpegPath, "-y", "-ar", "44100", "-i", "-", tempfile.tempdir + "/%s.mp3" % titleNospaces], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
     
             # Pass the TTS output to the communicate input
             processConversion.communicate(processTTS.communicate()[0])
@@ -797,6 +814,95 @@ outs asig, asig
         for file in mp3Filenames:
             os.remove(file)
 
+    def Rhythm(self):
+        """Nothing..."""
+
+        docID = self.articleDocuments.docIDs[7]
+        data = self.articleDocuments.get(docID)
+        text = data["articleText"]
+        tf_idf = data["tf_idf"]
+
+        # Do all of our computations first
+        sentences = nltk.sent_tokenize(text)
+
+        tokens = []
+        for sentence in sentences:
+            tokens.append(self._makeTokens(sentence))
+        
+        allSyllables = []
+        allTFIDF = []
+        from nltk_contrib.readability import syllables_en
+
+        for tokenSet in tokens:
+            syllablesSet = []
+            tfIdfs = []
+            for word in tokenSet:
+                numSyllables = syllables_en.count(word)
+                
+                try:
+                    tfIdfs.append(math.log(tf_idf[word]))
+                except KeyError:
+                    continue
+
+                if (numSyllables != 0):
+                    syllablesSet.append(numSyllables)
+            
+            if (len(tfIdfs) == 0):
+                allTFIDF.append(4)
+            else:
+                allTFIDF.append(-1 * min(tfIdfs))
+            allSyllables.append(syllablesSet)
+        
+        print allTFIDF
+        # our instrument
+        instrumentList = ["drumSimple.instr", "vcoSimple.instr"]
+        
+        # All of our notes
+        allNotes = []
+
+        fTables = []
+        fTables.append("f1 0 512 10 1 ; sine wave")
+        #fTables.append("f   2       0           65536       10      5   2   7   3   1   2")
+        fTables.append("f2  0 1024  7 1 1024 1")
+        fTables.append("f   3       0           65536       13      1   1   0   3   0   2")
+        fTables.append("f5 0 512 20 2 ; hanning window")
+
+        notes = []
+        
+        timer = 0
+        duration = 0.4
+
+        fundamental = 200.0
+        prior = 1.0
+        for syllableSet in allSyllables:
+            numSyllables = len(syllableSet)
+            if (numSyllables == 0):
+                continue
+
+            avgSyllables = int(float(sum(syllableSet)/numSyllables))
+
+            
+            length = 0
+            for syllables in syllableSet:
+                noteDuration = float(duration / (syllables * 3))
+    
+                for x in xrange(syllables):
+                    #notes.append("i1 %f %f 25000 %d 5 0.1 200 200 %f %f" % (timer, noteDuration, 3, 0.01, 0.01))
+                    notes.append("i1 %f %f 1000" % (timer, noteDuration))
+                    timer += noteDuration
+                    length += noteDuration
+
+            #notes.append("i2 %f %f 2000 %f" % (timer, duration * numSyllables, fundamental * (avgSyllables / prior)))
+            prior = avgSyllables
+
+        # Give me the csd file, please
+        csdMaker = CsoundProcessor(config = self.config)
+        instruments = csdMaker.loadInstruments(instrumentList, instrumentPrefix = csdMaker.instrumentPrefix)
+        csd = csdMaker.makeCSD(instruments, fTables, notes)
+
+        fp = open("foo.csd", "w")
+        fp.write(csd)
+        fp.close()
 
     def Telegraph(self):
         # Get Paths to programs we're going to use
@@ -1037,7 +1143,7 @@ outs asig, asig
         return csd
 
 
-    def _makeCsoundChunks(self, csd, chunkNumber, tempDir = None, useStdout = False, resample = False):
+    def _makeCsoundChunks(self, csd, chunkNumber, tempDir = None, useStdout = False, resample = False, bitrate = "128k"):
         # Write csd file
         if (tempDir is None):
             # TODO
@@ -1066,10 +1172,9 @@ outs asig, asig
             # Getting rid of the stdout redirect makes the command work...why?
             processCsound = subprocess.call([csoundPath, "-d", "-o", outputPathWav, "-W", csdPath], shell=False, stdin = subprocess.PIPE)
             if resample:
-                processConversion = subprocess.call([ffmpegPath, "-y", "-ar", str(resample), "-i", outputPathWav, outputPathMp3], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-                pass
+                processConversion = subprocess.call([ffmpegPath, "-y", "-ar", str(resample), "-ab", bitrate, "-i", outputPathWav, outputPathMp3], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
             else:
-                processConversion = subprocess.call([ffmpegPath, "-y", "-i", outputPathWav, outputPathMp3], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+                processConversion = subprocess.call([ffmpegPath, "-y", "-ab", bitrate, "-i", outputPathWav, outputPathMp3], shell=False, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
             
             # Cleanup
             os.remove(outputPathWav)

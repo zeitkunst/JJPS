@@ -21,6 +21,7 @@
     <tabbox>
         <tabs>
             <tab label="&JJPS.preferences.standardTab;" />        
+            <tab label="&JJPS.preferences.sitesTab;" />        
             <tab label="&JJPS.preferences.advancedTab;" />        
             <tab label="&JJPS.preferences.aboutTab;" />        
         </tabs>    
@@ -40,6 +41,45 @@
 
                 </vbox>            
             </tabpanel>        
+            <tabpanel>
+                <vbox>
+                    <groupbox id="JJPSSitesGroupbox">
+                        <caption label="&JJPS.preferences.sitesGroup;" />
+                        <hbox>
+                            <checkbox tooltiptext="&JJPS.preferences.citeULikeTooltip;" label="&JJPS.preferences.citeULike;" checked="true" id="JJPSCiteULike" />                    
+                        </hbox>
+
+                        <hbox>
+                            <checkbox tooltiptext="&JJPS.preferences.elsevierTooltip;" label="&JJPS.preferences.elsevier;" checked="true" id="JJPSElsevier" />                    
+                        </hbox>
+                        <hbox>
+                            <checkbox tooltiptext="&JJPS.preferences.googleScholarTooltip;" label="&JJPS.preferences.googleScholar;" checked="true" id="JJPSGoogleScholar" />                    
+                        </hbox>
+
+                        <hbox>
+                            <checkbox tooltiptext="&JJPS.preferences.informaWorldTooltip;" label="&JJPS.preferences.informaWorld;" checked="true" id="JJPSInformaWorld" />                    
+                        </hbox>
+
+                        <hbox>
+                            <checkbox tooltiptext="&JJPS.preferences.ingentaConnectTooltip;" label="&JJPS.preferences.ingentaConnect;" checked="true" id="JJPSIngentaConnect" />                    
+                        </hbox>
+
+                        <hbox>
+                            <checkbox tooltiptext="&JJPS.preferences.johnWileyAndSonsTooltip;" label="&JJPS.preferences.johnWileyAndSons;" checked="true" id="JJPSJohnWileyAndSons" />                    
+                        </hbox>
+                        <hbox>
+                            <checkbox tooltiptext="&JJPS.preferences.sagePublicationsTooltip;" label="&JJPS.preferences.sagePublications;" checked="true" id="JJPSSagePublications" />                    
+                        </hbox>
+                        <hbox>
+                            <checkbox tooltiptext="&JJPS.preferences.springerTooltip;" label="&JJPS.preferences.springer;" checked="true" id="JJPSSpringer" />                    
+                        </hbox>
+                        <hbox>
+                            <checkbox tooltiptext="&JJPS.preferences.taylorAndFrancisTooltip;" label="&JJPS.preferences.taylorAndFrancis;" checked="true" id="JJPSTaylorAndFrancis" />                    
+                        </hbox>
+
+                    </groupbox>
+                </vbox>            
+            </tabpanel>
             <tabpanel>
                 <vbox>
                 <groupbox id="JJPSAdvancedGroupbox">
