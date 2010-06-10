@@ -1,0 +1,30 @@
+;instr 1
+;
+;; KS Snare Drum
+;kampenv4  linseg  0, .001, 1,  p3-.021, 1, .02, 0
+;kptchenv linseg  400, .01, 800, .2, 500, .01, 400
+;asig     pluck   p4, kptchenv, 50, 2, 4, .8, 3
+;aout     =       kampenv4*asig
+;outs aout, aout
+;
+;endin
+
+instr %d
+isweep1 = p5
+isweep2 = p6
+isweep3 = p7
+
+; Sorta Cool Knock Sweep Drum
+kfreqenv41 expseg  isweep1,    .01, isweep2, .01, isweep3
+kfreqenv42 linseg  150,    .01, 1000, .08, 250
+kampenv4  linseg  0, .01, p4,  .08, 0, .01, 0
+asig     rand kampenv4
+afilt1    reson asig, kfreqenv41, kfreqenv41/8
+;afilt2    reson asig, kfreqenv42, kfreqenv42/4
+aout1     balance afilt1, asig
+;aout2     balance afilt2, asig
+aout2 = aout1
+outs (aout1+aout2)/2, (aout1+aout2)/2
+
+endin
+

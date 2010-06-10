@@ -371,9 +371,9 @@ class Process(object):
             price = element.get("price")
             newsString += "%s has a price of %s cents.\n" % (name, price) 
         
-        self._makeTTSFileChunks(voice = None, text = newsString, title = "News")
+        self._makeTTSFileChunks(voice = None, text = newsString, title = "NewsProgram")
 
-        self.archiveShow("News", playlist = newsString)
+        self.archiveShow("NewsProgram", playlist = newsString)
 
     # TODO
     # better name :-)
@@ -656,7 +656,7 @@ outs asig, asig
         self.archiveShow("CutupHour", playlist = text)
         self.logger.info("Cutup Hour: done")
 
-    def WhatsTheFrequencyKenneth(self):
+    def WhatstheFrequencyKenneth(self):
         self.logger.info("What's the Frequency Kenneth: starting processing...")
         
         #docIDs = [item for item in self.db if item.find("_design") == -1]
@@ -845,10 +845,12 @@ outs asig, asig
         for file in mp3Filenames:
             os.remove(file)
 
-    def Rhythm(self):
+    def PhasorModFreq(self):
         """Nothing..."""
 
-        docID = self.articleDocuments.docIDs[18]
+        tempDir = tempfile.mkdtemp()
+
+        docID = random.choice(self.articleDocuments.docIDs)
         data = self.articleDocuments.get(docID)
         text = data["articleText"]
         tf_idf = data["tf_idf"]
@@ -861,38 +863,42 @@ outs asig, asig
             tokens.append(self._makeTokens(sentence))
         
         allSyllables = []
+        allWords = []
         allTFIDF = []
         from nltk_contrib.readability import syllables_en
 
         for tokenSet in tokens:
             syllablesSet = []
+            wordsSet = []
             tfIdfs = []
             for word in tokenSet:
                 numSyllables = syllables_en.count(word)
                 
                 try:
-                    tfIdfs.append(math.log(tf_idf[word]))
+                    if (tf_idf[word] != 0.0):
+                        tfIdfs.append(math.log(tf_idf[word]))
                 except KeyError:
                     continue
 
                 if (numSyllables != 0):
                     syllablesSet.append(numSyllables)
+                    wordsSet.append(len(word))
             
             if (len(tfIdfs) == 0):
                 allTFIDF.append(4)
             else:
                 allTFIDF.append(-1 * min(tfIdfs))
             allSyllables.append(syllablesSet)
+            allWords.append(wordsSet)
         
         # our instrument
-        instrumentList = ["drumSimple.instr", "bassSimple.instr", "vcoSimple.instr"]
+        instrumentList = ["drumSimple.instr", "bassSimple.instr", "phaseModSimple.instr"]
         
         # All of our notes
         allNotes = []
 
         fTables = []
-        fTables.append("f1 0 512 10 1 ; sine wave")
-        #fTables.append("f   2       0           65536       10      5   2   7   3   1   2")
+        fTables.append("f1 0 65537 10 1")
         fTables.append("f2  0 1024  7 1 1024 1")
         fTables.append("f   3       0           65536       13      1   1   0   3   0   2")
         fTables.append("f5 0 512 20 2 ; hanning window")
@@ -904,35 +910,73 @@ outs asig, asig
 
         fundamental = 200.0
         prior = 1.0
-        for syllableSet in allSyllables:
-            numSyllables = len(syllableSet)
-            if (numSyllables == 0):
-                continue
+        sweepSets = [[5000, 8000, 5000], [100, 1000, 500], [250, 5500, 500], [250, 500, 300]]
+        
+        print len(allSyllables)
+        chunkSize = 60
+        numSyllableSets = len(allSyllables)
+        numChunks = math.ceil(numSyllableSets/chunkSize)
 
-            avgSyllables = int(float(sum(syllableSet)/numSyllables))
-            #notes.append("i2 %f %f 2000 %f" % (timer, 0.5, fundamental * (avgSyllables / prior)))
-            
-            length = 0
-            notes.append("i2 %f %f 7000" % (timer, 0.5))
-            for syllables in syllableSet:
-                noteDuration = float(duration / (syllables * 3))
+        mp3Filenames = []
+        for chunkNumber in xrange(numChunks):
+            startSet = chunkNumber*chunkSize
+            endSet= min((chunkNumber+ 1)*chunkSize - 1, numSyllableSets)
+
+            currentSyllableSets = allSyllables[startSet:endSet]
+            currentWordSets = allWords[startSet:endSet]
+
+            for (syllableSet, wordsSet) in zip(currentSyllableSets, currentWordSets):
+                numSyllables = len(syllableSet)
+                if (numSyllables == 0):
+                    continue
+                
+                counter = 0
+                numBassBeats = 5
+                if (numBassBeats > numSyllables):
+                    numBassBeats = numSyllables
     
-                for x in xrange(syllables*3):
-                    #notes.append("i1 %f %f 25000 %d 5 0.1 200 200 %f %f" % (timer, noteDuration, 3, 0.01, 0.01))
-                    notes.append("i1 %f %f 1000" % (timer, noteDuration))
-                    timer += noteDuration
-                    length += noteDuration
-            
-            prior = avgSyllables
+                bassBeatTimes = random.sample(xrange(numSyllables), numBassBeats)
+                bassBeatTimes.sort()
+                notesTimes = random.sample(xrange(numSyllables), numBassBeats)
+    
+                for (syllables, words) in zip(syllableSet, wordsSet):
+                    sweepSet = random.choice(sweepSets)
+                    noteDuration = float(duration / (syllables * 4))
+                    
+                    try:
+                        bassBeatTimes.index(counter)
+                        notes.append("i2 %f %f 5000" % (timer, 0.8))
+                    except ValueError:
+                        pass
+                    
+    
+                    if ((counter % 8) == 0):
+                        notes.append("i3 %f %f 4000 %f" % (timer, words, float((float(prior)/float(words))) * fundamental))
+                        prior = float(words)
+    
+    
+                    for x in xrange(syllables*4):
+                        notes.append("i1 %f %f 2500 %d %d %d" % (timer, noteDuration, sweepSet[0], sweepSet[1], sweepSet[2]))
+                        timer += noteDuration
+                    
+                    counter += 1
+    
+            # Give me the csd file, please
+            csdMaker = CsoundProcessor(config = self.config)
+            instruments = csdMaker.loadInstruments(instrumentList, instrumentPrefix = csdMaker.instrumentPrefix)
+            csd = csdMaker.makeCSD(instruments, fTables, notes)
 
-        # Give me the csd file, please
-        csdMaker = CsoundProcessor(config = self.config)
-        instruments = csdMaker.loadInstruments(instrumentList, instrumentPrefix = csdMaker.instrumentPrefix)
-        csd = csdMaker.makeCSD(instruments, fTables, notes)
+            self.logger.debug("PhasorModFreq: on chunk %d of %d" % (chunkNumber, numChunks))
+            mp3File = self._makeCsoundChunks(csd, chunkNumber, tempDir = tempDir)
+            mp3Filenames.append(mp3File)
 
-        fp = open("foo.csd", "w")
-        fp.write(csd)
-        fp.close()
+        # Okay, got all of our mp3 files, let's finish wrapping them            
+        self.logger.debug("PhasorModFreq: wrapping mp3")
+        self._wrapMp3Files(mp3Filenames, "PhasorModFreq")
+
+        # TODO
+        # Only archiving one chunk of the grain csd now...
+        self.archiveShow("PhasorModFreq", playlist = csd)
 
     def Telegraph(self):
         # Get Paths to programs we're going to use
@@ -1343,7 +1387,7 @@ f7 0 128 -6 .001 128 64 64
 f8 0 512 7 0 6 1 5 1 6 0
 """
 
-    def __init__(self, config = None, orcOptions = {'sr': 44100, 'kr': 4410, 'ksmps': 10, 'nchnls': 2}, commandOptions = None):
+    def __init__(self, config = None, orcOptions = {'sr': 44100, 'kr': 4410, 'ksmps': 10, 'nchnls': 2}, commandOptions = "-d ; suppress displays"):
         self.config = config
         # TODO
         self.instrumentPrefix = self.config.get("Sound", "instrumentPrefix")

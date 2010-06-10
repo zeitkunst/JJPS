@@ -1,0 +1,42 @@
+    instr %d
+    
+    kenv transeg 0.01, p3*0.75, 4.0, 1, p3*0.25, -4.0, 0.01
+    kenv = p4 * kenv 
+    kbasefreq = p5
+    kmodratio1 = 7.5
+    ;kmodratio1 expseg 7.5, p3, 7.2
+    kmodratio2 = 11.0
+    ;kmodratio2 expseg 11.0, p3, 11.2
+    kmodratio3 = 13.0
+    ;kmodratio3 expseg 13.0, p3, 13.5
+    kcarratio = 1.0
+    ;kindex1 = 0.2
+    kindex1 expseg 0.2, p3, 0.4
+    ;kindex2 = 0.1
+    kindex2 expseg 0.1, p3/2, 0.05, p3/2, 0.2
+    kindex3 = 0.1
+
+	aModPhase1	phasor	kbasefreq * kmodratio1 ;CREATE A MOVING PHASE VALUE THAT WILL BE USED TO READ CREATE MODULATOR 1
+	aModulator1	tablei	aModPhase1, 1, 1, 0, 1		;MODULATOR 1 IS CREATED                                                  
+	aModulator1	=	aModulator1*kindex1		;MODULATOR 1 AMPLITUDE RESCALED                                          
+
+	aModPhase2	phasor	kbasefreq * kmodratio2 ;CREATE A MOVING PHASE VALUE THAT WILL BE USED TO READ CREATE MODULATOR 2                     
+	aModPhase2	=	aModPhase2 + aModulator1	;MODULATOR 1 SIGNAL IS ADDED TO MODULATOR 2 PHASE VARIABLE                                    
+	aModulator2	tablei	aModPhase2, 1, 1, 0, 1		;MODULATOR 2 OSCILLATOR IS CREATED
+	aModulator2	=	aModulator2 * kindex2		;MODULATOR 2 AMPLITUDE RESCALED                                                               
+
+	aModPhase3	phasor	kbasefreq * kmodratio3 ;CREATE A MOVING PHASE VALUE THAT WILL BE USED TO READ CREATE MODULATOR 3                     
+	aModPhase3	=	aModPhase3 + aModulator2	;MODULATOR 2 SIGNAL IS ADDED TO MODULATOR 3 PHASE VARIABLE                                    
+	aModulator3	tablei	aModPhase3, 1, 1, 0, 1		;MODULATOR 3 OSCILLATOR IS CREATED
+	aModulator3	=	aModulator3 * kindex3		;MODULATOR 3 AMPLITUDE RESCALED                                                               
+
+	aCarrPhase	phasor	kbasefreq * kcarratio ;CREATE A MOVING PHASE VALUE THAT WILL BE USED TO READ CREATE THE CARRIER
+	aCarrPhase	=	aCarrPhase + aModulator3	;MODULATOR 3 SIGNAL IS ADDED TO CARRIER PHASE VARIABLE
+	aCarrier	tablei	aCarrPhase, 1, 1, 0, 1		;CARRIER OSCILLATOR IS CREATED
+    
+    kDistort expseg 0.7, p3/3, 0.9, p3/3, 0.99, p3/3, 0.8
+    aCarrier distort aCarrier, kDistort, 3
+    aCarrier nreverb aCarrier, 0.2, 0.1
+    outs kenv*aCarrier, kenv*aCarrier
+    endin
+

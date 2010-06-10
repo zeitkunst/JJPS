@@ -1,0 +1,12 @@
+instr %d
+
+; Dumb Bass Drum
+kfreqenv expseg  40,    .01, 500, .08, 50
+kampenv  expseg  .0001, .01, p4,  .08, .01
+asig     rand kampenv
+afilt    moogvcf asig, kfreqenv, 1.0, 0dbfs
+aout     balance afilt, asig
+outs aout, aout
+
+endin
+
