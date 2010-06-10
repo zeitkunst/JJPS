@@ -21,6 +21,26 @@ import Model
 
 class DocumentBase(object):
 
+    all_docs_count = {"map": """function(doc) {
+    if ("tf" in doc) {
+        emit(null, 1);
+    }
+}""",
+        "reduce": """function(keys, values) {
+    return sum(values);
+}"""}
+    
+    docfreq = {"map": """function(doc) {
+    if ("tf" in doc) {
+        for (term in doc.tf) {
+            emit(term, 1);
+        }
+    }
+}""",
+        "reduce": """function(keys, values) {
+    return sum(values);
+}"""}
+
     def __init__(self, config = None, hashKeys = ["title", "authors"]):
         """Initialize the document processing code.
 
@@ -140,8 +160,11 @@ class DocumentBase(object):
             self.logger.debug("Computing TF-IDF: Working on \"%s\"" % doc[keyToDisplay])
             tf = doc['tf']
             tf_idf = {}
-            for k, v in tf.items(): # By construction, there should never be KeyError's here
-                tf_idf[k] = v * df[k]
+            for k, v in tf.items(): # By construction, there should never be KeyError's here...except there are :-(
+                try:
+                    tf_idf[k] = v * df[k]
+                except KeyError:
+                    continue
             doc['tf_idf'] = tf_idf
             self.addDocument(doc)
 
@@ -172,6 +195,18 @@ class DocumentBase(object):
         textNew = textNew.replace(".", ". ")
         textNew = textNew.replace(",", ", ")
         return textNew.decode("utf-8")
+
+    def initViews(self):
+        """Initialize with the standard views."""
+
+        view = couchdb.design.ViewDefinition("test", "all_docs_count", self.all_docs_count["map"], reduce_fun = self.all_docs_count["reduce"])
+        view.get_doc(self.db)
+        view.sync(self.db)
+
+        view = couchdb.design.ViewDefinition("test", "docfreq", self.docfreq["map"], reduce_fun = self.docfreq["reduce"])
+        view.get_doc(self.db)
+        view.sync(self.db)
+
 
     def addBibtexArticles(self, bibtexPath = None, desiredArticles = [], numArticles = 20, pdfHome = "/home/nknouf/Papers/Database"):
         """Add a random subset of bibtex articles to the database, in addition to the desired articles given in the list."""
@@ -208,16 +243,22 @@ class DocumentBase(object):
             dataDict["file"] = file.split(":")[1]
 
             # Add other infos to the dataDict
-            dataDict["title"] = article.fields["title"]
-            dataDict["journal"] = article.fields["journal"]
-            dataDict["authors"] = self._getAuthorList(bib_data.entries[key].persons["author"])
+            try:
+                dataDict["title"] = article.fields["title"]
+                dataDict["journal"] = article.fields["journal"]
+                dataDict["authors"] = self._getAuthorList(bib_data.entries[key].persons["author"])
+            except KeyError:
+                continue
             
             pdfFile = os.path.join(pdfHome, dataDict["file"])
             dataDict["articleText"] = self.getArticleText(pdfFile)
-
-            fp = open(pdfFile, "rb")
-            self.addDocument(dataDict, fp = fp)
-            fp.close()
+            
+            try:
+                fp = open(pdfFile, "rb")
+                self.addDocument(dataDict, fp = fp)
+                fp.close()
+            except IOError:
+                continue
 
     def getArticleText(self, pdfFile):
         self.logger.debug("Converting %s to text" % pdfFile)
@@ -639,7 +680,9 @@ class CopyrightDocuments(DocumentBase):
                  "University of California Press Fair Use Guidelines":"UCPFairUseGuidelines.txt",
                  "MIT Press Journal Copyright Form": "MITPressJournalCopyrightForm.txt",
                  "Wiley-Blackwell Copyright Form": "WileyBlackwellCopyright.txt",
-                 "Springer Copyright Agreement": "SpringerCopyright.txt"
+                 "Springer Copyright Agreement": "SpringerCopyright.txt",
+            "Creative Commons Attribution Non-Commercial Share Alike": "CC-Attribution-NonCommercial-ShareAlike.txt",
+            "Creative Commons Attribution Non-Commercial": "CC-Attribution-NonCommercial.txt"
     }
 
     def __init__(self, config = None, dbName = "jjps_copyright"):
@@ -677,7 +720,7 @@ class CopyrightDocuments(DocumentBase):
 
 class ArticleDocuments(DocumentBase):
 
-    def __init__(self, config = None, dbName = "jjps_test"):
+    def __init__(self, config = None, dbName = "jjps_articles"):
         super(ArticleDocuments, self).__init__(config = config)
 
         self.dbServer = couchdb.Server(self.config.get("Database", "host"))

@@ -624,7 +624,7 @@ outs asig, asig
         self.logger.debug("Open Access: TTS")
         self._makeTTSFileChunks(voice = None, text = "Now on the air: a recitation of articles that are available in open access journals.  These documents are freely available on the internet.  Be sure to visit the site of the journal for more information.  Enjoy.  %s, by %s from %s.  %s" % (title, authors, journal, text), title = "Open Access Hour")
         
-        self.archiveShow("OpenAccess", playlist = text)
+        self.archiveShow("OpenAccessHour", playlist = text)
 
         self.logger.info("Open Access: done")
 
@@ -945,7 +945,13 @@ outs asig, asig
         # Probably get this from couchdb later
         pdfPath = self.config.get("Sound", "pdfPath")
 
-        pdfFP = open(os.path.join(pdfPath, "Land1993.pdf"), "r")
+        docID = random.choice(self.articleDocuments.docIDs)
+
+        data = self.articleDocuments.get(docID)
+        pdfName = data["_attachments"].keys()[0]
+        pdfFP = self.articleDocuments.db.get_attachment(data, pdfName)
+
+        #pdfFP = open(os.path.join(pdfPath, "Land1993.pdf"), "r")
 
         instrumentList = ["morseSimple.instr"]
 
