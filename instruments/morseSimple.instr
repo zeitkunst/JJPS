@@ -1,0 +1,14 @@
+instr %d
+    idur    = p3
+    kamp    = p4
+    kfreq   = p5
+    ifn     = p6
+    
+ar  oscil kamp, kfreq, ifn
+; Basic envelope
+aenv linseg 0, 0.01, 1, idur - 0.05, 1, 0.04, 0, 1, 0    
+
+; Output, no reverb
+    out aenv*ar, aenv*ar
+endin
+
