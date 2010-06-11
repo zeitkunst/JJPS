@@ -76,6 +76,7 @@ else:
 
 render = web.template.render('templates/', base = 'layout', cache = serverConfig.cache)
 renderAdmin = web.template.render('templates/', base = 'layoutAdmin', cache = serverConfig.cache)
+renderExtension = web.template.render('templates/', base = 'layoutExtension', cache = serverConfig.cache)
 renderRadio = web.template.render('templates/', base = 'layoutRadio', cache = serverConfig.cache)
 #renderAdmin = web.template.render('templates/', base = 'layoutAdmin', cache = config.cache)
 
@@ -160,7 +161,7 @@ class index:
 
 class extensionIndex:
     def GET(self):
-        return render.extensionIndex("<p>This is a test</p>")
+        return renderExtension.extensionIndex("<p>This is a test</p>")
 
 class radioIndex:
     def GET(self):

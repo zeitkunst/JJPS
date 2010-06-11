@@ -184,7 +184,7 @@
             <archives>
             </archives>
         </program>
-        <program id="Telegraph" processed="1">
+        <program id="Telegraph" processed="0">
             <name>Telegraph</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
@@ -202,7 +202,7 @@
             <description>Concrete combination of grains.</description>
             <current href="GrainCombine.mp3"/>
             <archives>
-            <archive date="20100607" href="GrainCombine_20100607.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100607.txt"/><archive date="20100608" href="GrainCombine_20100608.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100608.txt"/><archive date="20100609" href="GrainCombine_20100609.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100609.txt"/><archive date="20100610" href="GrainCombine_20100610.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100610.txt"/></archives>
+            <archive date="20100608" href="GrainCombine_20100608.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100608.txt"/><archive date="20100609" href="GrainCombine_20100609.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100609.txt"/><archive date="20100610" href="GrainCombine_20100610.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100610.txt"/><archive date="20100611" href="GrainCombine_20100611.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100611.txt"/></archives>
         </program>
         <program id="Genealogies" processed="0">
             <name>Genealogies</name>        
