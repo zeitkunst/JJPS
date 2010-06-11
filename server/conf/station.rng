@@ -118,6 +118,11 @@
                         <text />
                     </attribute>
                 </element>
+                <optional>
+                    <element name="JJPS:technical">
+                        <text /> 
+                    </element> 
+                </optional>
                 <element name="JJPS:archives">
                     <zeroOrMore>
                         <element name="JJPS:archive">
@@ -134,6 +139,11 @@
                                 <attribute name="playlistHref">
                                     <text />                            
                                 </attribute>
+                            </optional>
+                            <optional>
+                                <attribute name="notes">
+                                    <text />
+                                </attribute> 
                             </optional>
                             <optional>
                                 <ref name="playlist" />

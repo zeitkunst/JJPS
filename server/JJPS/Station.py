@@ -1,3 +1,4 @@
+import codecs
 import ConfigParser
 import datetime, time
 import os
@@ -106,7 +107,18 @@ class Station(object):
             archive.set("playlistHref", programName + "Playlist" + "_" + today + ".txt")
         except OSError:
             archive.set("playlistHref", "")
-       
+
+        try:
+            notesSrc = os.path.join(archivePath, programName, programName + "CurrentNotes" + ".txt")
+            os.stat(playlistSrc)
+
+            fp = codecs.open(notesSrc, "r", "utf-8")
+            notes = fp.read()
+            fp.close()
+            archive.set("notes", notes)
+        except OSError:
+            archive.set("notes", "")
+      
         # Cull archives if necessary
         if (len(archiveList) >= int(numArchives)):
             self.logger.debug("Culling archives for %s" % programName)
@@ -341,6 +353,40 @@ class Station(object):
             div.append(divM)
 
         return etree.tostring(div, pretty_print = True)
+
+    def getAllProgramsTechnical(self):
+        """Get all of the technical information about the programs, sorted by programRef"""
+        programRefs = self.getAllProgramsList()
+
+        technical = {}
+
+        for programRef in programRefs:
+            xpathString = "//JJPS:program[@id='%s']/JJPS:technical" % programRef[0]
+            technicalList = self.stationTree.xpath(xpathString, namespaces = NAMESPACES)
+
+            for result in technicalList:
+                technical[programRef[1]] = result.text.strip()
+        
+        return technical
+
+    def getAllProgramsTechnicalHTML(self):
+        """Get all of the technical information about the programs, sorted by programRef"""
+        technical = self.getAllProgramsTechnical()
+        
+        divE = etree.Element("div")
+        ids = technical.keys()
+        ids.sort() 
+        for id in ids:
+            h2E = etree.Element("h2")
+            h2E.text = id
+            divE.append(h2E)
+            text = technical[id]
+            pTE = etree.Element("p")
+            pTE.text = text
+            pTE.set("id", id.replace(" ", "").replace("'", ""))
+            divE.append(pTE)
+        
+        return etree.tostring(divE, pretty_print = True)
 
     def getProgramArchivesList(self, programRef):
         """Get the archives for the given program"""

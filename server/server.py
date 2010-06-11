@@ -37,12 +37,18 @@ urls = (
     # Front-end URIs
     '/', 'index',
     '/extension', 'extensionIndex',
+    '/extension/', 'extensionIndex',
+    '/extension/documentation', 'extensionDocumentation',
+    '/extension/download', 'extensionDownload',
+    '/extension/FAQ', 'extensionFAQ',
+    '/extension/developers', 'extensionDevelopers',
     '/radio', 'radioIndex',
     '/radio/', 'radioIndex',
     '/radio/schedule', 'schedule',
     '/radio/schedule/', 'schedule',
     '/radio/programs/(.*?)', 'ViewProgram',
     '/radio/programs', 'ViewProgramList',
+    '/radio/technical', 'radioTechnical',
     # API URIs
     '/API', 'APIInfo',
     '/API/ownership/(.*?)', 'APIOwnership',
@@ -163,6 +169,22 @@ class extensionIndex:
     def GET(self):
         return renderExtension.extensionIndex("<p>This is a test</p>")
 
+class extensionDocumentation:
+    def GET(self):
+        return renderExtension.extensionDocumentation("<p>This is a test</p>")
+
+class extensionDownload:
+    def GET(self):
+        return renderExtension.extensionDownload("<p>This is a test</p>")
+
+class extensionFAQ:
+    def GET(self):
+        return renderExtension.extensionFAQ("<p>This is a test</p>")
+
+class extensionDevelopers:
+    def GET(self):
+        return renderExtension.extensionDevelopers("<p>This is a test</p>")
+
 class radioIndex:
     def GET(self):
         station = StationSingleton.getStation()
@@ -180,6 +202,13 @@ class radioIndex:
         """ % (nextProgramRef, nextProgramName)
 
         return renderRadio.radioIndex(current, next)
+
+class radioTechnical:
+    def GET(self):
+        station = StationSingleton.getStation()
+        station.reloadXML()
+        technicalInfo = station.getAllProgramsTechnicalHTML()
+        return renderRadio.radioTechnical(technicalInfo)
 
 class schedule:
     def GET(self):

@@ -612,7 +612,7 @@ outs asig, asig
 
         self.logger.info("Copy Hour: done")
 
-    def OpenAccess(self):
+    def OpenAccessHour(self):
         self.logger.info("OpenAccess: starting processing...")
         d = OpenAccessDocuments(config = self.config)
         docID = random.choice(d.docIDs)
@@ -624,7 +624,7 @@ outs asig, asig
         self.logger.debug("Open Access: TTS")
         self._makeTTSFileChunks(voice = None, text = "Now on the air: a recitation of articles that are available in open access journals.  These documents are freely available on the internet.  Be sure to visit the site of the journal for more information.  Enjoy.  %s, by %s from %s.  %s" % (title, authors, journal, text), title = "Open Access Hour")
         
-        self.archiveShow("OpenAccessHour", playlist = text)
+        self.archiveShow("OpenAccessHour", playlist = "")
 
         self.logger.info("Open Access: done")
 
@@ -1340,7 +1340,7 @@ outs asig, asig
 
         os.remove(tempFilename)
 
-    def archiveShow(self, programRef, playlist = None):
+    def archiveShow(self, programRef, playlist = None, notes = None):
         """Archive the show materials for the given show.  The writing of the archive materials to the station XML file occurs when we switch programs.  We know that we can always copy the given programRef.mp3 file to the archive directory as we always overwrite it on each process run."""
         archivePath = self.config.get("Sound", "archivePath")
         programArchivePath = os.path.join(archivePath, programRef)
@@ -1364,7 +1364,12 @@ outs asig, asig
             fp.write(playlist)
             fp.close()
 
-
+        # TODO
+        # Write notes to a separate file to be added to the archive attribute later
+        if (notes is not None):
+            fp = codecs.open(os.path.join(programArchivePath, programRef + "CurrentNotes.txt"), "w", "utf-8")
+            fp.write(notes)
+            fp.close()
 
 class CsoundProcessor(object):
     FTABLES = """
