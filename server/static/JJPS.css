@@ -1,6 +1,35 @@
+hr {
+    color: #000000;
+    height: 4em;
+}
+
+body#front {
+    background-color: #dedede;
+}
+
+.frontBig h1 a {
+    color: #dedede;
+    background-color: #de0000;
+    display: block;
+}
+
+div#posts h1 {
+    color: #de0000;
+}
+
+p.date {
+    background-color: #de0000;
+    color: #dedede;
+}
+
+.frontBig h1 a:hover {
+    background-color: #dedede;
+    color: #de0000;
+    display: block;
+}
 
 body#radio {
-    background: url("/static/images/site/diagonalBackground.png") repeat fixed;
+    background: url("images/site/diagonalBackground.png") repeat fixed;
 }
 
 #footer {
@@ -128,7 +157,7 @@ div#current, div#next {
 }
 
 #JJPSRadioFooterText {
-    background: url('/static/images/site/JJPSRadioBottomBackground.png') repeat-x;
+    background: url('images/site/JJPSRadioBottomBackground.png') repeat-x;
     height: 100px;
 }
 

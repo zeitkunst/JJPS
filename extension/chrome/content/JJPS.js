@@ -9,6 +9,8 @@ var JJPS = {
     request: null,
     programRequest: null,
     voteRequest: null,
+    uploadEnabled: false,
+    postData: null,
     newsItemIndex: null,
     headlineSwitchInterval: null,
     doc: null,
@@ -203,12 +205,26 @@ var JJPS = {
         });
     },
 
+    _resetVariables: function() {
+        JJPS.uploadEnabled = false;
+        JJPS.postData = new Array();
+    },
+
     _setupCopy: function() {
         JJPS.doc.getElementById("JJPSCopy").addEventListener("click", JJPS.copyToClipboard, false);
     },
 
+    _setupUpload: function() {
+        JJPS.doc.getElementById("JJPSUpload").addEventListener("click", JJPS.uploadArticleText, false);
+    },
+
     _setupVote: function() {
         JJPS.doc.getElementById("JJPSVote").addEventListener("click", JJPS.voteForArticle, false);
+    },
+
+    uploadArticleText: function() {
+        // Send it off!
+        JJPS.uploadPostData(JJPS.postData, JJPS.serverURL + "file/testing");
     },
 
     voteForArticle: function() {
@@ -274,6 +290,8 @@ var JJPS = {
         JJPS._readPrefs();
         
         updateJJPSButton();
+
+        JJPS._resetVariables();
 
         // If we don't enable the overlays, just return immediately
         if (!(JJPS.enableOverlays)) {
@@ -647,16 +665,6 @@ var JJPS = {
             journalTitle = journalTitleArticleId.childNodes[1].innerHTML;
         }
 
-        // If we actually have something, do the request
-        if (journalTitle != "") {
-            journalTitle = journalTitle.replace(/<.*?>/g, '').trim();
-
-            JJPS.journalRequest = JJPS._getRequest();
-            JJPS.journalRequest.open("GET", JJPS.serverURL + "journal/" + journalTitle, true);
-            JJPS.journalRequest.setRequestHeader('Accept', 'application/xml');
-            JJPS.journalRequest.onreadystatechange = JJPS.processJournalResult;
-            JJPS.journalRequest.send(null);
-        }
 
         // Replace ads
         JJPS._replaceAds();
@@ -693,7 +701,7 @@ var JJPS = {
         articleContent = JJPS.doc.getElementById("articleContent");
 
         if (articleContent != null) {
-            alert("here");
+            JJPS.uploadEnabled = true;
             title = getElementsByClassName(articleContent, "articleTitle")[0].innerHTML;
             authors = articleContent.getElementsByTagName("strong")[0].innerHTML;
 
@@ -721,15 +729,27 @@ var JJPS = {
             }
 
 
-            postData = new Array();
-            postData["title"] = title;
-            postData["authors"] = authors;
-            postData["articleText"] = articleText;
-            postData["journalTitle"] = journalTitle;
+            JJPS.postData = new Array();
+            JJPS.postData["title"] = title;
+            JJPS.postData["authors"] = authors;
+            JJPS.postData["articleText"] = articleText;
+            JJPS.postData["journalTitle"] = journalTitle;
 
             // Send it off!
-            JJPS.uploadPostData(postData, JJPS.serverURL + "file/testing");
+            //JJPS.uploadPostData(postData, JJPS.serverURL + "file/testing");
         }
+
+        // If we actually have something, do the request
+        if (journalTitle != "") {
+            journalTitle = journalTitle.replace(/<.*?>/g, '').trim();
+
+            JJPS.journalRequest = JJPS._getRequest();
+            JJPS.journalRequest.open("GET", JJPS.serverURL + "journal/" + journalTitle, true);
+            JJPS.journalRequest.setRequestHeader('Accept', 'application/xml');
+            JJPS.journalRequest.onreadystatechange = JJPS.processJournalResult;
+            JJPS.journalRequest.send(null);
+        }
+
     },
 
     // Fire off the request to replace the ads
@@ -1240,9 +1260,11 @@ var JJPS = {
         menuUL.appendChild(li);
 
         // Upload 
-        //var li = JJPS.doc.createElement("li");
-        //li.innerHTML = "<a id='JJPSUpload' href='#'>Upload <small>Upload Article</small></a>";
-        //menuUL.appendChild(li);
+        if (JJPS.uploadEnabled) {
+            var li = JJPS.doc.createElement("li");
+            li.innerHTML = "<a id='JJPSUpload' href='#'>Upload <small>Upload Article</small></a>";
+            menuUL.appendChild(li);
+        }
 
         // Copy
         var li = JJPS.doc.createElement("li");
@@ -1382,6 +1404,11 @@ var JJPS = {
 
         // Setup the copy command
         JJPS._setupCopy();
+
+        // Setup the upload command
+        if (JJPS.uploadEnabled) {
+            JJPS._setupUpload();
+        }
 
         // Setup the vote command
         JJPS._setupVote();
