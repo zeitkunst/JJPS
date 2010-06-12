@@ -180,6 +180,49 @@ class DocumentBase(object):
 
         return wordFreq
 
+    def preprocessWebData(self, dataDict):
+        """Preprocess the web-based data in dataDict."""
+        newDataDict = {}
+        
+        # Article text
+        soup = BeautifulSoup.BeautifulSoup(dataDict["articleText"])
+        # Go two levels down
+        articleText = u""
+        for element in soup.contents:
+            try:
+                for element2 in element.contents:
+                    try:
+                        articleText += unicode(element2.text).strip() + "\n"
+                    except AttributeError:
+                        articleText += unicode(element2).strip() + "\n"
+            except AttributeError:
+                articleText += unicode(element).strip() + "\n"
+        newDataDict["articleText"] = articleText        
+
+        # Title
+        soup = BeautifulSoup.BeautifulSoup(dataDict["title"])
+        newDataDict["title"] = soup.text
+
+        # Authors
+        soup = BeautifulSoup.BeautifulSoup(dataDict["authors"])
+        
+        # Go two levels deep, only get strings
+        authors = ""
+        for element in soup.contents:
+            try:
+                for element2 in element.contents:
+                    if (type(element2) == BeautifulSoup.NavigableString):
+                        if (element2 is not None):
+                            authors += element2
+            except AttributeError:
+                pass
+        newDataDict["authors"] = authors
+
+        # Nothing to do with the journal title
+        newDataDict["journalTitle"] = dataDict["journalTitle"]
+
+        return newDataDict
+
     def preprocessPDFData(self, text):
         """Preprocess the pdftotext data before we add it to the database."""
 
@@ -716,7 +759,24 @@ class CopyrightDocuments(DocumentBase):
             fp.close()
 
             self.addDocument(dataDict)
-          
+
+class UploadDocuments(DocumentBase):
+    """For documents that users upload."""
+
+    def __init__(self, config = None, dbName = "jjps_upload"):
+        super(UploadDocuments, self).__init__(config = config)
+
+        self.dbServer = couchdb.Server(self.config.get("Database", "host"))
+        
+        # Setup the db
+        if (dbName is not None):
+            self.db = self.dbServer[dbName]
+        else:
+            raise Exception("Need to provide db name")
+       
+        # Get a list of IDs
+        self.docIDs = [item for item in self.db if item.find("_design") == -1]
+
 
 class ArticleDocuments(DocumentBase):
 
@@ -735,48 +795,6 @@ class ArticleDocuments(DocumentBase):
         self.docIDs = [item for item in self.db if item.find("_design") == -1]
 
 
-    def preprocessWebData(self, dataDict):
-        """Preprocess the web-based data in dataDict."""
-        newDataDict = {}
-        
-        # Article text
-        soup = BeautifulSoup.BeautifulSoup(dataDict["articleText"])
-        # Go two levels down
-        articleText = u""
-        for element in soup.contents:
-            try:
-                for element2 in element.contents:
-                    try:
-                        articleText += unicode(element2.text).strip() + "\n"
-                    except AttributeError:
-                        articleText += unicode(element2).strip() + "\n"
-            except AttributeError:
-                articleText += unicode(element).strip() + "\n"
-        newDataDict["articleText"] = articleText        
-
-        # Title
-        soup = BeautifulSoup.BeautifulSoup(dataDict["title"])
-        newDataDict["title"] = soup.text
-
-        # Authors
-        soup = BeautifulSoup.BeautifulSoup(dataDict["authors"])
-        
-        # Go two levels deep, only get strings
-        authors = ""
-        for element in soup.contents:
-            try:
-                for element2 in element.contents:
-                    if (type(element2) == BeautifulSoup.NavigableString):
-                        if (element2 is not None):
-                            authors += element2
-            except AttributeError:
-                pass
-        newDataDict["authors"] = authors
-
-        # Nothing to do with the journal title
-        newDataDict["journalTitle"] = dataDict["journalTitle"]
-
-        return newDataDict
 
 
     def clearDatabase(self, really = False):

@@ -247,6 +247,11 @@ class Process(object):
                     counter += 1
                 except KeyError:
                     pass
+                except OverflowError:
+                    # TODO
+                    # totally faking it :-)
+                    total += -11
+                    counter += 1
             
             try:
                 value = (-1.0 * (float(total) / counter))

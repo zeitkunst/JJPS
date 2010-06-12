@@ -27,7 +27,7 @@ import textile
 # My own library imports
 from JJPS.Station import Station
 from JJPS.Model import Model 
-from JJPS.Documents import ArticleDocuments, VoteDocuments, PPCDocuments, AdsDocuments, JournalDocuments
+from JJPS.Documents import ArticleDocuments, VoteDocuments, PPCDocuments, AdsDocuments, JournalDocuments, UploadDocuments
 
 import serverConfig
 
@@ -394,8 +394,8 @@ class APIFile:
         dataDict["articleText"] = articleText
         dataDict["journalTitle"] = journalTitle
 
-        dataDict = station.documents.preprocessWebData(dataDict)
-        station.documents.addDocument(dataDict)
+        dataDict = station.uploadDocuments.preprocessWebData(dataDict)
+        station.uploadDocuments.addDocument(dataDict)
 
         #pickleFP = open("dataDict.pickle", "wb")
         #cPickle.dump(dataDict, pickleFP)
@@ -659,6 +659,7 @@ class StationSingleton(object):
             # TODO
             # Make name configurable?
             StationSingleton.station.voteDocuments = VoteDocuments(config = StationSingleton.station.config, dbName = "jjps_votes")
+            StationSingleton.station.uploadDocuments = UploadDocuments(config = StationSingleton.station.config)
             StationSingleton.station.ppcDocuments = PPCDocuments(config = StationSingleton.station.config)
             StationSingleton.station.adsDocuments = AdsDocuments(config = StationSingleton.station.config)
             StationSingleton.station.journalDocuments = JournalDocuments(config = StationSingleton.station.config)

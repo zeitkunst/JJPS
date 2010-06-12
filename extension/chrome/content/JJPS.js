@@ -1,7 +1,5 @@
 window.addEventListener("load", function(){ JJPS._init(); }, false);
 
-const DEFAULT_JJPSPANE_HEIGHT = 300;
-
 var JJPS = {
     preferences: null,
     previousState: null,
@@ -31,9 +29,6 @@ var JJPS = {
     _init: function() {
         // Read preferences before we setup event handler
         this._readPrefs();
-
-        // Open SQLite file
-        this._getSqlite();
 
         // Create regexps and their corresponding methods
         this._setupRegexps();
@@ -223,8 +218,19 @@ var JJPS = {
     },
 
     uploadArticleText: function() {
+        JJPS.uploadRequest = JJPS._getRequest();            
+        JJPS.uploadRequest.onload = JJPS.respondToUpload;
+
         // Send it off!
-        JJPS.uploadPostData(JJPS.postData, JJPS.serverURL + "file/testing");
+        JJPS.uploadPostData(JJPS.postData, JJPS.serverURL + "file/testing", JJPS.uploadRequest);
+    },
+
+    respondToUpload: function() {
+        JJPS.doc.getElementById("JJPSHeaderResponseDiv").innerHTML = "<strong>Response</strong>: Document uploaded!";
+        JJPS.doc.getElementById("JJPSHeaderResponseDiv").style.display = "block";
+
+        $jq = jQuery.noConflict();
+        $jq("#JJPSHeaderResponseDiv", JJPS.doc).fadeOut(2000);
     },
 
     voteForArticle: function() {
@@ -260,20 +266,7 @@ var JJPS = {
         JJPS.programRequest.send(null);
     },
 
-    // Return a connection to a local SQL store
-    // TODO
-    // Do we need this?
-    _getSqlite: function() {
-        var file = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("ProfD", Components.interfaces.nsIFile); 
-        file.append("JJPS.sqlite");
-        var storageService = Components.classes["@mozilla.org/storage/service;1"].getService(Components.interfaces.mozIStorageService);
-        var mDBConn = storageService.openDatabase(file); // Will also create the file if it does not exist
-        this.dbConn = mDBConn;
-    },
-
     // Get a particular request object
-    // TODO
-    // Do we need this?  Probably, because we have a few different types of requests possibly going on...
     _getRequest: function() {
         var newRequest = null;
         newRequest = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance(Components.interfaces.nsIXMLHttpRequest);
@@ -416,8 +409,6 @@ var JJPS = {
         numChosenNodes = JJPS._randomSample(numNodes, 3);
 
         // Create containing div and sponsored links div
-        // TODO
-        // move styling to inject.css
         div = JJPS.doc.createElement("div");
         div.className = "JJPSAds";
         clearDiv = JJPS.doc.createElement("div");
@@ -570,23 +561,51 @@ var JJPS = {
 
     },
 
+    _setVoteParameters: function(journal, article, url) {
+        JJPS.currentJournalName = journal;
+        JJPS.currentArticleTitle = article;
+        JJPS.currentArticleURL = url;
+    },
+
+    _setUploadPostParameters: function(journal, article, authors, text) {
+        JJPS.postData["title"] = article;
+        JJPS.postData["authors"] = authors;
+        JJPS.postData["articleText"] = text;
+        JJPS.postData["journalTitle"] = journal;
+    },
+
     // Process Ingenta Connect
     _processIngentaConnect: function(doc) {
         if (!(JJPS.ingentaConnect)) {
             return;
         }
-
+        
+        var journalTitle = null;
         publisherLogoDiv = doc.getElementById("altLayoutPublisherLogo");
 
         if (publisherLogoDiv != null) {
+            topAd = JJPS.doc.getElementById("top-ad-alignment");
+            topAd.innerHTML = "&nbsp;&nbsp;";
+            verticalAd = JJPS.doc.getElementById("vertical-ad");
+            verticalAd.innerHTML = "&nbsp;&nbsp;";
+
             h1 = publisherLogoDiv.getElementsByTagName("h1");
             journalTitle = h1[0].innerHTML;
 
+        } else if (doc.getElementById("info") != null) {
+            var info = doc.getElementById("info");
+            var p = info.getElementsByTagName("p")[1];
+            var a = p.getElementsByTagName("a")[0];
+            journalTitle = a.innerHTML;
+        }
+
+        if (journalTitle != null) {
             JJPS.journalRequest = JJPS._getRequest();
             JJPS.journalRequest.open("GET", JJPS.serverURL + "journal/" + journalTitle, true);
             JJPS.journalRequest.setRequestHeader('Accept', 'application/xml');
             JJPS.journalRequest.onreadystatechange = JJPS.processJournalResult;
             JJPS.journalRequest.send(null);
+
         }
 
         // Replace Ads
@@ -601,11 +620,67 @@ var JJPS = {
         metahead = doc.getElementById("metahead");
 
         if (metahead != null) {
-            h1 = metahead.getElementsByTagName("h1");;
-            if (h1.length != 0) {
-                journalTitle = h1[0].innerHTML;
-                journalTitle = journalTitle.trim();
+            journalTitle = null;
+            articleText = null;
+            articleLocation = null;
+            articleURL = null;
 
+            metas = JJPS.doc.getElementsByTagName("meta");
+
+            // Check to see if there is a DC.subject...
+            haveDCSubject = false;
+
+            for (i in metas) {
+                if (metas[i].getAttribute("name") == "DC.subject") {
+                    haveDCSubject = true;
+                }
+            }
+            
+            // If we don't have a DC subject, then we're on a contents page
+            if (haveDCSubject == false) {
+                for (i in metas) {
+                    if (metas[i].getAttribute("name") == "DC.title") {
+                        journalTitle = metas[i].getAttribute("content");
+                    }
+                }
+            } else {
+                // Check if we're on an article fulltext page            
+                if ((doc.getElementById("section") != null) && (JJPS.doc.body.innerHTML.indexOf("View Full Text Article") == -1)) {
+                    divs = metahead.getElementsByTagName("div");
+                    authors = divs[2].childNodes[2].nodeValue;
+                    var a = divs[5].getElementsByTagName("a")[0];
+                    journalTitle = a.innerHTML;                
+    
+                    // we get the article title from the DC.title
+                    for (i in metas) {
+                        if (metas[i].getAttribute("name") == "DC.title") {
+                            articleTitle = metas[i].getAttribute("content");
+                        }
+                    }
+    
+                    JJPS._setVoteParameters(journalTitle, articleTitle, JJPS.doc.location.href);
+                    JJPS._setUploadPostParameters(journalTitle, articleTitle, authors, doc.getElementById("section").innerHTML);
+                    JJPS.uploadEnabled = true;
+                  
+                } else if (JJPS.doc.body.innerHTML.indexOf("View Full Text Article") != -1) {
+                    // otherwise, we're on an article page and need to dig down a bit deeper...
+                    divs = metahead.getElementsByTagName("div");
+                    a = divs[3].getElementsByTagName("a")[0];
+                    journalTitle = a.innerHTML;                
+    
+                    // we get the article title from the DC.title
+                    for (i in metas) {
+                        if (metas[i].getAttribute("name") == "DC.title") {
+                            articleTitle = metas[i].getAttribute("content");
+                        }
+                    }
+                    JJPS._setVoteParameters(journalTitle, articleTitle, JJPS.doc.location.href);
+                }
+
+            }
+            
+
+            if (journalTitle != null) {
                 JJPS.journalRequest = JJPS._getRequest();
                 JJPS.journalRequest.open("GET", JJPS.serverURL + "journal/" + journalTitle, true);
                 JJPS.journalRequest.setRequestHeader('Accept', 'application/xml');
@@ -620,8 +695,6 @@ var JJPS = {
     },
 
     // Process Wiley Interscience
-    // TODO
-    // get wiley pricing info
     _processWiley: function(doc) {
         if (!(JJPS.johnWileyAndSons)) {
             return;
@@ -915,6 +988,7 @@ var JJPS = {
         }         
 
         if (pageTitle != "") {
+            pageTitle = pageTitle.split("--")[0];
             pageTitle = pageTitle.replace(/<.*?>/g, '').trim();
 
             JJPS.journalRequest = JJPS._getRequest();
@@ -929,8 +1003,6 @@ var JJPS = {
 
     },
 
-    // TODO
-    // get springer pricing info
     _processSpringer: function(doc) {
         if (!(JJPS.springer)) {
             return;
@@ -983,6 +1055,7 @@ var JJPS = {
     },
 
     // TODO
+    // Deal with hiding google ads, since they seem to mess some things up
     _processCiteULike: function(doc) {
         if (!(JJPS.citeULike)) {
             return;
@@ -991,6 +1064,11 @@ var JJPS = {
         citationNode = JJPS.doc.getElementById("citation");
         
         if (citationNode != null) {
+            topAdNode = JJPS.doc.getElementById("topright");
+            topAdNode.innerHTML = "&nbsp;&nbsp;";
+            navleftNode = JJPS.doc.getElementById("navleft");
+            navleftNode.innerHTML = "&nbsp;&nbsp;&nbsp;";
+
             articleTitle = JJPS.doc.getElementById("article_title").innerHTML;
 
             journalName = citationNode.childNodes[0].innerHTML;        
@@ -1298,7 +1376,9 @@ var JJPS = {
         headerDiv.appendChild(responseParent);
 
         // Insert the header
-        JJPS.doc.body.insertBefore(headerDiv, JJPS.doc.body.childNodes[0]);
+        //JJPS.doc.body.insertBefore(headerDiv, JJPS.doc.body.childNodes[0]);
+        numChildNodes = JJPS.doc.body.childNodes.length;
+        JJPS.doc.body.insertBefore(headerDiv, JJPS.doc.body.childNodes[numChildNodes - 1]);
         
 
 
