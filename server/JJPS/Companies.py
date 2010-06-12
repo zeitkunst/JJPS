@@ -4,6 +4,7 @@ import time
 import urllib
 
 import feedparser
+import memcache
 
 import Log
 
@@ -24,6 +25,9 @@ class Companies(object):
 
         # Setup logging
         self.logger = Log.getLogger(config = self.config)
+
+        # Setup memcache
+        self.mc = memcache.Client([self.config.get("memcache", "server")], debug = int(self.config.get("memcache", "debug")))
 
     def getCompanyInfo(self, companyName, numEntries = 10):
         try:
@@ -77,9 +81,12 @@ class Companies(object):
     def getCompanyNews(self, companyName, numEntries = 10):
         """Search for company information at yahoo news; the data here is easier to parse than google's rss (at least if I remember correctly...)"""
         
-        # TODO
-        # Semi-hack until we can implement memcached, as it seems we are getting rate limited somehow...
-        try:
+        companyNameKey = companyName.replace(" ", "_").replace("&", "_").replace(".", "_")
+
+        dataDict = self.mc.get(companyNameKey.encode("ascii"))
+        if dataDict:
+            return dataDict
+        else:
             url = "http://news.search.yahoo.com/rss?ei=UTF-8&p=%22" + urllib.quote(companyName) + "%22&fr=news-us-ss"
             response = urllib.urlopen(url)
             data = response.read()
@@ -92,10 +99,7 @@ class Companies(object):
             
             dataDict = {"headlines": headlines, "summaries": summaries}
             self.companyNews[companyName] = dataDict
+
+            self.mc.set(companyNameKey.encode("ascii"), dataDict, time = int(self.config.get("memcache", "time")))
+
             return dataDict
-        except IOError, e:
-            self.logger.debug("Some sort of network problem: %s" % e)
-            try:
-                return self.companyNews[companyName]
-            except KeyError:
-                return {"headlines": [], "summaries": summaries}

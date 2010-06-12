@@ -5,6 +5,7 @@ import glob
 import os
 import re
 
+import memcache
 from lxml import etree
 import RDF
 import simplejson as json
@@ -45,6 +46,9 @@ class Model(object):
         
         # Setup link to company info
         self.companies = Companies.Companies(config = config)
+
+        # Setup memcache
+        self.mc = memcache.Client([self.config.get("memcache", "server")], debug = int(self.config.get("memcache", "debug")))
 
     def getSubscriptionPrices(self):
         prices = {}
@@ -252,10 +256,15 @@ class Model(object):
     def getJournalInfo(self, journalName, returnFormat = "xml"):
         """Return the information about a particular journal."""
         
+
         # Format the journal name so that we can find it in our model
         journalNameFormatted = journalName.lower().replace("&amp;", "and").replace(" ", "_")
 
         if (returnFormat == "xml"):
+            returnValue = self.mc.get(journalNameFormatted.encode("ascii") + "_xml")
+            if returnValue:
+                return etree.fromstring(returnValue)
+
             # First, get the owner and, potentially, the price of the journal
             queryString = """
             PREFIX jjps: <%s> 
@@ -399,7 +408,8 @@ class Model(object):
             # Get click value
             clickValue = self.d.getClickValue(journalName)
             resultXML.set("clickValue", unicode(round(clickValue)))
-
+            
+            self.mc.set(journalNameFormatted.encode("ascii") + "_xml", etree.tostring(resultsXML), time = int(self.config.get("memcache", "time")))
             return resultsXML
         elif (returnFormat == "json"):
             pass
