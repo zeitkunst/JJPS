@@ -41,16 +41,12 @@ class Model(object):
         self.parser = RDF.Parser()
 
         # setup link to PPC database
-        # TODO
-        # Make this configurable?
         self.d = Documents.PPCDocuments(config = self.config, dbName="jjps_ppc")
         
         # Setup link to company info
         self.companies = Companies.Companies(config = config)
 
     def getSubscriptionPrices(self):
-        # TODO
-        # More to get and process...
         prices = {}
         data = csv.reader(open("data/journalPrices/ElsevierPricelist2010USD.csv"))
         for item in data:
@@ -60,6 +56,7 @@ class Model(object):
         for item in data:
             if (item[7] == "USD"):
                 prices[item[2]] = (item[8], '')
+
         data = csv.reader(open("data/journalPrices/SpringerJournals.csv"))
         for item in data:
             if (item[6] == ""):
@@ -78,6 +75,14 @@ class Model(object):
         for line in reader:
             if (issnRE.match(line[1])):
                 prices[line[1]] = (line[4], '')
+
+        # Sage Publications
+        reader = csv.reader(open("data/journalPrices/SagePublications.csv"))
+        for line in reader:
+            # Shouldn't have happened, but it did...
+            if (len(line) != 2):
+                continue
+            prices[line[0]] = (line[1], '')
 
         self.prices = prices
 

@@ -315,6 +315,9 @@ class Process(object):
         # And finally, cleanup
         shutil.rmtree(tempDir)
 
+        # Finally, archive
+        self.archiveShow("Drone", playlist = csd)
+
 
     # Processing the news
     def NewsProgram(self):
@@ -599,7 +602,7 @@ outs asig, asig
         self._makeTTSFileChunks(voice = None, text = "Now, %s from %s by %s.  %s" % (title, journalName, authors, text), title = "Recitation Hour")
         
         codedText = self.createTextTransmission(text)
-        self.archiveShow("RecitationHour", playlist = codedText)
+        self.archiveShow("RecitationHour", playlist = codedText, notes = "%s by %s from %s" % (title, authors, journalName))
 
         self.logger.info("Recitation Hour: done")
 
@@ -706,11 +709,6 @@ outs asig, asig
         tempFP = os.fdopen(tempFH, "wb")
         tempFP.write(programText.encode("ascii", "ignore"))
         tempFP.close()
-
-        # TODO
-        # make voice a configuration variable
-        #commandTTS = """%s -eval "(voice_cmu_us_slt_arctic_hts)" %s""" % (text2wavePath, tempFilename)
-        #commandConversion = """%s -y -i - %s/news.mp3 """ % (ffmpegPath, outputPath)
 
         # TODO
         # Need to figure out why I can't choose a particular voice
@@ -990,17 +988,12 @@ outs asig, asig
         id3tagPath = self.config.get("Sound", "id3tagPath")
         mp3wrapPath = self.config.get("Sound", "mp3wrapPath")
         csoundPath = self.config.get("Sound", "csoundPath")
-        # TODO
-        # Probably get this from couchdb later
-        pdfPath = self.config.get("Sound", "pdfPath")
 
         docID = random.choice(self.articleDocuments.docIDs)
 
         data = self.articleDocuments.get(docID)
         pdfName = data["_attachments"].keys()[0]
         pdfFP = self.articleDocuments.db.get_attachment(data, pdfName)
-
-        #pdfFP = open(os.path.join(pdfPath, "Land1993.pdf"), "r")
 
         instrumentList = ["morseSimple.instr"]
 
@@ -1233,7 +1226,8 @@ outs asig, asig
         if (tempDir is None):
             # TODO
             # make cross-platform
-            tempDir = "/tmp"
+            #tempDir = "/tmp"
+            tempDir = tempfile.gettempdir()
         
         csdPath = os.path.join(tempDir, "chunk.csd")
         fp = open(csdPath, "w")
@@ -1369,8 +1363,6 @@ outs asig, asig
             fp.write(playlist)
             fp.close()
 
-        # TODO
-        # Write notes to a separate file to be added to the archive attribute later
         if (notes is not None):
             fp = codecs.open(os.path.join(programArchivePath, programRef + "CurrentNotes.txt"), "w", "utf-8")
             fp.write(notes)

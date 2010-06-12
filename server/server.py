@@ -656,8 +656,6 @@ class StationSingleton(object):
             StationSingleton.station = Station(configFile = "JJPSConfig.ini")
             StationSingleton.station.journalModel = Model(config = StationSingleton.station.config)
             StationSingleton.station.articleDocuments = ArticleDocuments(config = StationSingleton.station.config)
-            # TODO
-            # Make name configurable?
             StationSingleton.station.voteDocuments = VoteDocuments(config = StationSingleton.station.config, dbName = "jjps_votes")
             StationSingleton.station.uploadDocuments = UploadDocuments(config = StationSingleton.station.config)
             StationSingleton.station.ppcDocuments = PPCDocuments(config = StationSingleton.station.config)

@@ -203,6 +203,9 @@ var JJPS = {
     _resetVariables: function() {
         JJPS.uploadEnabled = false;
         JJPS.postData = new Array();
+        JJPS.currentJournalName = null;
+        JJPS.currentArticleTitle = null;
+        JJPS.currentArticleURL = null;
     },
 
     _setupCopy: function() {
