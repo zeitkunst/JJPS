@@ -106,11 +106,11 @@
     <vbox>
     <groupbox id="JJPSAboutGroupbox">
         <hbox pack="center">
-            <image onclick="window.open('http://journalofjournalperformancestudies.org');" width="196" height="196" src="chrome://JJPS/skin/JJPSLogo.png"/>
+            <image onclick="window.open('http://journalofjournalperformancestudies.org');" width="196" src="chrome://JJPS/skin/JJPSLogo.png"/>
         </hbox>
     </groupbox>
     <hbox>
-        <text value="&JJPS.preferences.FAQLink;" class="JJPSurl" onclick="window.open('http://journalofjournalperformancestudies.org/FAQ');"/>
+        <text value="&JJPS.preferences.FAQLink;" class="JJPSurl" onclick="window.open('http://journalofjournalperformancestudies.org/extension/FAQ');"/>
     </hbox>
     <hbox>
         <textbox multiline="true" rows="10" readonly="true" id="JJPSInfo" value="&JJPS.preferences.info;" />

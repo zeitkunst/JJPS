@@ -7,10 +7,13 @@
                    em:minVersion="3.0"
                    em:maxVersion="3.8" />
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
-                   em:id="info@journalofjournalperformancestudies.org"
+                   em:id="extension@journalofjournalperformancestudies.org"
                    em:name="JJPS"
-                   em:version="0.0.1"
-                   em:creator="JJPS; info@journalofjournalperformancestudies.org"
+                   em:version="0.1.0"
+                   em:creator="JJPS; extension@journalofjournalperformancestudies.org"
+                   em:optionsURL="chrome://JJPS/content/options.xul"
+                    em:iconURL="chrome://JJPS/skin/icon128.png"
+                    em:updateURL="http://journalofjournalperformancestudies.org/static/update.rdf"
                    em:description="Journal of Journal Performance Studies"
                    em:homepageURL="http://journalofjournalperformancestudies.org"
                    em:updateKey="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDUhtw/63VMA2Sc0vM72Xr+ZiyDlVdSswbO5IAVCXw/W4XdHZ8IdZCSiCWq8/2d8sOlgyzY82/HoToCvb3qdeH/21XveJS+f6yGgkDqTLr9XdWIyQp3IH6WV8JuC9yl4tNEgPfTPrHB85mApUKk5VIaEda1YqT2mQ5D6+mlTnDP0QIDAQAB">

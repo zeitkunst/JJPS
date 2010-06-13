@@ -5,7 +5,7 @@ if /usr/bin/test "$#" -ne 1; then
     exit 1
 fi
 
-XPI_NAME=JJPS.$1.xpi
+XPI_NAME=JJPS_$1.xpi
 
 zip -r $XPI_NAME . -x "*.git/*" \*.xpi
 

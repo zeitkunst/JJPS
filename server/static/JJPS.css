@@ -18,13 +18,13 @@ body#extension h1, body#extension h2, body#extension h3 {
     color: black;
 }
 
-body#extension a {
+#footer a, body#front a, body#extension a {
     color: #de0000;
     font-weight: bold;
     text-decoration: none;
 }
 
-body#extension a:hover {
+#footer a:hover, body#front a:hover, body#extension a:hover {
     color: #dedede;
     background-color: #de0000;
     font-weight: bold;
@@ -51,6 +51,7 @@ div#posts h1 {
 }
 
 p.date {
+    padding: 4px;
     background-color: #de0000;
     color: #dedede;
 }
@@ -83,6 +84,13 @@ div.frontBig h1 {
 
 div#JJPSMainLinks a {
     text-decoration: none;
+    color: #dedede;
+}
+
+div#JJPSMainLinks a:hover {
+    text-decoration: none;
+    background-color: #dedede;
+    color: #de0000;
 }
 
 div#posts h1 {

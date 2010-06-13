@@ -110,6 +110,7 @@ class Station(object):
 
         try:
             notesSrc = os.path.join(archivePath, programName, programName + "CurrentNotes" + ".txt")
+            print notesSrc
             os.stat(playlistSrc)
 
             fp = codecs.open(notesSrc, "r", "utf-8")
