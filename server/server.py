@@ -38,6 +38,7 @@ urls = (
     '/extension', 'extensionIndex',
     '/extension/', 'extensionIndex',
     '/extension/documentation', 'extensionDocumentation',
+    '/extension/documentation/features', 'extensionFeatures',
     '/extension/download', 'extensionDownload',
     '/extension/FAQ', 'extensionFAQ',
     '/extension/developers', 'extensionDevelopers',
@@ -189,6 +190,10 @@ class extensionFAQ:
 class extensionDevelopers:
     def GET(self):
         return renderExtension.extensionDevelopers()
+
+class extensionFeatures:
+    def GET(self):
+        return renderExtension.extensionFeatures()
 
 class radioIndex:
     def GET(self):

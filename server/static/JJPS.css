@@ -37,6 +37,7 @@ body#extension a:hover {
     padding-top: 2em;
     padding-bottom: 2em;
     background-color: #dedede;
+    min-height: 392px;
 }
 
 .frontBig h1 a {
