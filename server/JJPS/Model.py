@@ -49,7 +49,13 @@ class Model(object):
 
         # Setup memcache
         self.mc = memcache.Client([self.config.get("memcache", "server")], debug = int(self.config.get("memcache", "debug")))
+        
+        # setup error response XML
+        self._setupErrorXML()
 
+    def _setupErrorXML(self):
+        self.errorResults = etree.Element("results")
+        
     def getSubscriptionPrices(self):
         prices = {}
         data = csv.reader(open("data/journalPrices/ElsevierPricelist2010USD.csv"))
@@ -258,7 +264,7 @@ class Model(object):
         
 
         # Format the journal name so that we can find it in our model
-        journalNameFormatted = journalName.lower().replace("&amp;", "and").replace(" ", "_")
+        journalNameFormatted = journalName.lower().replace("&amp;", "and").replace(" ", "_").replace(",", "_")
 
         if (returnFormat == "xml"):
             returnValue = self.mc.get(journalNameFormatted.encode("ascii") + "_xml")
@@ -306,6 +312,11 @@ class Model(object):
             resultsXML = etree.Element("results")
             resultsXML.set("type", "journalInfo")
             resultsXML.set("journalName", journalName)
+            
+            if (results.finished()):
+                self.errorResults.set("error", "No results found")
+                return self.errorResults
+
             for result in results:
                 resultXML = etree.Element("result")
                 if (result["price"] is not None):

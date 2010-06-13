@@ -1,6 +1,90 @@
-$def with (frontmatter)
+$def with ()
 $var title: Developers || Extension || Journal of Journal Performance Studies
 
-<div class="span-24 last append-bottom">
-    $:frontmatter
+<div id="JJPSExtensionTopDiv" class="span-24 last append-bottom">
+    <div class="prepend-4 span-6">
+        <h1>Developer Information</h1>
+        <h2>Or, how to access our data</h2>
+    </div>
+    <div class="span-12 append-2 last">
+        <h2>Developer API</h2>
+        <p>We are making a subset of our journal information available through a public API.  This information is based on a preliminary <a href="http://en.wikipedia.org/wiki/Web_ontology_language">OWL</a> <abbr title="We understand that the use of the word 'ontology' is problematic; however, this is what computer scientists call the data representation that we are using.  In the future we will present our own detailed thoughts on the matter.">ontology</abbr> that can be <a href="#">viewed online</a>.  Use of the API does not require full knowledge of the API; in fact, it is rather simple to use.</p>
+        <h2>Use</h2>
+        <p>The API is based on REST.  The base is at <code>http://journalofjournalperformancestudies.org/API/journal/</code>.  If you want to search for a particular journal name, such as "Angiology", then perform a GET on <code>http://journalofjournalperformancestudies.org/API/journal/Angiology</code>.  Be sure that your "Accept" header includes one of "application/xml", "application/xhtml+xml" or "text/xml", otherwise you will receive an error.  Your response will come in the form of XML such as the following:</p>
+        <div>
+            <pre class="brush: xml">
+&lt;results type=&quot;journalInfo&quot; journalName=&quot;Angiology&quot;&gt;
+&lt;result ownerURI=&quot;http://journalofjournalperformancestudies.org/NS/JJPS.owl#sage_publications_inc&quot; ownerName=&quot;Sage Publications Inc&quot; price=&quot;1039&quot; frobpactFactor=&quot;1096&quot; frobfluence=&quot;197&quot; eigenfrobFactor=&quot;268&quot; sjr=&quot;102&quot; hIndex=&quot;37&quot; parentURI=&quot;http://journalofjournalperformancestudies.org/NS/JJPS.owl#SagePublications&quot; parentName=&quot;Sage Publications&quot; clickValue=&quot;0.0&quot;/&gt;
+&lt;headlines&gt;
+&lt;headline value=&quot;SAGE to publish Australian and New Zealand Journal of Criminology from 2011&quot;/&gt;
+&lt;headline value=&quot;Theology and Theology Today enter partnership with SAGE&quot;/&gt;
+&lt;headline value=&quot;Power outage: A loss of social power distorts how money is represented&quot;/&gt;
+&lt;headline value=&quot;&#039;The LTTE can never re-emerge&#039;&quot;/&gt;
+&lt;headline value=&quot;Mathematics Through Play in the Early Years&quot;/&gt;
+&lt;headline value=&quot;On the Media: Publisher Sara Miller McCune has serious goals for journalism&quot;/&gt;
+&lt;headline value=&quot;Ultrasound could boost tissue implant success&quot;/&gt;
+&lt;headline value=&quot;SAGE partners with RTVJ Division of AEJMC to publish Electronic News&quot;/&gt;
+&lt;headline value=&quot;Journalism&#039;s next top model&quot;/&gt;
+&lt;headline value=&quot;The financial crisis and the challenge to social science thinking&quot;/&gt;
+&lt;/headlines&gt;
+&lt;words type=&quot;volume&quot;&gt;
+&lt;word name=&quot;york&quot; price=&quot;$2.11&quot;/&gt;
+&lt;word name=&quot;world&quot; price=&quot;$1.76&quot;/&gt;
+&lt;word name=&quot;west&quot; price=&quot;$2.60&quot;/&gt;
+&lt;word name=&quot;washington&quot; price=&quot;$2.81&quot;/&gt;
+&lt;word name=&quot;us&quot; price=&quot;$2.05&quot;/&gt;
+&lt;word name=&quot;university&quot; price=&quot;$2.11&quot;/&gt;
+&lt;word name=&quot;to&quot; price=&quot;$1.48&quot;/&gt;
+&lt;word name=&quot;the&quot; price=&quot;$1.17&quot;/&gt;
+&lt;word name=&quot;texas&quot; price=&quot;$1.88&quot;/&gt;
+&lt;word name=&quot;state&quot; price=&quot;$1.40&quot;/&gt;
+&lt;word name=&quot;st&quot; price=&quot;$1.70&quot;/&gt;
+&lt;word name=&quot;south&quot; price=&quot;$2.03&quot;/&gt;
+&lt;word name=&quot;software&quot; price=&quot;$2.62&quot;/&gt;
+&lt;word name=&quot;service&quot; price=&quot;$2.67&quot;/&gt;
+&lt;word name=&quot;school&quot; price=&quot;$1.26&quot;/&gt;
+&lt;word name=&quot;real&quot; price=&quot;$2.86&quot;/&gt;
+&lt;word name=&quot;online&quot; price=&quot;$2.82&quot;/&gt;
+&lt;word name=&quot;on&quot; price=&quot;$1.53&quot;/&gt;
+&lt;word name=&quot;office&quot; price=&quot;$2.34&quot;/&gt;
+&lt;word name=&quot;of&quot; price=&quot;$1.19&quot;/&gt;
+&lt;word name=&quot;north&quot; price=&quot;$2.07&quot;/&gt;
+&lt;word name=&quot;news&quot; price=&quot;$1.65&quot;/&gt;
+&lt;word name=&quot;new&quot; price=&quot;$2.39&quot;/&gt;
+&lt;word name=&quot;music&quot; price=&quot;$1.04&quot;/&gt;
+&lt;word name=&quot;london&quot; price=&quot;$2.19&quot;/&gt;
+&lt;word name=&quot;in&quot; price=&quot;$1.60&quot;/&gt;
+&lt;word name=&quot;house&quot; price=&quot;$1.58&quot;/&gt;
+&lt;word name=&quot;high&quot; price=&quot;$0.87&quot;/&gt;
+&lt;word name=&quot;health&quot; price=&quot;$3.25&quot;/&gt;
+&lt;word name=&quot;game&quot; price=&quot;$0.75&quot;/&gt;
+&lt;word name=&quot;from&quot; price=&quot;$1.63&quot;/&gt;
+&lt;word name=&quot;for&quot; price=&quot;$1.65&quot;/&gt;
+&lt;word name=&quot;food&quot; price=&quot;$1.00&quot;/&gt;
+&lt;word name=&quot;florida&quot; price=&quot;$2.29&quot;/&gt;
+&lt;word name=&quot;et&quot; price=&quot;$0.71&quot;/&gt;
+&lt;word name=&quot;en&quot; price=&quot;$0.69&quot;/&gt;
+&lt;word name=&quot;do&quot; price=&quot;$0.86&quot;/&gt;
+&lt;word name=&quot;digital&quot; price=&quot;$1.76&quot;/&gt;
+&lt;word name=&quot;de&quot; price=&quot;$0.87&quot;/&gt;
+&lt;word name=&quot;computer&quot; price=&quot;$2.56&quot;/&gt;
+&lt;/words&gt;
+&lt;/results&gt;
+</pre>
+        </div>
+        <p>The first <code>result</code> tag gives the information you want.  The attributes should be self-explanatory.</p>
+        <h3>Headlines</h3>
+        <p>If we are able to find headlines about the company that owns the journal, the top ones are presented under the <code>headlines</code> tag.</p>
+        <h3>Stock Quotes</h3>
+        <p>As well, for public companies that we know about, we present you with stock quotes under the <code>stocks</code> tag.</p>
+        <h3>Words</h3>
+        <p>The <code>words</code> tag contains words that are displayed in the extension itself; it can be ignored.</p>
+        <h2>Errors</h2>
+        <p>If we're unable to find any information about the journal asked for, an informational message will be given in the root <code>results</code> attribute.</p>
+        <h2>Future</h2>
+        <p>We will shortly provide the data in RDF format as well.  Keep an eye on the blog on the front page of the site for details.</p>
+        <h2>Questions?  Problems?</h2>
+        <p>Please contact the editor by the e-mail at the bottom of the page.</p>
+    </div>
 </div>
+

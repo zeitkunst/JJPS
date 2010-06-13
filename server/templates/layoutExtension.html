@@ -16,6 +16,17 @@ $def with (content)
 
     <link rel="alternate" type="application/rss+xml" title="JJPS RSS" href="/feed/rss" />
 
+    <!-- syntax highlighter -->
+    <script type="text/javascript" src="/static/js/sh/src/shCore.js"></script>
+    <!-- At least one brush, here we choose JS. You need to include a brush for every language you want to highlight -->
+    <script type="text/javascript" src="/static/js/sh/scripts/shBrushXml.js"></script>
+    <!-- Include *at least* the core style and default theme -->
+    <link href="/static/css/sh/shCore.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" rel="Stylesheet" href="/static/css/sh/shThemeDefault.css"/></script></script> 
+    <script type="text/javascript">
+        SyntaxHighlighter.all()
+    </script>
+
     <script type="text/javascript" src="/static/js/jquery-1.4.2.min.js"></script>
     <link rel="stylesheet" href="/static/css/nivo-slider.css" type="text/css" media="screen" />
     <script src="/static/js/jquery.nivo.slider.pack.js" type="text/javascript"></script></script>
@@ -26,7 +37,7 @@ $def with (content)
 <body id="extension">
 <div class="container" id="content">
 <div class="span-24 last append-bottom">
-    <div class="span-8 prepend-top">
+    <div class="prepend-1 span-7 prepend-top">
         <a href="/extension"><img src="/static/images/site/JJPSExtensionHeader.png" alt="JJPS Extension" /></a>
     </div>
     <div class="span-16 prepend-top last">
@@ -47,6 +58,7 @@ $def with (content)
     
     <div id="footer" class="span-24 last">
             <div class="prepend-top prepend-4 span-4">
+                <h3>JJPS Contact &amp; License</h3>
                 <p>editor --at-- journalofjournalperformancestudies ---dot--- org</p>
                 <p>Copyleft, <a href="/license">with restrictions</a>, 2010</p>
             </div>
@@ -57,6 +69,7 @@ $def with (content)
                 <p><a href="/journal">Journal</a></p> 
             </div>
             <div class="prepend-top prepend-1 span-4 append-7 last">
+                <h3>JJPS Credits</h3>
                 <p>Journal of Journal Performance Studies is a 2009 commission of New Radio and Performing Arts, Inc., (aka Ether-Ore) for its  Turbulence web site.  It was made possible with funding from the Jerome Foundation.</p>
             </div>
 

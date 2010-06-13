@@ -1,6 +1,19 @@
-$def with (frontmatter)
+$def with (currentVersion, currentPath)
 $var title: Download || Extension || Journal of Journal Performance Studies
 
-<div class="span-24 last append-bottom">
-    $:frontmatter
+<div id="JJPSExtensionTopDiv" class="span-24 last append-bottom">
+    <div class="prepend-4 span-6">
+        <h1>Download</h1>
+        <h2>JJPS is free to use and download</h2>
+    </div>
+    <div class="span-8 append-6 last">
+        <div><a href="$:currentPath"><img src="/static/images/site/JJPSExtensionDownloadButton.png" alt="JJPS Button" /></a></div>
+        <div><h3>Version $:currentVersion; for Firefox 3+</h3></div>
+        <div>
+            <h2>Installation instructions</h2>
+            <p>You will have to specifically "allow" this site to install the MAICgregator extension. When you click on the "Download Now!" button, a small window will appear in which you will have to click "allow". When the next window pops up, you will be able to click "Install now" after a few second wait. Do so, wait for the extension to download and install, and then restart your browser.</p>
+            <h2>Extension Source Code</h2>
+            <p>The extension for the source code can be found within the extension itself; simply unzip the .xpi file to look inside.  The most up-to-date, and not necessarily functional, code can be found in the <a href="http://github.com/zeitkunst/JJPS">git repository on github</a>.</p>
+        </div>
+    </div>
 </div>

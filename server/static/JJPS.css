@@ -7,6 +7,38 @@ body#front {
     background: url(images/site/textBackground.png) repeat-x;
 }
 
+body#extension {
+    background-repeat: repeat;
+    background-color: #dedede;
+}
+
+body#extension h1, body#extension h2, body#extension h3 {
+    font-family: "Charis SIL", Georgia, "Times New Roman", serif;
+    font-weight: bold;
+    color: black;
+}
+
+body#extension a {
+    color: #de0000;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+body#extension a:hover {
+    color: #dedede;
+    background-color: #de0000;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#JJPSExtensionTopDiv {
+    background-image: url(images/site/extensionPageBackground.png);
+    background-repeat: no-repeat;
+    padding-top: 2em;
+    padding-bottom: 2em;
+    background-color: #dedede;
+}
+
 .frontBig h1 a {
     color: #dedede;
     background-color: #de0000;
@@ -72,11 +104,14 @@ div#posts h1 {
     border-bottom: 3px solid #454545;
     text-decoration: none;
     color: #454545;
+    font-weight: normal;
 }
 
 #JJPSExtensionMenu li a:hover {
     color: #d90000;
     border-bottom: 3px solid #d90000;
+    font-weight: normal;
+    background-color: transparent;
 }
 
 body#radio .menuItem, body#radio .item {

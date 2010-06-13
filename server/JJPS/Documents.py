@@ -122,11 +122,16 @@ class DocumentBase(object):
             results = self.db.query(ifMap)
 
         self.logger.debug("Computing TF")
-        #for result in db.query(ifMap):
         for result in results:
-            if (result.find("_design") != -1):
-                continue
-            doc = self.db[result]
+            try:
+                # if we're recomputing...
+                if (result.find("_design") != -1):
+                    continue
+                doc = self.db[result]
+            except AttributeError:
+                # otherwise, just get the key
+                doc = self.db[result["key"]]
+
             self.logger.debug("Computing TF: Working on \"%s\"" % doc[keyToDisplay])
             # Get the text to use
             textToTokenize = ""
@@ -659,6 +664,22 @@ class VoteDocuments(DocumentBase):
             dataDict["_rev"] = rev
             dataDict["votes"] = votes + 1
             self.db.save(dataDict)
+
+class PriceDocuments(DocumentBase):
+    """Methods for processing price database."""
+
+    def __init__(self, config = None, dbName = "jjps_article_prices"):
+        super(PriceDocuments, self).__init__(config = config)
+
+        self.dbServer = couchdb.Server(self.config.get("Database", "host"))
+        
+        # Setup the db
+        if (dbName is not None):
+            self.db = self.dbServer[dbName]
+        else:
+            raise Exception("Need to provide db name")
+
+
 
 class AdsDocuments(DocumentBase):
     """Methods for processing ppc database."""

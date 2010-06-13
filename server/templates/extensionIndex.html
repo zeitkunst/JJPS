@@ -1,8 +1,8 @@
-$def with (frontmatter)
+$def with (currentVersion, currentPath)
 $var title: Extension || Journal of Journal Performance Studies
 
-<div class="span-24 last append-bottom">
-    <div class="span-13">
+<div class="span-24 last append-bottom" id="JJPSExtensionTopDiv">
+    <div class="prepend-1 span-13">
         <div id="slider" style="height: 354px">
             <img src="/static/images/site/factors.png" width="300" alt="" />
             <img src="/static/images/site/graph.png" width="300" alt=""/>
@@ -16,14 +16,15 @@ $var title: Extension || Journal of Journal Performance Studies
         <img src="/static/images/site/JJPSExtensionFront.png" />
         -->
     </div>
-    <div class="span-9 append-2 last">
+    <div class="span-9 append-1 last">
         <h1>For all your journal performance needs.</h1>            
         <p>The Journal of Journal Performance Studies Firefox extension provides immediate access to the latest in bibliometric and journal mapping technology.  It also provides a glimpse into the future by creating special advertisements based on contemporary trends.  Install the extension today!</p>
-        <div class="prepend-1"><img src="/static/images/site/JJPSExtensionDownloadButton.png" alt="JJPS Button" /></div>
+        <div class="prepend-1"><a href="$:currentPath"><img src="/static/images/site/JJPSExtensionDownloadButton.png" alt="JJPS Button" /></a></div>
+        <div><h3>Version $:currentVersion; for Firefox 3+</h3></div>
     </div>
 </div>
 <div class="span-24 last prepend-top">
-    <div class="append-bottom prepend-2 span-18 append-4 last">
+    <div class="append-bottom prepend-3 span-18 append-3 last">
         <div class="span-9">
             <img src="/static/images/site/factorsCut.png" alt="Factors" />
         </div>
@@ -32,7 +33,7 @@ $var title: Extension || Journal of Journal Performance Studies
             <p>We all know how important it is to keep up on the latest bibliometric factors.  That's why the JJPS Extension provides all of the necessary metrics from a convenient drop-down menu.  We offer standard values such as SJR and the hIndex, as well as our own special ones such as the Frobpact Factor (tm), Eigenfrob Factor (tm), Frobfluence (tm), and new!  The Click Value!  We're always developing new ways to measure journal performance, so stay tuned!</p>
         </div>
     </div>
-    <div class="append-bottom prepend-2 span-18 append-4 last">
+    <div class="append-bottom prepend-3 span-18 append-3 last">
         <div class="span-9">
             <img src="/static/images/site/graphCut.png" alt="Graph" />
         </div>
@@ -42,7 +43,7 @@ $var title: Extension || Journal of Journal Performance Studies
         </div>
     </div>
 
-    <div class="append-bottom prepend-2 span-18 append-4 last">
+    <div class="append-bottom prepend-3 span-18 append-3 last">
         <div class="span-9">
             <img src="/static/images/site/footerCut.png" alt="Copy items" />
         </div>
@@ -51,7 +52,7 @@ $var title: Extension || Journal of Journal Performance Studies
             <p>Need to know how much a journal costs your institution?  Where possible we give you the bottom line.  As well, we keep you up to date with everything going on in the world of this publisher, including headlines and real-time stock quotes!</p>
         </div>
     </div>
-    <div class="prepend-2 span-18 append-4 last">
+    <div class="prepend-3 span-18 append-3 last">
         <div class="span-9">
             &nbsp;
         </div>
@@ -59,8 +60,5 @@ $var title: Extension || Journal of Journal Performance Studies
             <h2>And there's more!</h2>
             <p>See the <a href="/extension/documentation">documentation</a> for a complete list of features!</p>
         </div>
-    </div>
-    <div class="span-24 last">
-        $:frontmatter
     </div>
 </div>

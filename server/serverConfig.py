@@ -23,4 +23,6 @@ fastcgi = True
 baseURI = "http://localhost:8080/"
 
 # Path to the most up-to-date extension
-currentExtensionPath = ""
+currentExtensionPath = "/static/JJPS_0.1.0.xpi"
+
+currentExtensionVersion = "0.1.0"

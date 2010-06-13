@@ -8,7 +8,6 @@
 
 import os
 import random
-import re
 from StringIO import StringIO
 import sys
 import urllib
@@ -27,7 +26,7 @@ import textile
 # My own library imports
 from JJPS.Station import Station
 from JJPS.Model import Model 
-from JJPS.Documents import ArticleDocuments, VoteDocuments, PPCDocuments, AdsDocuments, JournalDocuments, UploadDocuments
+from JJPS.Documents import ArticleDocuments, VoteDocuments, PPCDocuments, AdsDocuments, JournalDocuments, UploadDocuments, PriceDocuments
 
 import serverConfig
 
@@ -57,6 +56,7 @@ urls = (
     '/API/test/(.*?)', 'APITest',
     '/API/file/(.*?)', 'APIFile',
     '/API/vote', 'APIVote',
+    '/API/price', 'APIPrice',
     '/API/programs', 'APIPrograms',
     # Admin URIs
     '/admin', 'adminIndex',
@@ -167,7 +167,9 @@ class index:
 
 class extensionIndex:
     def GET(self):
-        return renderExtension.extensionIndex("<p>This is a test</p>")
+        currentVersion = serverConfig.currentExtensionVersion
+        currentPath = serverConfig.currentExtensionPath
+        return renderExtension.extensionIndex(currentVersion, currentPath)
 
 class extensionDocumentation:
     def GET(self):
@@ -175,7 +177,10 @@ class extensionDocumentation:
 
 class extensionDownload:
     def GET(self):
-        return renderExtension.extensionDownload("<p>This is a test</p>")
+        currentVersion = serverConfig.currentExtensionVersion
+        currentPath = serverConfig.currentExtensionPath
+
+        return renderExtension.extensionDownload(currentVersion, currentPath)
 
 class extensionFAQ:
     def GET(self):
@@ -183,7 +188,7 @@ class extensionFAQ:
 
 class extensionDevelopers:
     def GET(self):
-        return renderExtension.extensionDevelopers("<p>This is a test</p>")
+        return renderExtension.extensionDevelopers()
 
 class radioIndex:
     def GET(self):
@@ -451,6 +456,55 @@ class APIVote:
         results.set("done", "true")
         return etree.tostring(results)
 
+class APIPrice:
+    def POST(self):
+        station = StationSingleton.getStation()
+
+        # BEGIN HACK HACK HACK HACK HACK HACK HACK HACK HACK
+        # I shouldn't have to do the following...but I do, for some reason, otherwise I get annoying timeout errors when posting from javascript.  See this thread for background info, even though it's a different use-case: http://groups.google.com/group/webpy/browse_thread/thread/b22d7dd17b1e477d/7f823b1aa133ac12?lnk=gst&q=timed+out#7f823b1aa133ac12.
+        # This is needed even on files of only 30 bytes or so!
+        tmpfile = os.tmpfile()
+        contentLength = int(web.ctx.env['CONTENT_LENGTH'])
+        if contentLength <= 0:
+            raise AssertionError('invalid content length')
+
+        wsgiInput = web.ctx.env['wsgi.input']
+
+        while contentLength > 0:
+            chunk = 1024
+            if contentLength < chunk:
+                chunk = contentLength
+            contentLength -= chunk
+            currentChunk = wsgiInput.read(chunk)
+            #print currentChunk
+            tmpfile.write(currentChunk)
+        tmpfile.seek(0)
+
+        web.ctx.env['wsgi.input'] = tmpfile 
+
+        data = web.input(myfile = {})
+        #data = web.input()
+        tmpfile.close()
+        # END HACK HACK HACK HACK HACK HACK HACK HACK HACK
+
+        # Writing PDF files, if we get them            
+        #file = data["myfile"].file.read()
+        #fp = open("test.pdf", "wb")
+        #fp.write(file)
+        #fp.close()
+
+        # For the moment, as we're testing, save the data to a dict, and then save to a pickled file
+        dataDict = {}
+        dataDict["journalName"] = urllib.unquote(data["journalName"]).strip()
+        dataDict["price"] = urllib.unquote(data["price"]).strip()
+        print dataDict
+        station.priceDocuments.addDocumentByName(dataDict["journalName"], dataDict)
+
+        web.header("Content-Type", "application/xml; charset=utf-8")
+        results = etree.Element("results")
+        results.set("done", "true")
+        return etree.tostring(results)
+
 
 class APIPrograms:
     def GET(self):
@@ -656,6 +710,7 @@ class StationSingleton(object):
             StationSingleton.station = Station(configFile = "JJPSConfig.ini")
             StationSingleton.station.journalModel = Model(config = StationSingleton.station.config)
             StationSingleton.station.articleDocuments = ArticleDocuments(config = StationSingleton.station.config)
+            StationSingleton.station.priceDocuments = PriceDocuments(config = StationSingleton.station.config)
             StationSingleton.station.voteDocuments = VoteDocuments(config = StationSingleton.station.config, dbName = "jjps_votes")
             StationSingleton.station.uploadDocuments = UploadDocuments(config = StationSingleton.station.config)
             StationSingleton.station.ppcDocuments = PPCDocuments(config = StationSingleton.station.config)

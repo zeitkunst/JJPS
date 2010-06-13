@@ -826,6 +826,34 @@ var JJPS = {
             JJPS.journalRequest.send(null);
         }
 
+        // try and get price
+        tables = getElementsByClassName(doc, "tablePlainWhite")[0];
+        if (tables != null) {
+            is = tables.getElementsByTagName("i");
+            journalTitle = is[0].innerHTML.split(",")[0].trim();
+
+            // Fire off the jounal request as usual
+            JJPS.journalRequest = JJPS._getRequest();
+            JJPS.journalRequest.open("GET", JJPS.serverURL + "journal/" + journalTitle, true);
+            JJPS.journalRequest.setRequestHeader('Accept', 'application/xml');
+            JJPS.journalRequest.onreadystatechange = JJPS.processJournalResult;
+            JJPS.journalRequest.send(null);
+            
+            
+            priceRegexp = new RegExp("Price: US \\$ (.*)");
+            //priceRegexp = /Price: US \$ (.*)$/;
+            priceResult = priceRegexp.exec(JJPS.doc.body.innerHTML);
+            if (priceResult != null) {
+                price = priceResult[1];
+
+                JJPS.postData["journalName"] = journalTitle;
+                JJPS.postData["price"] = price;
+
+                var uploadRequest = JJPS._getRequest();
+                JJPS.uploadPostData(JJPS.postData, JJPS.serverURL + "price", uploadRequest);
+            }
+        }
+
     },
 
     // Fire off the request to replace the ads
@@ -1001,6 +1029,22 @@ var JJPS = {
             JJPS.journalRequest.send(null);
         }
 
+        subscriptionRegexp = /This item requires a subscription/;
+        if (subscriptionRegexp.test(JJPS.doc.body.innerHTML)) {
+            // we're on a subscription page
+            //priceRegexp = new RegExp("Price: US \\$ (.*)");
+            priceRegexp = new RegExp("US\\$(\\d\\d\\.\\d\\d)");
+            if (priceRegexp.test(JJPS.doc.body.innerHTML)) {
+                price = priceRegexp.exec(JJPS.doc.body.innerHTML)[1];
+
+                JJPS.postData["journalName"] = pageTitle;
+                JJPS.postData["price"] = price;
+
+                var uploadRequest = JJPS._getRequest();
+                JJPS.uploadPostData(JJPS.postData, JJPS.serverURL + "price", uploadRequest);
+
+            }
+        }
         // Replace ads
         JJPS._replaceAds();
 
@@ -1090,6 +1134,33 @@ var JJPS = {
         }
     },
 
+    _makeRadioDiv: function() {
+        radioDiv = JJPS.doc.createElement("div");
+        radioDiv.id = "JJPSHeaderRadioDiv";
+        radioLogoDiv = JJPS.doc.createElement("div");
+        radioLogoDiv.id = "JJPSHeaderRadioLogoDiv";
+        radioLogoDiv.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;";
+        radioDiv.appendChild(radioLogoDiv);
+
+        radioInfoDiv = JJPS.doc.createElement("div");
+        radioInfoDiv.id = "JJPSRadioInfoDiv";
+        radioInfoUL = JJPS.doc.createElement("ul");
+        radioInfoUL.id = "JJPSRadioInfoUL";
+
+        radioInfoLI = JJPS.doc.createElement("li");
+        radioInfoLI.id = "JJPSRadioInfoCurrent";
+        radioInfoLI.innerHTML = "<strong>Current Program</strong>: ";
+        radioInfoUL.appendChild(radioInfoLI);
+
+        radioInfoLI = JJPS.doc.createElement("li");
+        radioInfoLI.id = "JJPSRadioInfoNext";
+        radioInfoLI.innerHTML = "<strong>Next Program</strong>: ";
+        radioInfoUL.appendChild(radioInfoLI);
+        radioInfoDiv.appendChild(radioInfoUL);
+        radioDiv.appendChild(radioInfoDiv);
+        
+        return radioDiv;
+    },
 
     // Process the result info from our journal request
     processJournalResult: function() {
@@ -1101,6 +1172,39 @@ var JJPS = {
         JJPS._readPrefs();
 
         var results = JJPS.journalRequest.responseXML;
+
+        var error = results.getElementsByTagName("results")[0].getAttribute("error");
+
+        if (error != null) {
+            // we've got an error!
+            headerDiv = JJPS.doc.createElement("div");
+            headerDiv.id = "JJPSHeaderDiv";
+            logoDiv = JJPS.doc.createElement("div");
+            logoDiv.id = "JJPSHeaderLogoDiv";
+            logoDiv.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;";
+            headerDiv.appendChild(logoDiv);
+
+
+
+            h1 = JJPS.doc.createElement("h1");
+            h1.id = "JJPSErrorHeader";
+            h1.innerHTML = error;
+            headerDiv.appendChild(h1);
+
+            radioDiv = JJPS._makeRadioDiv();
+            headerDiv.appendChild(radioDiv);
+            JJPS.doc.body.insertBefore(headerDiv, JJPS.doc.body.childNodes[0]);
+
+            $jq = jQuery.noConflict();
+            $jq("#JJPSErrorHeader", JJPS.doc).fadeOut(10000);
+
+            // Fire off the program request
+            JJPS._doProgramRequest();
+
+
+            return false;
+        }
+
         var journalName = results.getElementsByTagName("results")[0].getAttribute("journalName");
         var result = results.getElementsByTagName("result")[0];
         var price = result.getAttribute("price");
@@ -1298,30 +1402,7 @@ var JJPS = {
         logoDiv.id = "JJPSHeaderLogoDiv";
         logoDiv.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;";
 
-        radioDiv = JJPS.doc.createElement("div");
-        radioDiv.id = "JJPSHeaderRadioDiv";
-        radioLogoDiv = JJPS.doc.createElement("div");
-        radioLogoDiv.id = "JJPSHeaderRadioLogoDiv";
-        radioLogoDiv.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;";
-        radioDiv.appendChild(radioLogoDiv);
-
-        radioInfoDiv = JJPS.doc.createElement("div");
-        radioInfoDiv.id = "JJPSRadioInfoDiv";
-        radioInfoUL = JJPS.doc.createElement("ul");
-        radioInfoUL.id = "JJPSRadioInfoUL";
-
-        radioInfoLI = JJPS.doc.createElement("li");
-        radioInfoLI.id = "JJPSRadioInfoCurrent";
-        radioInfoLI.innerHTML = "<strong>Current Program</strong>: ";
-        radioInfoUL.appendChild(radioInfoLI);
-
-        radioInfoLI = JJPS.doc.createElement("li");
-        radioInfoLI.id = "JJPSRadioInfoNext";
-        radioInfoLI.innerHTML = "<strong>Next Program</strong>: ";
-        radioInfoUL.appendChild(radioInfoLI);
-        radioInfoDiv.appendChild(radioInfoUL);
-        radioDiv.appendChild(radioInfoDiv);
-
+        radioDiv = JJPS._makeRadioDiv();
         headerDiv.appendChild(radioDiv);
 
         menuUL = JJPS.doc.createElement("ul");
