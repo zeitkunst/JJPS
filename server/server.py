@@ -39,6 +39,10 @@ urls = (
     '/extension/', 'extensionIndex',
     '/extension/documentation', 'extensionDocumentation',
     '/extension/documentation/features', 'extensionFeatures',
+    '/extension/documentation/factors', 'extensionFactors',
+    '/extension/documentation/statement', 'extensionStatement',
+    '/extension/documentation/screenshots', 'extensionScreenshots',
+    '/extension/documentation/credits', 'extensionCredits',
     '/extension/download', 'extensionDownload',
     '/extension/FAQ', 'extensionFAQ',
     '/extension/developers', 'extensionDevelopers',
@@ -86,6 +90,12 @@ renderAdmin = web.template.render('templates/', base = 'layoutAdmin', cache = se
 renderExtension = web.template.render('templates/', base = 'layoutExtension', cache = serverConfig.cache)
 renderRadio = web.template.render('templates/', base = 'layoutRadio', cache = serverConfig.cache)
 #renderAdmin = web.template.render('templates/', base = 'layoutAdmin', cache = config.cache)
+
+def notfound():
+    return web.notfound(render.notfound())
+
+app.notfound = notfound
+
 
 class Log(WsgiLog):
     def __init__(self, application):
@@ -174,7 +184,23 @@ class extensionIndex:
 
 class extensionDocumentation:
     def GET(self):
-        return renderExtension.extensionDocumentation("<p>This is a test</p>")
+        return renderExtension.extensionDocumentation()
+
+class extensionFactors:
+    def GET(self):
+        return renderExtension.extensionFactors()
+
+class extensionScreenshots:
+    def GET(self):
+        return renderExtension.extensionScreenshots()
+
+class extensionStatement:
+    def GET(self):
+        return renderExtension.extensionStatement()
+
+class extensionCredits:
+    def GET(self):
+        return renderExtension.extensionCredits()
 
 class extensionDownload:
     def GET(self):
@@ -185,7 +211,7 @@ class extensionDownload:
 
 class extensionFAQ:
     def GET(self):
-        return renderExtension.extensionFAQ("<p>This is a test</p>")
+        return renderExtension.extensionFAQ()
 
 class extensionDevelopers:
     def GET(self):

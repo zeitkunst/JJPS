@@ -1,0 +1,29 @@
+$def with ()
+$var title: Factors || Extension || Journal of Journal Performance Studies
+
+<div id="JJPSExtensionTopDiv" class="span-24 last append-bottom">
+    <div class="prepend-4 span-6">
+        <h1>Factors</h1>
+        <h2><a href="#ClickValue">Click Value</a></h2>
+        <h2><a href="#SJRHIndex">SJR, hIndex</a></h2>
+        <h2><a href="#Frobpact">Frobpact, Eigenfrob, Frobfluence</a></h2>
+    </div>
+    <div class="span-8 append-6 last">
+        <script type="text/javascript" src="/static/js/LaTeXMathML.js"> </script>
+
+        <div id="ClickValue">
+            <h2>Click Value</h2>
+            <p>The Click Value was created specifically for this extension.  Using the <a href="https://adwords.google.com/select/TrafficEstimatorSandbox">Google Adwords Traffic Estimator</a>, and the top 1000 words taken from the titles and owners of the journals in the database, we see how valuable these words are on the open Google auction market.  From this service we can get estimates for the number of clicks per day for the word, as well as how much per it would cost to use it in an advertisement.  Then, for each journal and its associated owner in our database, we calculate the following:</p>
+            <p>$$\displaystyle{ \sum_{i=0}^{n} \overline{count}_i \times  \overline{price}_i }$$</p>
+            <p>In other words, taking the mean of the low and high "count" (number of clicks) and "price" for each word, multiplying it together (to get a weighted value), and summing over the words in the journal title and publisher's name, we arrive at the Click Value.  You'll note that for some journals, especially ones with only one, specialized word in the title, you won't get a click value.  We think that given the role of Google in searching for information&mdash;and the ways in which this searching needs to be monitized&mdash;choosing your journal title so that it can make money in Google's network will be an important consideration for the future.</p>
+        </div>
+        <div id="SJRHIndex">
+            <h2>SJR &amp; hIndex</h2>
+            <p>The SJR and hIndex come from <a href="http://www.scimagojr.com/">SCImago</a>.  SJR, or <a href="http://arxiv.org/ftp/arxiv/papers/0912/0912.4141.pdf">SCImago Journal Rank</a>, allows one to provide unbiased <a href="http://matteopasquinelli.com/docs/Pasquineli_PageRank.pdf">PageRank-style rankings</a> of journals, allowing <a href="http://www.scimagojr.com/countryrank.php">country-by-country comparisons</a> to be made.  The hIndex is much like the <a href="http://en.wikipedia.org/wiki/H-index">one known for individual researchers</a>, but this time applied to journals as a whole.</p>
+        </div>
+        <div id="Frobpact">
+            <h2>Frobpact Factor, Eigenfrob Factor, Frobfluence</h2>
+            <p>These three factors are our own special developments.  If you'd like to know more, look around the preferences of the extension.</p>
+        </div>
+    </div>
+</div>

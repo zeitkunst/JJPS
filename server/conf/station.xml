@@ -192,7 +192,7 @@
             <description>What do the dots and the dashes mean?</description>
             <current href="Telegraph.mp3"/>
             <archives>
-            <archive date="20100610" href="Telegraph_20100610.mp3" hidden="0" playlistHref="TelegraphPlaylist_20100610.txt"/><archive date="20100611" href="Telegraph_20100611.mp3" hidden="0" playlistHref="TelegraphPlaylist_20100611.txt"/><archive date="20100612" href="Telegraph_20100612.mp3" hidden="0" playlistHref="TelegraphPlaylist_20100612.txt" notes=""/><archive date="20100613" href="Telegraph_20100613.mp3" hidden="0" playlistHref="TelegraphPlaylist_20100613.txt" notes=""/></archives>
+            <archive date="20100611" href="Telegraph_20100611.mp3" hidden="0" playlistHref="TelegraphPlaylist_20100611.txt"/><archive date="20100612" href="Telegraph_20100612.mp3" hidden="0" playlistHref="TelegraphPlaylist_20100612.txt" notes=""/><archive date="20100613" href="Telegraph_20100613.mp3" hidden="0" playlistHref="TelegraphPlaylist_20100613.txt" notes=""/><archive date="20100614" href="Telegraph_20100614.mp3" hidden="0" playlistHref="TelegraphPlaylist_20100614.txt" notes=""/></archives>
             <technical>
                 This is a technical test.        
             </technical>
@@ -228,7 +228,7 @@
             <archives>
             <archive date="20100611" href="Noise_20100611.mp3" hidden="0" playlistHref="" notes=""/></archives>
         </program>
-        <program id="Conjunctional" processed="0">
+        <program id="Conjunctional" processed="1">
             <name>Conjunctional</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
