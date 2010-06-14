@@ -24,13 +24,13 @@ body#extension h1, body#extension h2, body#extension h3 {
     color: black;
 }
 
-#footer a, body#front a, body#extension a {
+#footer a, body#front a, body#radio a, body#extension a {
     color: #de0000;
     font-weight: bold;
     text-decoration: none;
 }
 
-#footer a:hover, body#front a:hover, body#extension a:hover {
+#footer a:hover, body#front a:hover, body#radio a:hover, body#extension a:hover {
     color: #dedede;
     background-color: #de0000;
     font-weight: bold;
@@ -179,6 +179,12 @@ div#current, div#next {
     font-weight: bold;
     background-color: #dedede;
     color: black;
+}
+
+#JJPSRadioFrontInfo {
+    margin-top: 1em;
+    background-color: #dedede;
+    padding: 8px;
 }
 
 #JJPSRadioFooterText p a {

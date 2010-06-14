@@ -153,6 +153,7 @@
             <current href="NewsProgram.mp3"/>
             <archives>
             <archive date="20100610" href="NewsProgram_20100610.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100610.txt"/><archive date="20100611" href="NewsProgram_20100611.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100611.txt" notes=""/><archive date="20100612" href="NewsProgram_20100612.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100612.txt" notes=""/><archive date="20100613" href="NewsProgram_20100613.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100613.txt" notes=""/></archives>
+            <technical>The news show searches for the latest stock quotes and headlines of the biggest academic publishers.</technical>
         </program>    
         <program id="RecitationHour" processed="0">
             <name>Recitation Hour</name>        
@@ -162,7 +163,8 @@
             <description>A reading from one of the articles in our archives...</description>
             <current href="RecitationHour.mp3"/>
             <archives>
-            <archive date="20100608" href="RecitationHour_20100608.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100608.txt"/><archive date="20100611" href="RecitationHour_20100611.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100611.txt"/><archive date="20100612" href="RecitationHour_20100612.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100612.txt" notes=""/><archive date="20100613" href="RecitationHour_20100613.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100613.txt" notes=""/></archives>
+            <archive date="20100611" href="RecitationHour_20100611.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100611.txt"/><archive date="20100612" href="RecitationHour_20100612.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100612.txt" notes=""/><archive date="20100613" href="RecitationHour_20100613.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100613.txt" notes=""/><archive date="20100614" href="RecitationHour_20100614.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100614.txt" notes=""/></archives>
+            <technical>The show that provided the impetus for the entire JJPS project, this is simply TTS of one of the articles in our database.  Be sure to checkout the playlist for the show.</technical>
         </program>
         <program id="CutupHour" processed="0">
             <name>Cut-up Hour</name>        
@@ -173,6 +175,7 @@
             <current href="CutupHour.mp3"/>
             <archives>
                 <archive date="20100608" href="CutupHour_20100608.mp3" hidden="0" playlistHref="CutupHourPlaylist_20100608.txt"/><archive date="20100609" href="CutupHour_20100609.mp3" hidden="0" playlistHref="CutupHourPlaylist_20100609.txt"/><archive date="20100610" href="CutupHour_20100610.mp3" hidden="0" playlistHref="CutupHourPlaylist_20100610.txt"/><archive date="20100613" href="CutupHour_20100613.mp3" hidden="0" playlistHref="CutupHourPlaylist_20100613.txt" notes=""/></archives>
+            <technical>By taking random sentences from each of the texts in the database, we produce a cut-up show that is reminiscent of the works of Allen Ginsburg and John Cage.</technical>
         </program>
         <program id="WhatstheFrequencyKenneth" processed="0">
             <name>What's the Frequency Kenneth?</name>        
@@ -183,6 +186,7 @@
             <current href="WhatstheFrequencyKenneth.mp3"/>
             <archives>
             </archives>
+            <technical>Here we count the number of times a word occurs in the text, rank it by size, and read it out.  We refer here to the various poetic experiments of Kenneth Goldsmith.</technical>
         </program>
         <program id="Telegraph" processed="1">
             <name>Telegraph</name>        
@@ -194,7 +198,7 @@
             <archives>
             <archive date="20100611" href="Telegraph_20100611.mp3" hidden="0" playlistHref="TelegraphPlaylist_20100611.txt"/><archive date="20100612" href="Telegraph_20100612.mp3" hidden="0" playlistHref="TelegraphPlaylist_20100612.txt" notes=""/><archive date="20100613" href="Telegraph_20100613.mp3" hidden="0" playlistHref="TelegraphPlaylist_20100613.txt" notes=""/><archive date="20100614" href="Telegraph_20100614.mp3" hidden="0" playlistHref="TelegraphPlaylist_20100614.txt" notes=""/></archives>
             <technical>
-                This is a technical test.        
+                This explanation has been removed.
             </technical>
         </program>
         <program id="GrainCombine" processed="0">
@@ -206,7 +210,7 @@
             <current href="GrainCombine.mp3"/>
             <archives>
             <archive date="20100611" href="GrainCombine_20100611.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100611.txt"/><archive date="20100612" href="GrainCombine_20100612.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100612.txt" notes=""/><archive date="20100613" href="GrainCombine_20100613.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100613.txt" notes=""/><archive date="20100614" href="GrainCombine_20100614.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100614.txt" notes=""/></archives>
-            <technical>Grain Combine technical test.</technical>
+            <technical>We take the top words as ranked by TF-IDF and convert them by TTS to sound files.  Then we cycle through the text and where the word occurs, subject it to granular manipulations.  If there is no matching word, we play a haunting granular manipulation of a sine wave.  The otherworldy sounds come from mismatched sampling rates; the TTS files are at 16000kHz, while the final composition is at 44100kHz.</technical>
         </program>
         <program id="Genealogies" processed="0">
             <name>Genealogies</name>        
@@ -217,6 +221,7 @@
             <current href="Genealogies.mp3"/>
             <archives>
             <archive date="20100610" href="Genealogies_20100610.mp3" hidden="0" playlistHref="GenealogiesPlaylist_20100610.txt"/></archives>
+            <technical>In this show we take one of the top publishers in the database and, using TTS, read out the journals they have under their control.</technical>
         </program>
         <program id="Noise" processed="1">
             <name>Noise</name>        
@@ -227,6 +232,7 @@
             <current href="Noise.mp3"/>
             <archives>
             <archive date="20100611" href="Noise_20100611.mp3" hidden="0" playlistHref="" notes=""/></archives>
+            <technical>By simply opening our binary database files and writing them out again as sound files, we get a noise landscape.</technical>
         </program>
         <program id="Conjunctional" processed="1">
             <name>Conjunctional</name>        
@@ -237,6 +243,7 @@
             <current href="Conjunctional.mp3"/>
             <archives>
             </archives>
+            <technical>We select the "stopwords" in the text; these are words, from a NLP perspective, that are often left out of NLP processes because they are considered "insignificant".  Words such as of, and, he, she, it, a, the, etc.  We then take a subset of the other words in the text.  Then, finally, we go through the text word by word.  If a "stopword" is found, it is played straight; if it is one of the other words, it is played backwards; and if nothing is found, nothing is heard.</technical>
         </program>
         <program id="Drone" processed="0">
             <name>Drone</name>        
@@ -247,6 +254,7 @@
             <current href="Drone.mp3"/>
             <archives>
             <archive date="20100614" href="Drone_20100614.mp3" hidden="0" playlistHref="DronePlaylist_20100614.txt" notes=""/></archives>
+        <technical>We go through each sentence within a randomly chosen article.  Duration of the sounds are based on the number of syllables in a sentence, while frequency is determined by the length of the sentence.  The oscilating variations in the sound come from a cut-up version of the TF-IDF scores in the sentence.  The instrument was chosen to be reminiscent of the Theatre of Eternal Music.</technical>
         </program>
         <program id="CopyHour" processed="0">
             <name>Copy Hour</name>        
@@ -257,6 +265,7 @@
             <current href="CopyHour.mp3"/>
             <archives>
             <archive date="20100611" href="CopyHour_20100611.mp3" hidden="0" playlistHref="CopyHourPlaylist_20100611.txt" notes=""/><archive date="20100613" href="CopyHour_20100613.mp3" hidden="0" playlistHref="CopyHourPlaylist_20100613.txt" notes=""/></archives>
+            <technical>The content for this program comes from copyright agreements of journal publishers.</technical>
         </program>
         <program id="PhasorModFreq" processed="0">
             <name>Phasor. mod. freq.</name>        
@@ -267,6 +276,7 @@
             <current href="PhasorModFreq.mp3"/>
             <archives>
             <archive date="20100611" href="PhasorModFreq_20100611.mp3" hidden="0" playlistHref="PhasorModFreqPlaylist_20100611.txt"/></archives>
+            <technical>First, we take the number of syllables of each word and, multiplied by a scaling factor, create a rhythmic background.  Next, frequencies of the overlaying sounds are determined by word length, with the instrument phase-based FM synthesis.</technical>
         </program>
         <program id="OpenAccessHour" processed="0">
             <name>Open Access Hour</name>        
@@ -277,6 +287,7 @@
             <current href="OpenAccessHour.mp3"/>
             <archives>
             <archive date="20100611" href="OpenAccessHour_20100611.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20100611.txt" notes=""/><archive date="20100612" href="OpenAccessHour_20100612.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20100612.txt" notes=""/><archive date="20100613" href="OpenAccessHour_20100613.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20100613.txt" notes=""/></archives>
+            <technical>These documents are TTS versions of open-access articles in our database.  Our main sources are Culture Machine, Fast Capitalism, and the International Journal of Zizek Studies.</technical>
         </program>
 
     </programs>

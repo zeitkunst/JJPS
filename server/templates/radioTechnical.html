@@ -22,7 +22,9 @@ $var title: Technical || Journal of Journal Performance Studies
     <div class="prepend-11 span-11 append-2 last prepend-top">
         <div class="item">
             <h2>Technical information about JJPS Radio</h2>
-            <p>All of our programs are generated automatically; nothing is pre-recorded, with the exception of a few samples here and there.</p>
+            <p>All of our programs are generated automatically; nothing is pre-recorded, with the exception of a few samples here and there.  The two main software programs that make this possible are <a href="http://www.cstr.ed.ac.uk/projects/festival/">festival</a>, an open-source text-to-speech (TTS) software system, and <a href="http://csounds.com">csound</a>, one of the oldest and widely-used computer music software packages around.</p>
+            <p>Complete technical information about the programs can be found in the <a href="http://github.com/zeitkunst/JJPS/blob/master/server/JJPS/Sound.py">source code</a>, but a brief description of some of our programs can be found below.</p>
+            <p>Many of our programs use the <a href="http://en.wikipedia.org/wiki/Tf%E2%80%93idf">term-frequency/inverse-document frequency</a> computation (TF-IDF), a measure of the "uniqueness" of a particular word within a dataset.  This number is rather coarse, yet it has found wide application within the realm of natural language processing (NLP).  Our use of it here is not meant to validate it as a reasonable way to "measure" properties about documents, but rather as a way to model how actual search engines divide up articles into computational chunks.</p>
         </div>
         <div class="item">
             $:technical

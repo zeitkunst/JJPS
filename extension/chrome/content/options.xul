@@ -18,7 +18,7 @@
     <script type="application/x-javascript" src="chrome://JJPS/content/JJPS.js" />
     <script type="application/x-javascript" src="chrome://JJPS/content/preferences.js" />
 
-    <tabbox>
+    <tabbox id="JJPSPreferencesTabbox">
         <tabs>
             <tab label="&JJPS.preferences.standardTab;" />        
             <tab label="&JJPS.preferences.sitesTab;" />        
@@ -106,11 +106,17 @@
     <vbox>
     <groupbox id="JJPSAboutGroupbox">
         <hbox pack="center">
-            <image onclick="window.open('http://journalofjournalperformancestudies.org');" width="196" src="chrome://JJPS/skin/JJPSLogo.png"/>
+            <image onclick="window.open('http://journalofjournalperformancestudies.org');" width="200" height="110" src="chrome://JJPS/skin/JJPSLogo.png"/>
         </hbox>
     </groupbox>
     <hbox>
+        <text value="&JJPS.preferences.ExtensionHomepage;" class="JJPSurl" onclick="window.open('http://journalofjournalperformancestudies.org/extension');"/>
+    </hbox>
+    <hbox>
         <text value="&JJPS.preferences.FAQLink;" class="JJPSurl" onclick="window.open('http://journalofjournalperformancestudies.org/extension/FAQ');"/>
+    </hbox>
+    <hbox>
+        <text value="&JJPS.preferences.Statement;" class="JJPSurl" onclick="window.open('http://journalofjournalperformancestudies.org/journal');"/>
     </hbox>
     <hbox>
         <textbox multiline="true" rows="10" readonly="true" id="JJPSInfo" value="&JJPS.preferences.info;" />

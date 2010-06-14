@@ -76,3 +76,15 @@
 .nivo-controlNav a.active {
 	font-weight:bold;
 }
+
+#slider {
+    position:relative;
+    background:url(images/site/loading.gif) no-repeat 50% 50%; 
+}
+
+#slider img {
+    position:absolute;
+    top:0px;
+    left:0px;
+    display:none;
+}

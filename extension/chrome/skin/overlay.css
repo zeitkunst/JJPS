@@ -16,6 +16,7 @@ toolbar[iconsize="small"] #JJPSToolbarButton {
     color: #0000ef;
     text-decoration: underline;
     font-weight: bolder;
+    cursor: pointer;
 }
 
 #JJPSInfo {
@@ -27,4 +28,8 @@ toolbar[iconsize="small"] #JJPSToolbarButton {
     border: none;
     background-color: transparent;
     -moz-appearance: none;
+}
+
+#JJPSPreferencesTabbox groupbox {
+    border: none;
 }
