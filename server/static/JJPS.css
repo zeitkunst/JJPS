@@ -12,6 +12,12 @@ body#extension {
     background-color: #dedede;
 }
 
+.featuresImage {
+    width: 200px;
+    margin-right: 4px;
+    float: left;
+}
+
 body#extension h1, body#extension h2, body#extension h3 {
     font-family: "Charis SIL", Georgia, "Times New Roman", serif;
     font-weight: bold;
