@@ -159,7 +159,9 @@ class index:
             parser = etree.HTMLParser()
             tree = etree.parse(StringIO(content), parser)
             for child in tree.getroot():
-                contentE.append(child)
+                children = child.getchildren()
+                for item in children:
+                    contentE.append(item)
 
             aE = etree.Element("a")
             aE.set("href", "/post/" + str(postID))
