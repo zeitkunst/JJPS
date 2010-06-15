@@ -22,6 +22,7 @@ from wsgilog import WsgiLog, LogIO
 from webob.acceptparse import Accept
 from lxml import etree
 import textile
+import PyRSS2Gen
 
 # My own library imports
 from JJPS.Station import Station
@@ -35,6 +36,8 @@ version = "0.01"
 urls = (
     # Front-end URIs
     '/', 'index',
+    '/license', 'license',
+    '/license/', 'license',
     '/extension', 'extensionIndex',
     '/extension/', 'extensionIndex',
     '/extension/documentation', 'extensionDocumentation',
@@ -63,6 +66,9 @@ urls = (
     '/API/vote', 'APIVote',
     '/API/price', 'APIPrice',
     '/API/programs', 'APIPrograms',
+    # Feed URL
+    '/feed/rss', 'PostsFeed', 
+    '/feed/rss/', 'PostsFeed',
     # Admin URIs
     '/admin', 'adminIndex',
     '/admin/', 'adminIndex',
@@ -171,6 +177,43 @@ class index:
         etree.tostring(postsE)
         #return render.index(posts)
         return render.index(etree.tostring(postsE, pretty_print = True, method="html"))
+
+class license:
+    def GET(self):
+        return render.license()
+
+
+class PostsFeed:
+    def GET(self):
+        title = "Journal of Journal Performance Studies"
+        link = "http://journalofjournalperformancestudies.org/feed/rss"
+        description = "RSS feed of posts for http://journalofjournalperformancestudies.org"
+        
+        results = webDB.select("posts", limit=10, order="datetime DESC")
+
+        items = []
+        for result in results:
+            url = "http://journalofjournalperformancestudies.org/post/" + str(result["pid"])
+            datetime = result['datetime']
+            timeTuple = time.localtime(datetime)
+            timeFormatted = time.strftime("%a, %d %b %Y %H:%M:%S", timeTuple)
+
+            item = PyRSS2Gen.RSSItem(title = result["title"],
+                link = url,
+                description = textile.textile(result["content"]),
+                guid = PyRSS2Gen.Guid(url),
+                categories = ["journalofjournalperformancestudies.org"],
+                author = "editor@journalofjournalperformancestudies.org",
+                pubDate = timeFormatted)
+            items.append(item)
+        
+        rss = PyRSS2Gen.RSS2(title = title,
+            link = link,
+            description = description,
+            lastBuildDate = items[0].pubDate,
+            items = items)
+
+        return rss.to_xml()
 
 class extensionIndex:
     def GET(self):

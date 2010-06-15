@@ -155,7 +155,7 @@
             <archive date="20100611" href="NewsProgram_20100611.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100611.txt" notes=""/><archive date="20100612" href="NewsProgram_20100612.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100612.txt" notes=""/><archive date="20100613" href="NewsProgram_20100613.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100613.txt" notes=""/><archive date="20100614" href="NewsProgram_20100614.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100614.txt" notes=""/></archives>
             <technical>The news show searches for the latest stock quotes and headlines of the biggest academic publishers.</technical>
         </program>    
-        <program id="RecitationHour" processed="0">
+        <program id="RecitationHour" processed="1">
             <name>Recitation Hour</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
@@ -209,7 +209,7 @@
             <description>Concrete combination of grains.</description>
             <current href="GrainCombine.mp3"/>
             <archives>
-            <archive date="20100611" href="GrainCombine_20100611.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100611.txt"/><archive date="20100612" href="GrainCombine_20100612.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100612.txt" notes=""/><archive date="20100613" href="GrainCombine_20100613.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100613.txt" notes=""/><archive date="20100614" href="GrainCombine_20100614.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100614.txt" notes=""/></archives>
+            <archive date="20100612" href="GrainCombine_20100612.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100612.txt" notes=""/><archive date="20100613" href="GrainCombine_20100613.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100613.txt" notes=""/><archive date="20100614" href="GrainCombine_20100614.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100614.txt" notes=""/><archive date="20100615" href="GrainCombine_20100615.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100615.txt" notes=""/></archives>
             <technical>We take the top words as ranked by TF-IDF and convert them by TTS to sound files.  Then we cycle through the text and where the word occurs, subject it to granular manipulations.  If there is no matching word, we play a haunting granular manipulation of a sine wave.  The otherworldy sounds come from mismatched sampling rates; the TTS files are at 16000kHz, while the final composition is at 44100kHz.</technical>
         </program>
         <program id="Genealogies" processed="0">
@@ -245,7 +245,7 @@
             </archives>
             <technical>We select the "stopwords" in the text; these are words, from a NLP perspective, that are often left out of NLP processes because they are considered "insignificant".  Words such as of, and, he, she, it, a, the, etc.  We then take a subset of the other words in the text.  Then, finally, we go through the text word by word.  If a "stopword" is found, it is played straight; if it is one of the other words, it is played backwards; and if nothing is found, nothing is heard.</technical>
         </program>
-        <program id="Drone" processed="1">
+        <program id="Drone" processed="0">
             <name>Drone</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
