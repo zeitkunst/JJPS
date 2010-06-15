@@ -144,7 +144,7 @@
             <archives>
             </archives>
         </program>    
-        <program id="NewsProgram" processed="0">
+        <program id="NewsProgram" processed="1">
             <name>News</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
@@ -155,7 +155,7 @@
             <archive date="20100611" href="NewsProgram_20100611.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100611.txt" notes=""/><archive date="20100612" href="NewsProgram_20100612.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100612.txt" notes=""/><archive date="20100613" href="NewsProgram_20100613.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100613.txt" notes=""/><archive date="20100614" href="NewsProgram_20100614.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100614.txt" notes=""/></archives>
             <technical>The news show searches for the latest stock quotes and headlines of the biggest academic publishers.</technical>
         </program>    
-        <program id="RecitationHour" processed="1">
+        <program id="RecitationHour" processed="0">
             <name>Recitation Hour</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
@@ -163,7 +163,7 @@
             <description>A reading from one of the articles in our archives...</description>
             <current href="RecitationHour.mp3"/>
             <archives>
-            <archive date="20100611" href="RecitationHour_20100611.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100611.txt"/><archive date="20100612" href="RecitationHour_20100612.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100612.txt" notes=""/><archive date="20100613" href="RecitationHour_20100613.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100613.txt" notes=""/><archive date="20100614" href="RecitationHour_20100614.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100614.txt" notes=""/></archives>
+            <archive date="20100612" href="RecitationHour_20100612.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100612.txt" notes=""/><archive date="20100613" href="RecitationHour_20100613.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100613.txt" notes=""/><archive date="20100614" href="RecitationHour_20100614.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100614.txt" notes=""/><archive date="20100615" href="RecitationHour_20100615.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100615.txt" notes=""/></archives>
             <technical>The show that provided the impetus for the entire JJPS project, this is simply TTS of one of the articles in our database.  Be sure to checkout the playlist for the show.</technical>
         </program>
         <program id="CutupHour" processed="0">
@@ -253,7 +253,7 @@
             <description>Droning, drone drone drone</description>
             <current href="Drone.mp3"/>
             <archives>
-            <archive date="20100614" href="Drone_20100614.mp3" hidden="0" playlistHref="DronePlaylist_20100614.txt" notes=""/></archives>
+            <archive date="20100614" href="Drone_20100614.mp3" hidden="0" playlistHref="DronePlaylist_20100614.txt" notes=""/><archive date="20100615" href="Drone_20100615.mp3" hidden="0" playlistHref="DronePlaylist_20100615.txt" notes=""/></archives>
         <technical>We go through each sentence within a randomly chosen article.  Duration of the sounds are based on the number of syllables in a sentence, while frequency is determined by the length of the sentence.  The oscilating variations in the sound come from a cut-up version of the TF-IDF scores in the sentence.  The instrument was chosen to be reminiscent of the Theatre of Eternal Music.</technical>
         </program>
         <program id="CopyHour" processed="0">
@@ -264,7 +264,7 @@
             <description>Whose rights are these anyway?</description>
             <current href="CopyHour.mp3"/>
             <archives>
-            <archive date="20100611" href="CopyHour_20100611.mp3" hidden="0" playlistHref="CopyHourPlaylist_20100611.txt" notes=""/><archive date="20100613" href="CopyHour_20100613.mp3" hidden="0" playlistHref="CopyHourPlaylist_20100613.txt" notes=""/></archives>
+            <archive date="20100611" href="CopyHour_20100611.mp3" hidden="0" playlistHref="CopyHourPlaylist_20100611.txt" notes=""/><archive date="20100613" href="CopyHour_20100613.mp3" hidden="0" playlistHref="CopyHourPlaylist_20100613.txt" notes=""/><archive date="20100615" href="CopyHour_20100615.mp3" hidden="0" playlistHref="CopyHourPlaylist_20100615.txt" notes=""/></archives>
             <technical>The content for this program comes from copyright agreements of journal publishers.</technical>
         </program>
         <program id="PhasorModFreq" processed="0">

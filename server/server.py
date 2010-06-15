@@ -56,6 +56,7 @@ urls = (
     '/radio/programs/(.*?)', 'ViewProgram',
     '/radio/programs', 'ViewProgramList',
     '/radio/technical', 'radioTechnical',
+    '/radio/feed/podcast.xml', 'podcastFeed',
     # API URIs
     '/API', 'APIInfo',
     '/API/ownership/(.*?)', 'APIOwnership',
@@ -216,6 +217,43 @@ class PostsFeed:
             items = items)
 
         return rss.to_xml()
+
+class podcastFeed:
+    def GET(self):
+        station = StationSingleton.getStation()
+
+        returnValue = station.mc.get("podcast")
+        if returnValue:
+            return returnValue
+        title = "Journal of Journal Performance Studies Podcast"
+        link = "http://journalofjournalperformancestudies.org/radio/feed/rss"
+        description = "Podcast for JJPS Radio; http://journalofjournalperformancestudies.org/radio"
+        
+        items = []
+        podcastItems = station.getPodcastItemsList()
+        for podcastItem in podcastItems:
+            url = "http://journalofjournalperformancestudies.org" + podcastItem["url"] 
+            datetime = podcastItem['date']
+            enclosure = PyRSS2Gen.Enclosure(url, podcastItem["size"], "audio/mpeg")
+            item = PyRSS2Gen.RSSItem(title = podcastItem["title"],
+                link = url,
+                description = "<![CDATA[" + textile.textile(podcastItem["description"]) + "]]>",
+                guid = PyRSS2Gen.Guid(url),
+                enclosure = enclosure,
+                categories = ["journalofjournalperformancestudies.org"],
+                author = "editor@journalofjournalperformancestudies.org",
+                pubDate = datetime)
+            items.append(item)
+        
+        rss = PyRSS2Gen.RSS2(title = title,
+            link = link,
+            description = description,
+            lastBuildDate = items[0].pubDate,
+            items = items)
+        
+        podcastXML = rss.to_xml()
+        station.mc.set("podcast", podcastXML, time = 60 * 24)
+        return podcastXML
 
 class extensionIndex:
     def GET(self):

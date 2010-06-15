@@ -2,11 +2,14 @@ import codecs
 import ConfigParser
 import datetime, time
 import os
+import random
 import shutil
 
 import lxml
+import eyeD3
 from lxml import etree
 import mpd
+import memcache
 import couchdb
 
 # Local imports
@@ -41,6 +44,9 @@ class Station(object):
 
         self.logger.debug("Setting up sound stream")
         self.soundStream = Sound.Stream(config = self.config)
+
+        # Setup memcache
+        self.mc = memcache.Client([self.config.get("memcache", "server")], debug = int(self.config.get("memcache", "debug")))
 
     def reloadXML(self):
         self.stationTree = etree.parse(self.stationXML)
@@ -354,6 +360,67 @@ class Station(object):
             div.append(divM)
 
         return etree.tostring(div, pretty_print = True)
+
+    def getPodcastItemsList(self):
+        """Get a list of entries for our podcast."""
+
+        # TODO
+        # implement memcached
+        #returnValue = self.mc.get(journalNameFormatted.encode("ascii") + "_xml")
+        #if returnValue:
+        #    return etree.fromstring(returnValue)
+
+        programRefs = self.getAllProgramsList()
+
+        # Get all of the archives and their information
+        archiveItems = []
+        archivesByDate = {}
+        for programRef in programRefs:
+            programID = programRef[0]
+            programName = programRef[1]
+            archives = self.getProgramArchivesList(programID)
+
+            if (archives != []):
+                for archive in archives:
+                    archiveDate = archive[0]
+                    if (archivesByDate.has_key(archiveDate)):
+                        archivesByDate[archiveDate].append([programID, programName, archive[1], archive[2]])
+                    else:
+                        archivesByDate[archiveDate] = []
+                        archivesByDate[archiveDate].append([programID, programName, archive[1], archive[2]])
+            
+        # Select an item by random for each date
+        finalArchiveList = []
+        
+        archiveDates = archivesByDate.keys()
+        archiveDates.sort()
+        archiveDates.reverse()
+        archivePath = self.config.get("Sound", "archivePath")
+        for archiveDate in archiveDates:
+            selectedArchive = random.choice(archivesByDate[archiveDate])
+            programID = selectedArchive[0]
+            programName = selectedArchive[1]
+            programMP3 = selectedArchive[2]
+            programPlaylist = selectedArchive[3]
+
+            mp3Path = os.path.join(archivePath, programID, programID + "_" + archiveDate + ".mp3")
+            playtime = eyeD3.Mp3AudioFile(mp3Path).getPlayTime()
+            size = os.path.getsize(mp3Path)
+
+            description = programName
+            
+            dateTuple = time.strptime(archiveDate, "%Y%m%d")
+            dateFormatted = time.strftime("%a, %d %b %Y %H:%M:%S", dateTuple)
+            entryDict = {}
+            entryDict["title"] = programName
+            entryDict["description"] = "Check out the <a href='http://journalofjournalperformancestudies.org%s'>playlist</a>." % programPlaylist
+            entryDict["size"] = size
+            entryDict["playtime"] = playtime
+            entryDict["url"] = programMP3
+            entryDict["date"] = dateFormatted
+            finalArchiveList.append(entryDict)
+
+        return finalArchiveList
 
     def getAllProgramsTechnical(self):
         """Get all of the technical information about the programs, sorted by programRef"""
