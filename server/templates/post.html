@@ -1,5 +1,10 @@
 $def with (postID, postTitle, postData, comments)
 $var title: $postTitle || MAICgregator
+<div class="span-24 prepend-top append-bottom last" style="border-bottom: 1px solid #000;">
+    <div class="span-8 JJPSTitle">
+        <a href="/"><img src="/static/images/site/JJPSLogo.png" /></a>
+    </div>
+    <div id="JJPSPost" class="span-14 append-2 last">
 $:postData
 <h2>Comments</h2>
 $for comment in comments:
@@ -26,3 +31,6 @@ $for comment in comments:
             <p><input type="submit" value="Submit comment" name="commentSubmitButton" id="commentSubmitButton"/></p>
         </fieldset>
 </div>
+    </div>
+</div>
+

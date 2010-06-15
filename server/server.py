@@ -125,17 +125,9 @@ class index:
         posts += "<div id='posts'>"
         for item in results:
             postID = item["pid"]
-            posts += "<div id=\"post" + str(postID) + "\">\n"
-            posts += "<h2>" + item["title"] + "</h2>\n"
-            posts += "<div class=\"post\">\n"
-            posts += "<div>" + textile.textile(item["content"]) + "</div>\n"
             datetime = item['datetime']
             timeTuple = time.localtime(datetime)
             timeFormatted = time.strftime("%a, %d %b %Y %H:%M:%S", timeTuple)
-            posts += "<p>Posted on " + timeFormatted + "</p>\n"
-            posts += "<p><a href=\"/post/" + str(postID) + "\" title=\"comment  on post\">Comments</a></p>\n"
-            posts += "</div>\n"
-            posts += "</div>\n"
             postE = etree.Element("div")
             postE.set("id", "post" + str(postID))
             postE.set("class", "prepend-3 span-21 append-bottom last")
@@ -147,7 +139,11 @@ class index:
             actualPostE = etree.Element("div")
             actualPostE.set("class", "post prepend-1 span-10")
             h2E = etree.Element("h3")
-            h2E.text = item["title"]
+            aPostLink = etree.Element("a")
+            postLink = "/post/" + str(postID)
+            aPostLink.set("href", postLink)
+            aPostLink.text = item["title"]
+            h2E.append(aPostLink)
             actualPostE.append(h2E)
             
             # TODO
@@ -260,10 +256,14 @@ class viewPost:
         results = webDB.select("posts", dbVars, where="pid = $postID", order="datetime DESC")
         post = ""
         for item in results:
+            datetime = item['datetime']
+            timeTuple = time.localtime(datetime)
+            timeFormatted = time.strftime("%a, %d %b %Y %H:%M:%S", timeTuple)
+
             postTitle = item["title"]
             post += "<h2>" + item["title"] + "</h2>\n"
             post += "<div>" + textile.textile(item["content"]) + "</div>\n"
-            post += "<p>Posted on " + str(item["datetime"]) + "</p>\n"
+            post += "<p>Posted on " + str(timeFormatted) + "</p>\n"
 
         results = webDB.select("comments", dbVars, where="pid = $postID", order="datetime DESC")
         comments = []

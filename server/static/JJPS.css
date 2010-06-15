@@ -30,6 +30,15 @@ body#extension h1, body#extension h2, body#extension h3 {
     text-decoration: none;
 }
 
+body#extension #JJPSExtensionLogo a:hover, body#extension #JJPSExtensionDownloadButton a:hover, body#front .JJPSTitle a:hover {
+    background-color: transparent;
+}
+
+#JJPSPost {
+    background-color: #dedede;
+    padding: 8px;
+}
+
 #footer a:hover, body#front a:hover, body#radio a:hover, body#extension a:hover {
     color: #dedede;
     background-color: #de0000;
