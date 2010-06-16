@@ -521,11 +521,13 @@ class Station(object):
         programPersonsDiv = etree.Element("div")
         programPersonsDiv.set("class", "hostedBy")
 
+        personH2 = etree.Element("h2")
+        personH2.text = "Hosted by "
         for person in hostedBy.keys():
             # TODO
             # Make link to person's page
-            personH2 = etree.Element("h2")
-            personH2.text = person
+            #personH2 = etree.Element("h2")
+            personH2.text += person
             programPersonsDiv.append(personH2)
 
         programDiv.append(programPersonsDiv)

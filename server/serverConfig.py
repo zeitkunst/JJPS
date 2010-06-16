@@ -20,7 +20,7 @@ log_backups = 4
 fastcgi = True
 
 # Base URI -- used for redirects and admin pages
-baseURI = "http://localhost:8080/"
+baseURI = "http://turbulence.org/Works/JJPS/"
 
 # Path to the most up-to-date extension
 currentExtensionPath = "/static/JJPS_0.1.0.xpi"

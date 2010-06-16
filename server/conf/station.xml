@@ -144,7 +144,7 @@
             <archives>
             </archives>
         </program>    
-        <program id="NewsProgram" processed="1">
+        <program id="NewsProgram" processed="0">
             <name>News</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
@@ -152,7 +152,7 @@
             <description>All the news that's fit to hear!</description>
             <current href="NewsProgram.mp3"/>
             <archives>
-            <archive date="20100611" href="NewsProgram_20100611.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100611.txt" notes=""/><archive date="20100612" href="NewsProgram_20100612.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100612.txt" notes=""/><archive date="20100613" href="NewsProgram_20100613.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100613.txt" notes=""/><archive date="20100614" href="NewsProgram_20100614.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100614.txt" notes=""/></archives>
+            <archive date="20100612" href="NewsProgram_20100612.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100612.txt" notes=""/><archive date="20100613" href="NewsProgram_20100613.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100613.txt" notes=""/><archive date="20100614" href="NewsProgram_20100614.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100614.txt" notes=""/><archive date="20100615" href="NewsProgram_20100615.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100615.txt" notes=""/></archives>
             <technical>The news show searches for the latest stock quotes and headlines of the biggest academic publishers.</technical>
         </program>    
         <program id="RecitationHour" processed="0">
@@ -166,7 +166,7 @@
             <archive date="20100612" href="RecitationHour_20100612.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100612.txt" notes=""/><archive date="20100613" href="RecitationHour_20100613.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100613.txt" notes=""/><archive date="20100614" href="RecitationHour_20100614.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100614.txt" notes=""/><archive date="20100615" href="RecitationHour_20100615.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100615.txt" notes=""/></archives>
             <technical>The show that provided the impetus for the entire JJPS project, this is simply TTS of one of the articles in our database.  Be sure to checkout the playlist for the show.</technical>
         </program>
-        <program id="CutupHour" processed="0">
+        <program id="CutupHour" processed="1">
             <name>Cut-up Hour</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
@@ -174,7 +174,7 @@
             <description>Doing cut-ups is easy digitally!</description>
             <current href="CutupHour.mp3"/>
             <archives>
-                <archive date="20100608" href="CutupHour_20100608.mp3" hidden="0" playlistHref="CutupHourPlaylist_20100608.txt"/><archive date="20100609" href="CutupHour_20100609.mp3" hidden="0" playlistHref="CutupHourPlaylist_20100609.txt"/><archive date="20100610" href="CutupHour_20100610.mp3" hidden="0" playlistHref="CutupHourPlaylist_20100610.txt"/><archive date="20100613" href="CutupHour_20100613.mp3" hidden="0" playlistHref="CutupHourPlaylist_20100613.txt" notes=""/></archives>
+                <archive date="20100609" href="CutupHour_20100609.mp3" hidden="0" playlistHref="CutupHourPlaylist_20100609.txt"/><archive date="20100610" href="CutupHour_20100610.mp3" hidden="0" playlistHref="CutupHourPlaylist_20100610.txt"/><archive date="20100613" href="CutupHour_20100613.mp3" hidden="0" playlistHref="CutupHourPlaylist_20100613.txt" notes=""/><archive date="20100615" href="CutupHour_20100615.mp3" hidden="0" playlistHref="CutupHourPlaylist_20100615.txt" notes=""/></archives>
             <technical>By taking random sentences from each of the texts in the database, we produce a cut-up show that is reminiscent of the works of Allen Ginsburg and John Cage.</technical>
         </program>
         <program id="WhatstheFrequencyKenneth" processed="0">
@@ -204,7 +204,7 @@
         <program id="GrainCombine" processed="0">
             <name>Grain Combine</name>        
             <hostedBy>
-                <person ref="PersonTwo"/>            
+                <person ref="Ixtel"/>            
             </hostedBy>
             <description>Concrete combination of grains.</description>
             <current href="GrainCombine.mp3"/>
@@ -286,7 +286,7 @@
             <description>Readings from open access publishers, with an emphasis on journals associated with Open Humanities Press.</description>
             <current href="OpenAccessHour.mp3"/>
             <archives>
-            <archive date="20100611" href="OpenAccessHour_20100611.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20100611.txt" notes=""/><archive date="20100612" href="OpenAccessHour_20100612.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20100612.txt" notes=""/><archive date="20100613" href="OpenAccessHour_20100613.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20100613.txt" notes=""/></archives>
+            <archive date="20100611" href="OpenAccessHour_20100611.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20100611.txt" notes=""/><archive date="20100612" href="OpenAccessHour_20100612.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20100612.txt" notes=""/><archive date="20100613" href="OpenAccessHour_20100613.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20100613.txt" notes=""/><archive date="20100615" href="OpenAccessHour_20100615.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20100615.txt" notes=""/></archives>
             <technical>These documents are TTS versions of open-access articles in our database.  Our main sources are Culture Machine, Fast Capitalism, and the International Journal of Zizek Studies.</technical>
         </program>
 
@@ -300,6 +300,10 @@
         <personality id="PersonTwo" href="">
             <name>Person Two</name>        
             <bio>No bio, really.  Nope!</bio>
+        </personality>    
+        <personality id="Ixtel" href="">
+            <name>Ixtel</name>        
+            <bio>A cat?</bio>
         </personality>    
 
     </personalities>
