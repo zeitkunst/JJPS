@@ -1139,7 +1139,7 @@ var JJPS = {
         radioDiv.id = "JJPSHeaderRadioDiv";
         radioLogoDiv = JJPS.doc.createElement("div");
         radioLogoDiv.id = "JJPSHeaderRadioLogoDiv";
-        radioLogoDiv.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;";
+        radioLogoDiv.innerHTML = "<a style='text-decoration: none;' href='http://turbulence.org/Works/JJPS/radio'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;</a>";
         radioDiv.appendChild(radioLogoDiv);
 
         radioInfoDiv = JJPS.doc.createElement("div");
@@ -1173,6 +1173,10 @@ var JJPS = {
 
         var results = JJPS.journalRequest.responseXML;
 
+        if (results == null) {
+            return false;
+        }
+
         var error = results.getElementsByTagName("results")[0].getAttribute("error");
 
         if (error != null) {
@@ -1181,7 +1185,7 @@ var JJPS = {
             headerDiv.id = "JJPSHeaderDiv";
             logoDiv = JJPS.doc.createElement("div");
             logoDiv.id = "JJPSHeaderLogoDiv";
-            logoDiv.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;";
+            logoDiv.innerHTML = "<a href='http://turbulence.org/Works/JJPS/extension' style='text-decoration: none;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;</a>";
             headerDiv.appendChild(logoDiv);
 
 
@@ -1400,7 +1404,7 @@ var JJPS = {
         headerDiv.id = "JJPSHeaderDiv";
         logoDiv = JJPS.doc.createElement("div");
         logoDiv.id = "JJPSHeaderLogoDiv";
-        logoDiv.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;";
+        logoDiv.innerHTML = "<a href='http://turbulence.org/Works/JJPS/extension' style='text-decoration: none;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;</a>";
 
         radioDiv = JJPS._makeRadioDiv();
         headerDiv.appendChild(radioDiv);

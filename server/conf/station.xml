@@ -4,7 +4,7 @@
             <slot startTime="00:00" endTime="01:59" program="GrainCombine"/>
             <slot startTime="02:00" endTime="05:59" program="Telegraph"/>
             <slot startTime="06:00" endTime="07:59" program="RecitationHour"/>
-            <slot startTime="08:00" endTime="10:59" program="ProgramTwo"/>
+            <slot startTime="08:00" endTime="10:59" program="PhasorModFreq"/>
             <slot startTime="11:00" endTime="11:59" program="NewsProgram"/>
             <slot startTime="12:00" endTime="13:59" program="RecitationHour"/>
             <slot startTime="14:00" endTime="16:59" program="OpenAccessHour"/>
@@ -31,7 +31,7 @@
             <slot startTime="00:00" endTime="01:59" program="GrainCombine"/>
             <slot startTime="02:00" endTime="05:59" program="Drone"/>
             <slot startTime="06:00" endTime="07:59" program="RecitationHour"/>
-            <slot startTime="08:00" endTime="10:59" program="ProgramTwo"/>
+            <slot startTime="08:00" endTime="10:59" program="Conjunctional"/>
             <slot startTime="11:00" endTime="11:59" program="NewsProgram"/>
             <slot startTime="12:00" endTime="13:59" program="RecitationHour"/>
             <slot startTime="14:00" endTime="14:59" program="CopyHour"/>
@@ -44,7 +44,7 @@
             <slot startTime="00:00" endTime="01:59" program="GrainCombine"/>
             <slot startTime="02:00" endTime="05:59" program="Telegraph"/>
             <slot startTime="06:00" endTime="07:59" program="RecitationHour"/>
-            <slot startTime="08:00" endTime="10:59" program="ProgramTwo"/>
+            <slot startTime="08:00" endTime="10:59" program="Drone"/>
             <slot startTime="11:00" endTime="11:59" program="NewsProgram"/>
             <slot startTime="12:00" endTime="13:59" program="WhatstheFrequencyKenneth"/>
             <slot startTime="14:00" endTime="15:59" program="Conjunctional"/>
@@ -58,7 +58,7 @@
             <slot startTime="00:00" endTime="01:59" program="GrainCombine"/>
             <slot startTime="02:00" endTime="05:59" program="Drone"/>
             <slot startTime="06:00" endTime="07:59" program="RecitationHour"/>
-            <slot startTime="08:00" endTime="10:59" program="ProgramTwo"/>
+            <slot startTime="08:00" endTime="10:59" program="Telegraph"/>
             <slot startTime="11:00" endTime="11:59" program="NewsProgram"/>
             <slot startTime="12:00" endTime="13:59" program="WhatstheFrequencyKenneth"/>
             <slot startTime="14:00" endTime="15:59" program="Genealogies"/>
@@ -71,7 +71,7 @@
             <slot startTime="00:00" endTime="01:59" program="GrainCombine"/>
             <slot startTime="02:00" endTime="05:59" program="Telegraph"/>
             <slot startTime="06:00" endTime="07:59" program="RecitationHour"/>
-            <slot startTime="08:00" endTime="10:59" program="ProgramTwo"/>
+            <slot startTime="08:00" endTime="10:59" program="PhasorModFreq"/>
             <slot startTime="11:00" endTime="11:59" program="NewsProgram"/>
             <slot startTime="12:00" endTime="13:59" program="RecitationHour"/>
             <slot startTime="14:00" endTime="14:59" program="CopyHour"/>
@@ -84,16 +84,18 @@
             <slot startTime="00:00" endTime="01:59" program="GrainCombine"/>
             <slot startTime="02:00" endTime="05:59" program="Telegraph"/>
             <slot startTime="06:00" endTime="07:59" program="RecitationHour"/>
-            <slot startTime="08:00" endTime="10:59" program="ProgramTwo"/>
+            <slot startTime="08:00" endTime="10:59" program="WhatstheFrequencyKenneth"/>
             <slot startTime="11:00" endTime="11:59" program="NewsProgram"/>
             <slot startTime="12:00" endTime="13:59" program="RecitationHour"/>
             <slot startTime="14:00" endTime="17:59" program="OpenAccessHour"/>
             <slot startTime="18:00" endTime="18:59" program="NewsProgram"/>
-            <slot startTime="19:00" endTime="23:59" program="ProgramFour"/>
+            <slot startTime="19:00" endTime="19:59" program="Noise"/>
+            <slot startTime="20:00" endTime="23:59" program="Drone"/>
         </saturday>
     </schedule>
 
     <programs>
+        <!--
         <program id="ProgramOne" processed="0">
             <name>Program One</name>        
             <hostedBy>
@@ -144,6 +146,7 @@
             <archives>
             </archives>
         </program>    
+        -->
         <program id="NewsProgram" processed="0">
             <name>News</name>        
             <hostedBy>
@@ -152,7 +155,7 @@
             <description>All the news that's fit to hear!</description>
             <current href="NewsProgram.mp3"/>
             <archives>
-            <archive date="20100612" href="NewsProgram_20100612.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100612.txt" notes=""/><archive date="20100613" href="NewsProgram_20100613.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100613.txt" notes=""/><archive date="20100614" href="NewsProgram_20100614.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100614.txt" notes=""/><archive date="20100615" href="NewsProgram_20100615.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100615.txt" notes=""/></archives>
+            <archive date="20100613" href="NewsProgram_20100613.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100613.txt" notes=""/><archive date="20100614" href="NewsProgram_20100614.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100614.txt" notes=""/><archive date="20100615" href="NewsProgram_20100615.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100615.txt" notes=""/><archive date="20100616" href="NewsProgram_20100616.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100616.txt" notes=""/></archives>
             <technical>The news show searches for the latest stock quotes and headlines of the biggest academic publishers.</technical>
         </program>    
         <program id="RecitationHour" processed="0">
@@ -163,7 +166,7 @@
             <description>A reading from one of the articles in our archives...</description>
             <current href="RecitationHour.mp3"/>
             <archives>
-            <archive date="20100612" href="RecitationHour_20100612.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100612.txt" notes=""/><archive date="20100613" href="RecitationHour_20100613.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100613.txt" notes=""/><archive date="20100614" href="RecitationHour_20100614.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100614.txt" notes=""/><archive date="20100615" href="RecitationHour_20100615.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100615.txt" notes=""/></archives>
+            <archive date="20100613" href="RecitationHour_20100613.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100613.txt" notes=""/><archive date="20100614" href="RecitationHour_20100614.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100614.txt" notes=""/><archive date="20100615" href="RecitationHour_20100615.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100615.txt" notes=""/><archive date="20100616" href="RecitationHour_20100616.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20100616.txt" notes=""/></archives>
             <technical>The show that provided the impetus for the entire JJPS project, this is simply TTS of one of the articles in our database.  Be sure to checkout the playlist for the show.</technical>
         </program>
         <program id="CutupHour" processed="1">
@@ -188,7 +191,7 @@
             <archive date="20100615" href="WhatstheFrequencyKenneth_20100615.mp3" hidden="0" playlistHref="WhatstheFrequencyKennethPlaylist_20100615.txt" notes=""/></archives>
             <technical>Here we count the number of times a word occurs in the text, rank it by size, and read it out.  We refer here to the various poetic experiments of Kenneth Goldsmith.</technical>
         </program>
-        <program id="Telegraph" processed="1">
+        <program id="Telegraph" processed="0">
             <name>Telegraph</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
@@ -209,7 +212,7 @@
             <description>Concrete combination of grains.</description>
             <current href="GrainCombine.mp3"/>
             <archives>
-            <archive date="20100612" href="GrainCombine_20100612.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100612.txt" notes=""/><archive date="20100613" href="GrainCombine_20100613.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100613.txt" notes=""/><archive date="20100614" href="GrainCombine_20100614.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100614.txt" notes=""/><archive date="20100615" href="GrainCombine_20100615.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100615.txt" notes=""/></archives>
+            <archive date="20100613" href="GrainCombine_20100613.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100613.txt" notes=""/><archive date="20100614" href="GrainCombine_20100614.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100614.txt" notes=""/><archive date="20100615" href="GrainCombine_20100615.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100615.txt" notes=""/><archive date="20100616" href="GrainCombine_20100616.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100616.txt" notes=""/></archives>
             <technical>We take the top words as ranked by TF-IDF and convert them by TTS to sound files.  Then we cycle through the text and where the word occurs, subject it to granular manipulations.  If there is no matching word, we play a haunting granular manipulation of a sine wave.  The otherworldy sounds come from mismatched sampling rates; the TTS files are at 16000kHz, while the final composition is at 44100kHz.</technical>
         </program>
         <program id="Genealogies" processed="0">
@@ -234,7 +237,7 @@
             <archive date="20100611" href="Noise_20100611.mp3" hidden="0" playlistHref="" notes=""/></archives>
             <technical>By simply opening our binary database files and writing them out again as sound files, we get a noise landscape.</technical>
         </program>
-        <program id="Conjunctional" processed="0">
+        <program id="Conjunctional" processed="1">
             <name>Conjunctional</name>        
             <hostedBy>
                 <person ref="PersonTwo"/>            
