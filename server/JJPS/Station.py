@@ -116,8 +116,6 @@ class Station(object):
 
         try:
             notesSrc = os.path.join(archivePath, programName, programName + "CurrentNotes" + ".txt")
-            print notesSrc
-            os.stat(playlistSrc)
 
             fp = codecs.open(notesSrc, "r", "utf-8")
             notes = fp.read()
@@ -418,6 +416,7 @@ class Station(object):
             entryDict["playtime"] = playtime
             entryDict["url"] = programMP3
             entryDict["date"] = dateFormatted
+            entryDict["playlist"] = programPlaylist
             finalArchiveList.append(entryDict)
 
         return finalArchiveList

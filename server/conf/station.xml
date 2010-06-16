@@ -31,7 +31,7 @@
             <slot startTime="00:00" endTime="01:59" program="GrainCombine"/>
             <slot startTime="02:00" endTime="05:59" program="Drone"/>
             <slot startTime="06:00" endTime="07:59" program="RecitationHour"/>
-            <slot startTime="08:00" endTime="10:59" program="Conjunctional"/>
+            <slot startTime="08:00" endTime="10:59" program="Genealogies"/>
             <slot startTime="11:00" endTime="11:59" program="NewsProgram"/>
             <slot startTime="12:00" endTime="13:59" program="RecitationHour"/>
             <slot startTime="14:00" endTime="14:59" program="CopyHour"/>
@@ -150,7 +150,7 @@
         <program id="NewsProgram" processed="0">
             <name>News</name>        
             <hostedBy>
-                <person ref="PersonTwo"/>            
+                <person ref="DJAnchor"/>            
             </hostedBy>
             <description>All the news that's fit to hear!</description>
             <current href="NewsProgram.mp3"/>
@@ -161,7 +161,7 @@
         <program id="RecitationHour" processed="0">
             <name>Recitation Hour</name>        
             <hostedBy>
-                <person ref="PersonTwo"/>            
+                <person ref="Festival"/>            
             </hostedBy>
             <description>A reading from one of the articles in our archives...</description>
             <current href="RecitationHour.mp3"/>
@@ -172,7 +172,7 @@
         <program id="CutupHour" processed="1">
             <name>Cut-up Hour</name>        
             <hostedBy>
-                <person ref="PersonTwo"/>            
+                <person ref="GinsburgsGhost"/>            
             </hostedBy>
             <description>Doing cut-ups is easy digitally!</description>
             <current href="CutupHour.mp3"/>
@@ -183,18 +183,18 @@
         <program id="WhatstheFrequencyKenneth" processed="0">
             <name>What's the Frequency Kenneth?</name>        
             <hostedBy>
-                <person ref="PersonTwo"/>            
+                <person ref="DJFreq"/>            
             </hostedBy>
             <description>Where frequency is the number of words.</description>
             <current href="WhatstheFrequencyKenneth.mp3"/>
             <archives>
-            <archive date="20100615" href="WhatstheFrequencyKenneth_20100615.mp3" hidden="0" playlistHref="WhatstheFrequencyKennethPlaylist_20100615.txt" notes=""/></archives>
+            <archive date="20100615" href="WhatstheFrequencyKenneth_20100615.mp3" hidden="0" playlistHref="WhatstheFrequencyKennethPlaylist_20100615.txt" notes=""/><archive date="20100616" href="WhatstheFrequencyKenneth_20100616.mp3" hidden="0" playlistHref="WhatstheFrequencyKennethPlaylist_20100616.txt" notes=""/></archives>
             <technical>Here we count the number of times a word occurs in the text, rank it by size, and read it out.  We refer here to the various poetic experiments of Kenneth Goldsmith.</technical>
         </program>
         <program id="Telegraph" processed="0">
             <name>Telegraph</name>        
             <hostedBy>
-                <person ref="PersonTwo"/>            
+                <person ref="ZerosAndOnes"/>            
             </hostedBy>
             <description>What do the dots and the dashes mean?</description>
             <current href="Telegraph.mp3"/>
@@ -218,7 +218,7 @@
         <program id="Genealogies" processed="0">
             <name>Genealogies</name>        
             <hostedBy>
-                <person ref="PersonTwo"/>            
+                <person ref="Order"/>            
             </hostedBy>
             <description>Who begat whom?</description>
             <current href="Genealogies.mp3"/>
@@ -229,7 +229,7 @@
         <program id="Noise" processed="0">
             <name>Noise</name>        
             <hostedBy>
-                <person ref="PersonTwo"/>            
+                <person ref="NoisePeep"/>            
             </hostedBy>
             <description>The sound of data...</description>
             <current href="Noise.mp3"/>
@@ -237,10 +237,10 @@
             <archive date="20100611" href="Noise_20100611.mp3" hidden="0" playlistHref="" notes=""/></archives>
             <technical>By simply opening our binary database files and writing them out again as sound files, we get a noise landscape.</technical>
         </program>
-        <program id="Conjunctional" processed="1">
+        <program id="Conjunctional" processed="0">
             <name>Conjunctional</name>        
             <hostedBy>
-                <person ref="PersonTwo"/>            
+                <person ref="AndsAndOrs"/>            
             </hostedBy>
             <description>Putting things together, taking them apart in reverse.</description>
             <current href="Conjunctional.mp3"/>
@@ -251,7 +251,7 @@
         <program id="Drone" processed="0">
             <name>Drone</name>        
             <hostedBy>
-                <person ref="PersonTwo"/>            
+                <person ref="DJEternal"/>            
             </hostedBy>
             <description>Droning, drone drone drone</description>
             <current href="Drone.mp3"/>
@@ -262,7 +262,7 @@
         <program id="CopyHour" processed="0">
             <name>Copy Hour</name>        
             <hostedBy>
-                <person ref="PersonTwo"/>            
+                <person ref="DJLitigation"/>            
             </hostedBy>
             <description>Whose rights are these anyway?</description>
             <current href="CopyHour.mp3"/>
@@ -273,18 +273,18 @@
         <program id="PhasorModFreq" processed="0">
             <name>Phasor. mod. freq.</name>        
             <hostedBy>
-                <person ref="PersonTwo"/>            
+                <person ref="DJPLL"/>            
             </hostedBy>
-            <description>What happens when you drink too much caffiene while reading articles.</description>
+            <description>What happens when you drink too much caffeine while reading articles.</description>
             <current href="PhasorModFreq.mp3"/>
             <archives>
             <archive date="20100611" href="PhasorModFreq_20100611.mp3" hidden="0" playlistHref="PhasorModFreqPlaylist_20100611.txt"/></archives>
             <technical>First, we take the number of syllables of each word and, multiplied by a scaling factor, create a rhythmic background.  Next, frequencies of the overlaying sounds are determined by word length, with the instrument phase-based FM synthesis.</technical>
         </program>
-        <program id="OpenAccessHour" processed="0">
+        <program id="OpenAccessHour" processed="1">
             <name>Open Access Hour</name>        
             <hostedBy>
-                <person ref="PersonTwo"/>            
+                <person ref="DJOA"/>            
             </hostedBy>
             <description>Readings from open access publishers, with an emphasis on journals associated with Open Humanities Press.</description>
             <current href="OpenAccessHour.mp3"/>
@@ -307,6 +307,54 @@
         <personality id="Ixtel" href="">
             <name>Ixtel</name>        
             <bio>A cat?</bio>
+        </personality>    
+        <personality id="AndsAndOrs" href="">
+            <name>Ands and Ors</name>        
+            <bio>Conjunctions</bio>
+        </personality>    
+        <personality id="ZerosAndOnes" href="">
+            <name>001011001</name>        
+            <bio>Binary</bio>
+        </personality>    
+        <personality id="NoisePeep" href="">
+            <name>$#*@)!</name>        
+            <bio>Binary</bio>
+        </personality>    
+        <personality id="DJPLL" href="">
+            <name>DJ PLL</name>        
+            <bio>Binary</bio>
+        </personality>    
+        <personality id="DJFreq" href="">
+            <name>DJ Freq</name>        
+            <bio>Rather</bio>
+        </personality>    
+        <personality id="GinsburgsGhost" href="">
+            <name>Ginsburg's Ghost</name>        
+            <bio>And Cage too</bio>
+        </personality>    
+        <personality id="DJOA" href="">
+            <name>DJ OA</name>        
+            <bio>OA</bio>
+        </personality>    
+        <personality id="DJLitigation" href="">
+            <name>DJ Litigation</name>        
+            <bio>Lawyer</bio>
+        </personality>    
+        <personality id="DJEternal" href="">
+            <name>DJ Eternal</name>        
+            <bio>Young, Conrad, Cale, and others</bio>
+        </personality>    
+        <personality id="Festival" href="">
+            <name>cmu_us_awb_cg</name>        
+            <bio>festival</bio>
+        </personality>    
+        <personality id="DJAnchor" href="">
+            <name>DJ Anchor</name>        
+            <bio>news</bio>
+        </personality>    
+        <personality id="Order" href="">
+            <name>Order of Lineage</name>        
+            <bio>lines</bio>
         </personality>    
 
     </personalities>

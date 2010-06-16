@@ -232,7 +232,7 @@ class podcastFeed:
         items = []
         podcastItems = station.getPodcastItemsList()
         for podcastItem in podcastItems:
-            url = "http://journalofjournalperformancestudies.org" + podcastItem["url"] 
+            url = "http://journalofjournalperformancestudies.org" + podcastItem["playlist"] 
             datetime = podcastItem['date']
             enclosure = PyRSS2Gen.Enclosure(url, podcastItem["size"], "audio/mpeg")
             item = PyRSS2Gen.RSSItem(title = podcastItem["title"],

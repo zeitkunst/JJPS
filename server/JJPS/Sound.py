@@ -915,7 +915,6 @@ outs asig, asig
         prior = 1.0
         sweepSets = [[5000, 8000, 5000], [100, 1000, 500], [250, 5500, 500], [250, 500, 300]]
         
-        print len(allSyllables)
         chunkSize = 60
         numSyllableSets = len(allSyllables)
         numChunks = math.ceil(numSyllableSets/chunkSize)

@@ -1,5 +1,7 @@
 = Journal of Journal Performance Studies =
 
+For license information, see http://journalofjournalperformancestudies.org/license
+
 == extension/ ==
 
 Code for the Firefox extension of the project
@@ -7,6 +9,10 @@ Code for the Firefox extension of the project
 == info/ == 
 
 Journal info and RDF model
+
+== instruments/ ==
+
+csound instruments for JJPS Radio
 
 == server/ ==
 
