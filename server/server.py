@@ -23,6 +23,7 @@ from webob.acceptparse import Accept
 from lxml import etree
 import textile
 import PyRSS2Gen
+import twitter
 
 # My own library imports
 from JJPS.Station import Station
@@ -120,14 +121,50 @@ class Log(WsgiLog):
 
 class index:
     def GET(self):
+        station = StationSingleton.getStation()
+
+        # get identi.ca dents
+        statusesString = station.mc.get("statuses")
+
+        if statusesString:
+            pass
+        else:
+            api = twitter.Api(base_url="http://identi.ca/api")
+            statuses = api.GetUserTimeline("JJPS", count = 5)
+            statusesE = etree.Element("div")
+            statusesE.set("class", "span-6")
+            headE = etree.Element("h2")
+            headE.text = "JJPS Dents"
+            statusesE.append(headE)
+            for status in statuses:
+                text = status.text
+                created = status.created_at
+                itemE = etree.Element("div")
+                itemE.set("class", "status")
+                itemSE = etree.Element("p")
+                itemSE.text = text
+                itemCE = etree.Element("p")
+                itemCE.text = created
+                itemE.append(itemSE)
+                itemE.append(itemCE)
+                statusesE.append(itemE)
+            followE = etree.Element("h3")
+            followAE = etree.Element("a")
+            followAE.set("href", "http://identi.ca/JJPS")
+            followAE.text = "Follow JJPS at identi.ca"
+            followE.append(followAE)
+            statusesE.append(followE)
+            statusesString = etree.tostring(statusesE, pretty_print = True)
+            station.mc.set("statuses", statusesString, time = 60)
+
         results = webDB.select("posts", limit=10, order="datetime DESC")
         posts = ""
         postsE = etree.Element("div")
         postsE.set("id", "posts")
-        postsE.set("class", "span-24 last")
+        postsE.set("class", "span-18 last")
         h1E = etree.Element("h1")
         h1E.text = "Recent News"
-        h1E.set("class", "prepend-8 span-16 last append-bottom")
+        h1E.set("class", "span-18 last append-bottom")
         postsE.append(h1E)
         posts += "<div id='posts'>"
         for item in results:
@@ -137,7 +174,7 @@ class index:
             timeFormatted = time.strftime("%a, %d %b %Y %H:%M:%S", timeTuple)
             postE = etree.Element("div")
             postE.set("id", "post" + str(postID))
-            postE.set("class", "prepend-3 span-21 append-bottom last")
+            postE.set("class", "span-18 append-bottom last")
             pE = etree.Element("p")
             pE.set("class", "date span-4")
             pE.text = "Posted on " + timeFormatted
@@ -179,7 +216,7 @@ class index:
         
         etree.tostring(postsE)
         #return render.index(posts)
-        return render.index(etree.tostring(postsE, pretty_print = True, method="html"))
+        return render.index(statusesString, etree.tostring(postsE, pretty_print = True, method="html"))
 
 class license:
     def GET(self):
