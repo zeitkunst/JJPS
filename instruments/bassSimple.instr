@@ -1,5 +1,5 @@
 instr %d
-
+; modified from http://www.csounds.com/mikelson/drummach.orc
 ; Dumb Bass Drum
 kfreqenv expseg  40,    .01, 500, .08, 50
 kampenv  expseg  .0001, .01, p4,  .08, .01

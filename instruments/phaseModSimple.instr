@@ -1,5 +1,5 @@
     instr %d
-    
+    ; modified from http://iainmccurdy.org/CsoundRealtimeExamples/FM_PM_RM_AM/18PhaseModulationSynthesisMMMC.csd 
     kenv transeg 0.01, p3*0.75, 4.0, 1, p3*0.25, -4.0, 0.01
     kenv = p4 * kenv 
     kbasefreq = p5

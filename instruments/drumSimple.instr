@@ -10,6 +10,7 @@
 ;endin
 
 instr %d
+; modified from http://www.csounds.com/mikelson/drummach.orc
 isweep1 = p5
 isweep2 = p6
 isweep3 = p7
