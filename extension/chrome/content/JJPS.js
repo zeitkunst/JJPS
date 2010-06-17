@@ -482,7 +482,7 @@ var JJPS = {
 
             h3 = JJPS.doc.createElement("h3");
             h3.className = "JJPSAdH3";
-            h3.innerHTML = "<a href=\"" + "#" + "\">" + journalName + "</a>";
+            h3.innerHTML = "<a href=\"http://www.google.com/search?q=" + journalName + "\">" + journalName + "</a>";
 
             cite = JJPS.doc.createElement("cite");
             cite.className = "JJPSAdCite";
@@ -490,11 +490,11 @@ var JJPS = {
 
             li.appendChild(h3);
             if (journalsOrderingType == "price") {
-                li.innerHTML = li.innerHTML + "Owned by " + ownerName + " is valuable: $" + price + "." ;
+                li.innerHTML = li.innerHTML + "Owned by " + ownerName + " is valuable! $" + price + " per click!." ;
             } else if (journalsOrderingType == "click") {
-                li.innerHTML = li.innerHTML + "Owned by " + ownerName + "might be clicked a lot: " + click + "." ;
+                li.innerHTML = li.innerHTML + "Owned by " + ownerName + " has a high click rate of " + click + " clicks a day!" ;
             } else if (journalsOrderingType == "volume") {
-                li.innerHTML = li.innerHTML + "Owned by " + ownerName + " might be high volume.";
+                li.innerHTML = li.innerHTML + "Owned by " + ownerName + " has a high volume of eyeballs!";
 
             }
 

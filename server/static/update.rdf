@@ -14,7 +14,7 @@
                    NS1:minVersion="3.0"
                    NS1:maxVersion="3.8.*"
                    NS1:updateLink="http://journalofjournalperformancestudies.org/static/JJPS_0.1.0.xpi"
-                   NS1:updateHash="sha1:da6fff34cc395e6fb53e58af41873f0c6ea6d34a" />
+                   NS1:updateHash="sha1:ede8e7d911c3e2352398fa6d436061d62da3fe44" />
   <RDF:Description RDF:about="urn:mozilla:extension:extension@journalofjournalperformancestudies.org"
                    NS1:signature="MIGTMA0GCSqGSIb3DQEBDQUAA4GBAHzq3r6mHlFNVqSYEfE3NmFvc7Frb6P64GRbpTwcx59y0+0H6esB1azkbNoIAYkPxeLogVl0EwHCMBeHnbDGemUcLqa8qVn/lbmbYRPSyqB3tSwAbK4gtVL4T8yH8FsaTeTyJjxleHrlrTlCi8LKFDwMBXHLMYKIl10iKBPzRhR2">
     <NS1:updates RDF:resource="rdf:#$ElUrA3"/>

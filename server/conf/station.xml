@@ -158,7 +158,7 @@
             <archive date="20100613" href="NewsProgram_20100613.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100613.txt" notes=""/><archive date="20100614" href="NewsProgram_20100614.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100614.txt" notes=""/><archive date="20100615" href="NewsProgram_20100615.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100615.txt" notes=""/><archive date="20100616" href="NewsProgram_20100616.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20100616.txt" notes=""/></archives>
             <technical>The news show searches for the latest stock quotes and headlines of the biggest academic publishers.</technical>
         </program>    
-        <program id="RecitationHour" processed="0">
+        <program id="RecitationHour" processed="1">
             <name>Recitation Hour</name>        
             <hostedBy>
                 <person ref="Festival"/>            
@@ -212,7 +212,7 @@
             <description>Concrete combination of grains.</description>
             <current href="GrainCombine.mp3"/>
             <archives>
-            <archive date="20100613" href="GrainCombine_20100613.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100613.txt" notes=""/><archive date="20100614" href="GrainCombine_20100614.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100614.txt" notes=""/><archive date="20100615" href="GrainCombine_20100615.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100615.txt" notes=""/><archive date="20100616" href="GrainCombine_20100616.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100616.txt" notes=""/></archives>
+            <archive date="20100614" href="GrainCombine_20100614.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100614.txt" notes=""/><archive date="20100615" href="GrainCombine_20100615.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100615.txt" notes=""/><archive date="20100616" href="GrainCombine_20100616.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100616.txt" notes=""/><archive date="20100617" href="GrainCombine_20100617.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20100617.txt" notes=""/></archives>
             <technical>We take the top words as ranked by TF-IDF and convert them by TTS to sound files.  Then we cycle through the text and where the word occurs, subject it to granular manipulations.  If there is no matching word, we play a haunting granular manipulation of a sine wave.  The otherworldy sounds come from mismatched sampling rates; the TTS files are at 16000kHz, while the final composition is at 44100kHz.</technical>
         </program>
         <program id="Genealogies" processed="0">
@@ -234,7 +234,7 @@
             <description>The sound of data...</description>
             <current href="Noise.mp3"/>
             <archives>
-            <archive date="20100611" href="Noise_20100611.mp3" hidden="0" playlistHref="" notes=""/></archives>
+            <archive date="20100611" href="Noise_20100611.mp3" hidden="0" playlistHref="" notes=""/><archive date="20100617" href="Noise_20100617.mp3" hidden="0" playlistHref="" notes=""/></archives>
             <technical>By simply opening our binary database files and writing them out again as sound files, we get a noise landscape.</technical>
         </program>
         <program id="Conjunctional" processed="0">
@@ -281,7 +281,7 @@
             <archive date="20100611" href="PhasorModFreq_20100611.mp3" hidden="0" playlistHref="PhasorModFreqPlaylist_20100611.txt"/></archives>
             <technical>First, we take the number of syllables of each word and, multiplied by a scaling factor, create a rhythmic background.  Next, frequencies of the overlaying sounds are determined by word length, with the instrument phase-based FM synthesis.</technical>
         </program>
-        <program id="OpenAccessHour" processed="1">
+        <program id="OpenAccessHour" processed="0">
             <name>Open Access Hour</name>        
             <hostedBy>
                 <person ref="DJOA"/>            

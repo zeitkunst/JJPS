@@ -121,7 +121,7 @@ class Station(object):
             notes = fp.read()
             fp.close()
             archive.set("notes", notes)
-        except OSError:
+        except IOError:
             archive.set("notes", "")
       
         # Cull archives if necessary

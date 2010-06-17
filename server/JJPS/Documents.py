@@ -687,16 +687,16 @@ class AdsDocuments(DocumentBase):
     # Initial ad list
     initialAds = [ {"title": "Better your ASEO!", 
                     "content": "Improve your academic search engine optimization!",
-                    "href": "#"},
+                    "href": "http://journalofjournalperformancestudies.org/journal/index.php/jjps/article/view/6/6"},
                   {"title": "Measure author performance!",
                    "content": "Ensure your authors are writing optimally!",
-                   "href": "http://www.elsevier.com/wps/find/editorshome.editors/joumeasures"},
+                   "href": "http://journalofjournalperformancestudies.org/journal/index.php/jjps/article/view/6/6"},
                   {"title": "Googlable titles?",
                    "content": "Can your title be found via Google?  Take this test to find out!",
-                   "href": "http://www.ojr.org/ojr/people/eulken/200910/1788/"},
+                   "href": "http://journalofjournalperformancestudies.org/journal/index.php/jjps/article/view/6/6"},
                   {"title": "Discover the hottest trends!",
                    "content": "Want to know what research is hot?  Check it out here!",
-                   "href": "http://www.mendeley.com/research/mendeley-a-lastfm-for-research/"}]
+                   "href": "http://journalofjournalperformancestudies.org/journal/index.php/jjps/article/view/6/6"}]
 
     def __init__(self, config = None, dbName = "jjps_ads", hashKeys = ["title", "href"]):
         super(AdsDocuments, self).__init__(config = config, hashKeys = hashKeys)
