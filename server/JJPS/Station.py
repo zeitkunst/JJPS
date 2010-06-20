@@ -464,7 +464,7 @@ class Station(object):
         stem = "/static/archives/" + programRef + "/"
 
         for archive in archiveList:
-            programArchivesList.append([archive.get("date"), stem + archive.get("href"), stem + archive.get("playlistHref")])
+            programArchivesList.append([archive.get("date"), stem + archive.get("href"), stem + archive.get("playlistHref"), archive.get("notes")])
 
         return programArchivesList
     
@@ -483,10 +483,17 @@ class Station(object):
             date = archive[0]
             mp3 = archive[1]
             playlist = archive[2]
+            notes = archive[3]
             timeTuple = time.strptime(date, "%Y%m%d")
             archiveDate = time.strftime("%d %B %Y", timeTuple)
             p = etree.Element("p")
             p.text = archiveDate + ": "
+
+            if (notes != ""):
+                notesSpan = etree.Element("span")
+                notesSpan.text = notes + "; "
+                p.append(notesSpan)
+
             a = etree.Element("a")
             a.set("href", mp3)
             a.text = "MP3 Archive"
