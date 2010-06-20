@@ -489,7 +489,7 @@ class Station(object):
             p = etree.Element("p")
             p.text = archiveDate + ": "
 
-            if (notes != ""):
+            if (notes != "" and notes is not None):
                 notesSpan = etree.Element("span")
                 notesSpan.text = notes + "; "
                 p.append(notesSpan)
