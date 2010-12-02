@@ -917,7 +917,7 @@ outs asig, asig
         
         chunkSize = 60
         numSyllableSets = len(allSyllables)
-        numChunks = math.ceil(numSyllableSets/chunkSize)
+        numChunks = min(math.ceil(numSyllableSets/chunkSize), 20)
 
         mp3Filenames = []
         for chunkNumber in xrange(numChunks):
