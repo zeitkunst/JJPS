@@ -9,7 +9,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="extension@journalofjournalperformancestudies.org"
                    em:name="JJPS"
-                   em:version="0.1.0"
+                   em:version="0.1.1"
                    em:creator="JJPS; extension@journalofjournalperformancestudies.org"
                    em:optionsURL="chrome://JJPS/content/options.xul"
                     em:iconURL="chrome://JJPS/skin/icon128.png"

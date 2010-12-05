@@ -587,10 +587,12 @@ var JJPS = {
         publisherLogoDiv = doc.getElementById("altLayoutPublisherLogo");
 
         if (publisherLogoDiv != null) {
-            topAd = JJPS.doc.getElementById("top-ad-alignment");
-            topAd.innerHTML = "&nbsp;&nbsp;";
-            verticalAd = JJPS.doc.getElementById("vertical-ad");
-            verticalAd.innerHTML = "&nbsp;&nbsp;";
+            // 4 Dec 2010
+            // Ads seem to be no longer running on the Ingenta website
+            //topAd = JJPS.doc.getElementById("top-ad-alignment");
+            //topAd.innerHTML = "&nbsp;&nbsp;";
+            //verticalAd = JJPS.doc.getElementById("vertical-ad");
+            //verticalAd.innerHTML = "&nbsp;&nbsp;";
 
             h1 = publisherLogoDiv.getElementsByTagName("h1");
             journalTitle = h1[0].innerHTML;
@@ -1018,10 +1020,17 @@ var JJPS = {
             return;
         }         
 
+        // On a table of contents page...            
+        if ((pageTitle.match(/^Sign In/) != null) || (pageTitle.match(/^Table of Contents/) != null)) {
+            abbr = JJPS.doc.getElementsByTagName("abbr");
+            pageTitle = abbr[0].getAttribute("title");
+
+        }
+
         if (pageTitle != "") {
             pageTitle = pageTitle.split("--")[0];
             pageTitle = pageTitle.replace(/<.*?>/g, '').trim();
-
+            
             JJPS.journalRequest = JJPS._getRequest();
             JJPS.journalRequest.open("GET", JJPS.serverURL + "journal/" + pageTitle, true);
             JJPS.journalRequest.setRequestHeader('Accept', 'application/xml');
@@ -1061,6 +1070,19 @@ var JJPS = {
             pageTitle = h2Node[0].innerHTML;
         } else {
             pageTitle = "";
+        }
+
+        divNode = JJPS.doc.getElementById("ContentHeading");
+        if (divNode != null) {
+
+            // First, check if we're on an article page
+            primaryClassDivs = getElementsByClassName(doc, "primary");
+            if (primaryClassDivs != 0) {
+                pageTitle = primaryClassDivs[0].getElementsByTagName("a")[0].innerHTML.trim();
+            } else {
+                // Otherwise, we're on the landing page for the issue
+                pageTitle = divNode.getElementsByTagName("h1")[0].innerHTML.trim();
+            }
         }
 
         if (pageTitle != "") {
