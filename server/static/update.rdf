@@ -2,6 +2,10 @@
 <RDF:RDF xmlns:NS1="http://www.mozilla.org/2004/em-rdf#"
          xmlns:NC="http://home.netscape.com/NC-rdf#"
          xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="urn:mozilla:extension:extension@journalofjournalperformancestudies.org"
+                   NS1:signature="MIGTMA0GCSqGSIb3DQEBDQUAA4GBABzkdpTyBEpxE9WvQ4Hg6BjDTHxeiMiObsa0CRvEsvC+vAlGH6BucT0A7dR1Cxy/fVj8s0cZB0od7JlbApx4m88iSrjcG0VmJqE16tjRUEVExFi4mx6yKVFdCMVZlJNZ6JgUksE60FApUDXTYQhdonC/LuwkUgv9UwQ8W/Ahmg6t">
+    <NS1:updates RDF:resource="rdf:#$ElUrA3"/>
+  </RDF:Description>
   <RDF:Description RDF:about="rdf:#$FlUrA3"
                    NS1:version="0.1.0">
     <NS1:targetApplication RDF:resource="rdf:#$IlUrA3"/>
@@ -10,6 +14,10 @@
                    NS1:version="0.1.1">
     <NS1:targetApplication RDF:resource="rdf:#$JlUrA3"/>
   </RDF:Description>
+  <RDF:Seq RDF:about="rdf:#$ElUrA3">
+    <RDF:li RDF:resource="rdf:#$FlUrA3"/>
+    <RDF:li RDF:resource="rdf:#$GlUrA3"/>
+  </RDF:Seq>
   <RDF:Description RDF:about="rdf:#$JlUrA3"
                    NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                    NS1:minVersion="3.0"
@@ -17,18 +25,10 @@
                    NS1:updateLink="http://journalofjournalperformancestudies.org/static/JJPS_0.1.1.xpi"
                    NS1:updateInfoURL="http://journalofjournalperformancestudies.org/static/JJPS.0.1.1.xhtml"
                    NS1:updateHash="sha1:11a8c9f1cda8b7523709e967f7d596f0d1388cb9" />
-  <RDF:Seq RDF:about="rdf:#$ElUrA3">
-    <RDF:li RDF:resource="rdf:#$FlUrA3"/>
-    <RDF:li RDF:resource="rdf:#$GlUrA3"/>
-  </RDF:Seq>
   <RDF:Description RDF:about="rdf:#$IlUrA3"
                    NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                    NS1:minVersion="3.0"
                    NS1:maxVersion="3.8.*"
                    NS1:updateLink="http://journalofjournalperformancestudies.org/static/JJPS_0.1.0.xpi"
                    NS1:updateHash="sha1:ede8e7d911c3e2352398fa6d436061d62da3fe44" />
-  <RDF:Description RDF:about="urn:mozilla:extension:extension@journalofjournalperformancestudies.org"
-                   NS1:signature="MIGTMA0GCSqGSIb3DQEBDQUAA4GBABzkdpTyBEpxE9WvQ4Hg6BjDTHxeiMiObsa0CRvEsvC+vAlGH6BucT0A7dR1Cxy/fVj8s0cZB0od7JlbApx4m88iSrjcG0VmJqE16tjRUEVExFi4mx6yKVFdCMVZlJNZ6JgUksE60FApUDXTYQhdonC/LuwkUgv9UwQ8W/Ahmg6t">
-    <NS1:updates RDF:resource="rdf:#$ElUrA3"/>
-  </RDF:Description>
 </RDF:RDF>
