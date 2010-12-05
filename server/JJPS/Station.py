@@ -1,6 +1,7 @@
 import codecs
 import ConfigParser
 import datetime, time
+import glob
 import os
 import random
 import shutil
@@ -134,6 +135,28 @@ class Station(object):
         fp = open(self.config.get("Station", "xmlPath"), "w")
         fp.write(etree.tostring(self.stationTree))
         fp.close()
+
+        self.cullArchiveFiles()
+
+    def cullArchiveFiles(self):
+        # Cull archive files on disk if necessary
+        archivePath = self.config.get("Sound", "archivePath")
+        dirs = glob.glob(os.path.join(archivePath, "*"))
+        for dir in dirs:
+            mp3s = glob.glob(os.path.join(dir, "*.mp3"))
+            mp3s.sort()
+            playlists = glob.glob(os.path.join(dir, "*Playlist*.txt"))
+            playlists.sort()
+            files = zip(mp3s, playlists)
+            if (len(files) <= 4):
+                continue
+            else:
+                filesToRemove = files[0:len(files) - 4]
+                for item in filesToRemove:
+                    self.logger.debug("Archive cleanup; Removing %s" % item[0])
+                    os.remove(item[0])
+                    self.logger.debug("Archive cleanup; Removing %s" % item[1])
+                    os.remove(item[1])
 
     def restartStream(self):
         currentProgram, nextProgram = self.getCurrentAndNextProgram()
