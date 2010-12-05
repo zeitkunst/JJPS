@@ -12,8 +12,7 @@
                    em:updateURL="http://journalofjournalperformancestudies.org/static/update.rdf"
                    em:description="Journal of Journal Performance Studies"
                    em:homepageURL="http://journalofjournalperformancestudies.org"
-
-                   em:updateKey="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDUYcLXtngvyO+E05ng9acKp8+O4C7CsE23OQvsfp8DPHth43dH+Wd7pO2PXzTXgdtzRFUy9tdjRBwLWobioEJ+NdJ6Q3xrRelxC2UPErhdET7K5es1yubVLIBsSFoir+8OUBA23smgfViMiG1174KKlBl1ljjQtb/PvNuEmtir6QIDAQAB">
+                   em:updateKey="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDUhtw/63VMA2Sc0vM72Xr+ZiyDlVdSswbO5IAVCXw/W4XdHZ8IdZCSiCWq8/2d8sOlgyzY82/HoToCvb3qdeH/21XveJS+f6yGgkDqTLr9XdWIyQp3IH6WV8JuC9yl4tNEgPfTPrHB85mApUKk5VIaEda1YqT2mQ5D6+mlTnDP0QIDAQAB">
     <em:targetApplication RDF:resource="rdf:#$db.xm1"/>
   </RDF:Description>
   <RDF:Description RDF:about="rdf:#$db.xm1"
