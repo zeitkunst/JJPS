@@ -879,8 +879,8 @@ def checkMimetype(acceptHeader):
     return best
 
 # Finally, setup our web application
-#if (serverConfig.fastcgi):
-#    web.wsgi.runwsgi = lambda func, addr=None: web.wsgi.runfcgi(func, addr)
+if (serverConfig.fastcgi):
+    web.wsgi.runwsgi = lambda func, addr=None: web.wsgi.runfcgi(func, addr)
 
 if __name__ == "__main__":
     app.run(Log)

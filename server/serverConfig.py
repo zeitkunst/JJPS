@@ -5,7 +5,7 @@
 # Please see http://.org/license.
 
 # Cache requests?
-cache = False 
+cache = True
 
 # Logfile location
 log_file = "logs/JJPS.log"
