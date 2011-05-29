@@ -23,6 +23,6 @@ fastcgi = True
 baseURI = "http://turbulence.org/Works/JJPS/"
 
 # Path to the most up-to-date extension
-currentExtensionPath = "/static/JJPS_0.1.0.xpi"
+currentExtensionPath = "/static/JJPS_0.1.1.xpi"
 
-currentExtensionVersion = "0.1.0"
+currentExtensionVersion = "0.1.1"

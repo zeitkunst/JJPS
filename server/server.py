@@ -104,7 +104,6 @@ def notfound():
 
 app.notfound = notfound
 
-
 class Log(WsgiLog):
     def __init__(self, application):
         WsgiLog.__init__(
@@ -112,12 +111,14 @@ class Log(WsgiLog):
             application,
             logformat = '%(message)s',
             tofile = True,
+            toprint = True,
             file = serverConfig.log_file,
             interval = serverConfig.log_interval,
             backups = serverConfig.log_backups
         )
         sys.stdout = LogIO(self.logger, logging.INFO)
         sys.stderr = LogIO(self.logger, logging.ERROR)
+
 
 class index:
     def GET(self):
