@@ -61,6 +61,10 @@
                         </hbox>
 
                         <hbox>
+                            <checkbox tooltiptext="&JJPS.preferences.ACMTooltip;" label="&JJPS.preferences.ACM;" checked="true" id="JJPSACM" />                    
+                        </hbox>
+
+                        <hbox>
                             <checkbox tooltiptext="&JJPS.preferences.ingentaConnectTooltip;" label="&JJPS.preferences.ingentaConnect;" checked="true" id="JJPSIngentaConnect" />                    
                         </hbox>
 

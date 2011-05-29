@@ -27,6 +27,10 @@ var JJPSPreferences = {
         if (checkbox != null)
             JJPS.informaWorld = checkbox.checked;
 
+        var checkbox = document.getElementById("JJPSACM");
+        if (checkbox != null)
+            JJPS.ACM = checkbox.checked;
+
         var checkbox = document.getElementById("JJPSIngentaConnect");
         if (checkbox != null)
             JJPS.ingentaConnect = checkbox.checked;
@@ -87,6 +91,10 @@ var JJPSPreferences = {
         var checkbox = document.getElementById("JJPSInformaWorld");
         if (checkbox != null)
             checkbox.setAttribute("checked", JJPS.informaWorld);
+
+        var checkbox = document.getElementById("JJPSACM");
+        if (checkbox != null)
+            checkbox.setAttribute("checked", JJPS.ACM);
 
         var checkbox = document.getElementById("JJPSIngentaConnect");
         if (checkbox != null)
