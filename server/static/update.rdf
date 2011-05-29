@@ -16,7 +16,7 @@
                    NS1:maxVersion="4.0.*"
                    NS1:updateLink="http://journalofjournalperformancestudies.org/static/JJPS_0.2.0.xpi"
                    NS1:updateInfoURL="http://journalofjournalperformancestudies.org/static/JJPS.0.2.0.xhtml"
-                   NS1:updateHash="sha1:cf4f7153ac1e6baff9686fc3758fa6705f84078a" />
+                   NS1:updateHash="sha1:960dc7ac9a62dad7b5f3bdb8770be100a95c4884" />
   <RDF:Description RDF:about="rdf:#$IlUrA3"
                    NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                    NS1:minVersion="3.0"
