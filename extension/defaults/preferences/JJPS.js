@@ -4,6 +4,7 @@ pref("extensions.JJPS.citeULike", true);
 pref("extensions.JJPS.elsevier", true);
 pref("extensions.JJPS.googleScholar", true);
 pref("extensions.JJPS.informaWorld", true);
+pref("extensions.JJPS.ACM", true);
 pref("extensions.JJPS.ingentaConnect", true);
 pref("extensions.JJPS.johnWileyAndSons", true);
 pref("extensions.JJPS.sagePublications", true);

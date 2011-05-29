@@ -34,6 +34,8 @@
 <!ENTITY JJPS.preferences.citeULike "CiteULike">
 <!ENTITY JJPS.preferences.informaWorldTooltip "On informaworld.com">
 <!ENTITY JJPS.preferences.informaWorld "Informa World">
+<!ENTITY JJPS.preferences.ACMTooltip "On portal.acm.org">
+<!ENTITY JJPS.preferences.ACM "ACM">
 <!ENTITY JJPS.preferences.googleScholarTooltip "On googlescholar.com">
 <!ENTITY JJPS.preferences.googleScholar "Google Scholar">
 

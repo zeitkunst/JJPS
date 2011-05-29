@@ -89,6 +89,11 @@ var JJPS = {
         InformaWorldArray.push(new RegExp("http://(.+?).informaworld.com"));        
         InformaWorldArray.push(JJPS._processInformaWorld);        
 
+        ACMArray = new Array();
+        ACMArray.push("ACM");
+        ACMArray.push(new RegExp("http://portal.acm.org"));        
+        ACMArray.push(JJPS._processACM);        
+
 
         JJPS.regExps.push(wileyArray);
         JJPS.regExps.push(scienceDirectArray);
@@ -99,6 +104,7 @@ var JJPS = {
         JJPS.regExps.push(GoogleScholarArray);
         JJPS.regExps.push(IngentaConnectArray);
         JJPS.regExps.push(InformaWorldArray);
+        JJPS.regExps.push(ACMArray);
     },
 
     // Create the factors subpanel for the header
@@ -699,6 +705,30 @@ var JJPS = {
         JJPS._replaceAds();
     },
 
+    // Process ACM portal                            
+    _processACM: function(doc) {
+
+        if (!(JJPS.ACM)) {
+            return;
+        }
+        
+        // For later; including cost of conferences and their registration fees
+        journalTitle = null;
+        citationPageRegEx = new RegExp("http://portal.acm.org/citation");        
+
+        var loc = JJPS.doc.location.href;
+        regExpResult = citationPageRegEx.exec(loc);
+
+        if (loc != null && regExpResult != null) {
+            // we're on a citation page
+            JJPS.processACMIEEEResult(0);
+        }
+
+        // Replace Ads
+        JJPS._replaceAds();
+    },
+
+
     // Process Wiley Interscience
     _processWiley: function(doc) {
         if (!(JJPS.johnWileyAndSons)) {
@@ -1182,6 +1212,73 @@ var JJPS = {
         radioDiv.appendChild(radioInfoDiv);
         
         return radioDiv;
+    },
+
+    processACMIEEEResult: function(type) {
+        // Reread our preferences
+        JJPS._readPrefs();
+
+        if (type == 0) {
+            name = "ACM";
+        } else if (type == 1) {
+            name = "IEEE";
+        }
+
+        overlayDiv = JJPS.doc.createElement("div");
+        overlayDiv.id = "JJPSTicker";
+
+        insertText = "This article is published by the " + name + ", would cost you $15 to purchase";
+        if (type == 0) {
+            subscriptionCost = "16,021";
+            insertText += ", and costs universities $16,021 per year for a full subscription";       
+        } else if (type == 1) {
+        }
+
+
+        insertText += ".";
+        ownershipDiv = JJPS.doc.createElement("div");
+        ownershipDiv.id = "JJPSOwnershipDiv";
+        //ownershipDiv.style.marginTop = "6px";
+        ownershipDiv.style.padding = "0em";
+        ownershipDiv.style.fontWeight = "bold";
+        ownershipDiv.innerHTML = insertText;
+        overlayDiv.appendChild(ownershipDiv);
+
+        JJPS.doc.body.insertBefore(overlayDiv, JJPS.doc.body.childNodes[0]);
+
+        if (JJPS.showMarquee) {
+            // TODO
+            // see if we can make marquee code more efficient
+            
+            // Load jquery into the page
+            $jq = jQuery.noConflict();
+
+            // We get the following code from http://jsbin.com/uyawi/3/edit
+            // Have to fix things up to work with the version of jquery we have and the particular contexts we need
+
+            // Top marquee
+            var marquee = $jq("#JJPSOwnershipDiv", JJPS.doc);
+            marquee.css({"overflow": "hidden", "width": "100%"});
+
+            // wrap "My Text" with a span (IE doesn't like divs inline-block)
+            marquee.wrapInner("<span>");
+            marquee.find("span").css({ "width": "50%", "display": "inline-block", "text-align":"center" });
+            marquee.append(marquee.find("span").clone()); // now there are two spans with "My Text"
+
+            marquee.wrapInner("<div>");
+            marquee.find("div").css("width", "200%");
+
+            var reset = function() {
+                $jq(this, JJPS.doc).css("margin-left", "0%");
+                $jq(this, JJPS.doc).animate({ marginLeft: "-100%" }, 12000, 'linear', reset);
+            };
+
+            reset.call(marquee.find("div"));
+            
+
+        } 
+
+
     },
 
     // Process the result info from our journal request
@@ -1783,6 +1880,7 @@ var JJPS = {
         this.elsevier = prefs.getBoolPref("elsevier");
         this.googleScholar = prefs.getBoolPref("googleScholar");
         this.informaWorld = prefs.getBoolPref("informaWorld");
+        this.ACM = prefs.getBoolPref("ACM");
         this.ingentaConnect = prefs.getBoolPref("ingentaConnect");
         this.johnWileyAndSons = prefs.getBoolPref("johnWileyAndSons");
         this.sagePublications = prefs.getBoolPref("sagePublications");
@@ -1802,6 +1900,7 @@ var JJPS = {
         prefs.setBoolPref("elsevier", this.elsevier);
         prefs.setBoolPref("googleScholar", this.googleScholar);
         prefs.setBoolPref("informaWorld", this.informaWorld);
+        prefs.setBoolPref("ACM", this.ACM);
         prefs.setBoolPref("ingentaConnect", this.ingentaConnect);
         prefs.setBoolPref("johnWileyAndSons", this.johnWileyAndSons);
         prefs.setBoolPref("sagePublications", this.sagePublications);
