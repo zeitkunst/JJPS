@@ -18,7 +18,7 @@ import time
 
 import simplejson as json
 import web
-from wsgilog import WsgiLog, LogIO
+from wsgilog import WsgiLog
 from webob.acceptparse import Accept
 from lxml import etree
 import textile
@@ -116,8 +116,8 @@ class Log(WsgiLog):
             interval = serverConfig.log_interval,
             backups = serverConfig.log_backups
         )
-        sys.stdout = LogIO(self.logger, logging.INFO)
-        sys.stderr = LogIO(self.logger, logging.ERROR)
+        #sys.stdout = LogIO(self.logger, logging.INFO)
+        #sys.stderr = LogIO(self.logger, logging.ERROR)
 
 
 class index:
