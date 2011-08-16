@@ -272,7 +272,7 @@ class podcastFeed:
         for podcastItem in podcastItems:
             url = "http://journalofjournalperformancestudies.org" + podcastItem["playlist"] 
             datetime = podcastItem['date']
-            enclosure = PyRSS2Gen.Enclosure(url, podcastItem["size"], "audio/mpeg")
+            enclosure = PyRSS2Gen.Enclosure("http://journalofjournalperformancestudies.org" + podcastItem["url"], podcastItem["size"], "audio/mpeg")
             item = PyRSS2Gen.RSSItem(title = podcastItem["title"],
                 link = url,
                 description = "<![CDATA[" + textile.textile(podcastItem["description"]) + "]]>",

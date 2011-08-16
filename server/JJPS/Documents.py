@@ -512,7 +512,7 @@ class PPCDocuments(DocumentBase):
         for token in tokens:
             try:
                 documents.append(self.db[token])
-            except couchdb.http.ResourceNotFound:
+            except couchdb.client.ResourceNotFound:
                 continue
 
         return documents            
@@ -650,7 +650,7 @@ class VoteDocuments(DocumentBase):
         try:
             data = self.db[id]
             dataDict["votes"] = int(data["votes"]) + 1
-        except couchdb.http.ResourceNotFound:
+        except couchdb.client.ResourceNotFound:
             dataDict["votes"] = 1
 
         dataDict["_id"] = id
