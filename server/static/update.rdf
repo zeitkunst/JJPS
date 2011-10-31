@@ -9,6 +9,14 @@
                    NS1:updateLink="http://journalofjournalperformancestudies.org/static/JJPS_0.2.0.xpi"
                    NS1:updateInfoURL="http://journalofjournalperformancestudies.org/static/JJPS.0.2.0.xhtml"
                    NS1:updateHash="sha1:960dc7ac9a62dad7b5f3bdb8770be100a95c4884" />
+  <RDF:Description RDF:about="rdf:#$LlUrA3"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="3.0"
+                   NS1:maxVersion="9.*"
+                   NS1:updateLink="http://journalofjournalperformancestudies.org/static/JJPS_0.2.1.xpi"
+                   NS1:updateInfoURL="http://journalofjournalperformancestudies.org/static/JJPS.0.2.1.xhtml"
+                   NS1:updateHash="sha1:533e31b3f7f716d5f3c188506f853719febd5197" />
+
   <RDF:Description RDF:about="rdf:#$JlUrA3"
                    NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                    NS1:minVersion="3.0"
@@ -16,6 +24,11 @@
                    NS1:updateLink="http://journalofjournalperformancestudies.org/static/JJPS_0.1.1.xpi"
                    NS1:updateInfoURL="http://journalofjournalperformancestudies.org/static/JJPS.0.1.1.xhtml"
                    NS1:updateHash="sha1:320e28579a5f222936a613831833c529ceab4400" />
+  <RDF:Description RDF:about="rdf:#$ElUrA3"
+                   NS1:version="0.2.1">
+    <NS1:targetApplication RDF:resource="rdf:#$LlUrA3"/>
+  </RDF:Description>
+
   <RDF:Description RDF:about="rdf:#$HlUrA3"
                    NS1:version="0.2.0">
     <NS1:targetApplication RDF:resource="rdf:#$KlUrA3"/>
@@ -35,6 +48,7 @@
     <NS1:updates RDF:resource="rdf:#$ElUrA3"/>
   </RDF:Description>
   <RDF:Seq RDF:about="rdf:#$ElUrA3">
+    <RDF:li RDF:resource="rdf:#$ElUrA3"/>
     <RDF:li RDF:resource="rdf:#$FlUrA3"/>
     <RDF:li RDF:resource="rdf:#$GlUrA3"/>
     <RDF:li RDF:resource="rdf:#$HlUrA3"/>

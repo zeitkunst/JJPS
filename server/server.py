@@ -130,8 +130,11 @@ class index:
         if statusesString:
             pass
         else:
-            api = twitter.Api(base_url="http://identi.ca/api")
-            statuses = api.GetUserTimeline("JJPS", count = 5)
+            try:
+                api = twitter.Api(base_url="http://identi.ca/api")
+                statuses = api.GetUserTimeline("JJPS", count = 5)
+            except twitter.TwitterError:
+                statuses = []
             statusesE = etree.Element("div")
             statusesE.set("class", "span-6")
             headE = etree.Element("h2")
@@ -156,6 +159,7 @@ class index:
             followE.append(followAE)
             statusesE.append(followE)
             statusesString = etree.tostring(statusesE, pretty_print = True)
+            statusesString = ""
             station.mc.set("statuses", statusesString, time = 60)
 
         results = webDB.select("posts", limit=10, order="datetime DESC")
