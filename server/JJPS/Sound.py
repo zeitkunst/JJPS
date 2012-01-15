@@ -8,6 +8,7 @@ import os
 import random
 import re
 import shutil
+from StringIO import StringIO
 import subprocess
 import tempfile
 import time
@@ -992,7 +993,7 @@ outs asig, asig
 
         data = self.articleDocuments.get(docID)
         pdfName = data["_attachments"].keys()[0]
-        pdfFP = self.articleDocuments.db.get_attachment(data, pdfName)
+        pdfFP = StringIO(self.articleDocuments.db.get_attachment(data, pdfName))
 
         instrumentList = ["morseSimple.instr"]
 

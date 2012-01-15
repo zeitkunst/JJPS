@@ -8,6 +8,7 @@
 
 import os
 import random
+import re
 from StringIO import StringIO
 import sys
 import urllib
@@ -104,6 +105,15 @@ def notfound():
 
 app.notfound = notfound
 
+# Turn URLs in plain text to 
+# From: http://stackoverflow.com/questions/1727535/replace-urls-in-text-with-links-to-urls
+#urlfinder = re.compile(r'http([^\.\s]+\.[^\.\s]*)+[^\.\s]{2,}')
+urlfinder = re.compile(r"(^|[\n ])(([\w]+?://[\w\#$%&~.\-;:=,?@\[\]+]*)(/[\w\#$%&~/.\-;:=,?@\[\]+]*)?)", re.IGNORECASE | re.DOTALL)
+def urlify2(value):
+    #return urlfinder.sub(r'<a href="http\1">http\1</a>', value)
+    return urlfinder.sub(r'\1<a href="\2" target="_blank">\2</a>', value)
+
+
 class Log(WsgiLog):
     def __init__(self, application):
         WsgiLog.__init__(
@@ -132,7 +142,7 @@ class index:
         else:
             try:
                 api = twitter.Api(base_url="http://identi.ca/api")
-                statuses = api.GetUserTimeline("JJPS", count = 5)
+                statuses = api.GetUserTimeline("JJPS", count = 10)
             except twitter.TwitterError:
                 statuses = []
             statusesE = etree.Element("div")
@@ -145,10 +155,13 @@ class index:
                 created = status.created_at
                 itemE = etree.Element("div")
                 itemE.set("class", "status")
-                itemSE = etree.Element("p")
-                itemSE.text = text
+                #itemSE = etree.Element("p")
+                itemSE = etree.fromstring(textile.textile(urlify2(text)))
                 itemCE = etree.Element("p")
-                itemCE.text = created
+                itemCEA = etree.Element("a")
+                itemCEA.set("href", "http://identi.ca/notice/" + str(status.id))
+                itemCEA.text = created
+                itemCE.append(itemCEA)
                 itemE.append(itemSE)
                 itemE.append(itemCE)
                 statusesE.append(itemE)
@@ -159,7 +172,7 @@ class index:
             followE.append(followAE)
             statusesE.append(followE)
             statusesString = etree.tostring(statusesE, pretty_print = True)
-            statusesString = ""
+            #statusesString = ""
             station.mc.set("statuses", statusesString, time = 60)
 
         results = webDB.select("posts", limit=10, order="datetime DESC")
