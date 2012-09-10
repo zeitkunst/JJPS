@@ -155,7 +155,7 @@
             <description>All the news that's fit to hear!</description>
             <current href="NewsProgram.mp3"/>
             <archives>
-            <archive date="20120113" href="NewsProgram_20120113.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20120113.txt" notes=""/><archive date="20120113" href="NewsProgram_20120113.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20120113.txt" notes=""/><archive date="20120114" href="NewsProgram_20120114.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20120114.txt" notes=""/><archive date="20120115" href="NewsProgram_20120115.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20120115.txt" notes=""/></archives>
+            <archive date="20120907" href="NewsProgram_20120907.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20120907.txt" notes=""/><archive date="20120908" href="NewsProgram_20120908.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20120908.txt" notes=""/><archive date="20120909" href="NewsProgram_20120909.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20120909.txt" notes=""/><archive date="20120909" href="NewsProgram_20120909.mp3" hidden="0" playlistHref="NewsProgramPlaylist_20120909.txt" notes=""/></archives>
             <technical>The news show searches for the latest stock quotes and headlines of the biggest academic publishers.</technical>
         </program>    
         <program id="RecitationHour" processed="0">
@@ -166,19 +166,19 @@
             <description>A reading from one of the articles in our archives...</description>
             <current href="RecitationHour.mp3"/>
             <archives>
-            <archive date="20120110" href="RecitationHour_20120110.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20120110.txt" notes="Upon Opening the Black Box and Finding It Empty: Social Constructivism and the Philosophy of Technology by Langdon  Winner from Science, Technology, \&amp; Human Values"/><archive date="20120113" href="RecitationHour_20120113.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20120113.txt" notes="The Social Construction of Facts and Artefacts: Or How the Sociology of Science and the Sociology of Technology Might Benefit Each Other by Trevor J. Pinchand  Wiebe E. Bijker from Social Studies of Science"/><archive date="20120114" href="RecitationHour_20120114.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20120114.txt" notes="The Satellite, the Prince, and Scheherazade: The Rise of Women as Communicators in Digital Islam by Fatema  Mernissi from Transnational Broadcasting Studies"/><archive date="20120115" href="RecitationHour_20120115.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20120115.txt" notes="Elephant's Don't Play Chess by Rodney A. Brooks from Robotics and Autonomous Systems"/></archives>
+            <archive date="20120904" href="RecitationHour_20120904.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20120904.txt" notes="Situating technoscience: an inquiry into spatialities by John  Lawand  Annemarie  Mol from Environment and Planning D: Society and Space"/><archive date="20120907" href="RecitationHour_20120907.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20120907.txt" notes="The Satellite, the Prince, and Scheherazade: The Rise of Women as Communicators in Digital Islam by Fatema  Mernissi from Transnational Broadcasting Studies"/><archive date="20120908" href="RecitationHour_20120908.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20120908.txt" notes="Regarding Electronic Music by Aurelio  Vega from Tempo"/><archive date="20120909" href="RecitationHour_20120909.mp3" hidden="0" playlistHref="RecitationHourPlaylist_20120909.txt" notes="The Unanticipated Consequences of Purposive Social Action by Robert K. Merton from American Sociological Review"/></archives>
             <technical>The show that provided the impetus for the entire JJPS project, this is simply TTS of one of the articles in our database.  Be sure to checkout the playlist for the show.</technical>
         </program>
         <program id="CutupHour" processed="0">
             <name>Cut-up Hour</name>        
             <hostedBy>
-                <person ref="GinsburgsGhost"/>            
+                <person ref="BurroughsGhost"/>            
             </hostedBy>
             <description>Doing cut-ups is easy digitally!</description>
             <current href="CutupHour.mp3"/>
             <archives>
-                <archive date="20120104" href="CutupHour_20120104.mp3" hidden="0" playlistHref="CutupHourPlaylist_20120104.txt" notes=""/><archive date="20120105" href="CutupHour_20120105.mp3" hidden="0" playlistHref="CutupHourPlaylist_20120105.txt" notes=""/><archive date="20120111" href="CutupHour_20120111.mp3" hidden="0" playlistHref="CutupHourPlaylist_20120111.txt" notes=""/><archive date="20120112" href="CutupHour_20120112.mp3" hidden="0" playlistHref="CutupHourPlaylist_20120112.txt" notes=""/></archives>
-            <technical>By taking random sentences from each of the texts in the database, we produce a cut-up show that is reminiscent of the works of Allen Ginsburg and John Cage.</technical>
+                <archive date="20120829" href="CutupHour_20120829.mp3" hidden="0" playlistHref="CutupHourPlaylist_20120829.txt" notes=""/><archive date="20120830" href="CutupHour_20120830.mp3" hidden="0" playlistHref="CutupHourPlaylist_20120830.txt" notes=""/><archive date="20120905" href="CutupHour_20120905.mp3" hidden="0" playlistHref="CutupHourPlaylist_20120905.txt" notes=""/><archive date="20120906" href="CutupHour_20120906.mp3" hidden="0" playlistHref="CutupHourPlaylist_20120906.txt" notes=""/></archives>
+            <technical>By taking random sentences from each of the texts in the database, we produce a cut-up show that is reminiscent of the works of William Burroughs and John Cage.</technical>
         </program>
         <program id="WhatstheFrequencyKenneth" processed="0">
             <name>What's the Frequency Kenneth?</name>        
@@ -188,7 +188,7 @@
             <description>Where frequency is the number of words.</description>
             <current href="WhatstheFrequencyKenneth.mp3"/>
             <archives>
-            <archive date="20120104" href="WhatstheFrequencyKenneth_20120104.mp3" hidden="0" playlistHref="WhatstheFrequencyKennethPlaylist_20120104.txt" notes=""/><archive date="20120105" href="WhatstheFrequencyKenneth_20120105.mp3" hidden="0" playlistHref="WhatstheFrequencyKennethPlaylist_20120105.txt" notes=""/><archive date="20120111" href="WhatstheFrequencyKenneth_20120111.mp3" hidden="0" playlistHref="WhatstheFrequencyKennethPlaylist_20120111.txt" notes=""/><archive date="20120112" href="WhatstheFrequencyKenneth_20120112.mp3" hidden="0" playlistHref="WhatstheFrequencyKennethPlaylist_20120112.txt" notes=""/></archives>
+            <archive date="20120829" href="WhatstheFrequencyKenneth_20120829.mp3" hidden="0" playlistHref="WhatstheFrequencyKennethPlaylist_20120829.txt" notes=""/><archive date="20120830" href="WhatstheFrequencyKenneth_20120830.mp3" hidden="0" playlistHref="WhatstheFrequencyKennethPlaylist_20120830.txt" notes=""/><archive date="20120905" href="WhatstheFrequencyKenneth_20120905.mp3" hidden="0" playlistHref="WhatstheFrequencyKennethPlaylist_20120905.txt" notes=""/><archive date="20120906" href="WhatstheFrequencyKenneth_20120906.mp3" hidden="0" playlistHref="WhatstheFrequencyKennethPlaylist_20120906.txt" notes=""/></archives>
             <technical>Here we count the number of times a word occurs in the text, rank it by size, and read it out.  We refer here to the various poetic experiments of Kenneth Goldsmith.</technical>
         </program>
         <program id="Telegraph" processed="0">
@@ -199,12 +199,12 @@
             <description>What do the dots and the dashes mean?</description>
             <current href="Telegraph.mp3"/>
             <archives>
-            <archive date="20120105" href="Telegraph_20120105.mp3" hidden="0" playlistHref="TelegraphPlaylist_20120105.txt" notes=""/><archive date="20120109" href="Telegraph_20120109.mp3" hidden="0" playlistHref="TelegraphPlaylist_20120109.txt" notes=""/><archive date="20120111" href="Telegraph_20120111.mp3" hidden="0" playlistHref="TelegraphPlaylist_20120111.txt" notes=""/><archive date="20120112" href="Telegraph_20120112.mp3" hidden="0" playlistHref="TelegraphPlaylist_20120112.txt" notes=""/></archives>
+            <archive date="20120830" href="Telegraph_20120830.mp3" hidden="0" playlistHref="TelegraphPlaylist_20120830.txt" notes=""/><archive date="20120903" href="Telegraph_20120903.mp3" hidden="0" playlistHref="TelegraphPlaylist_20120903.txt" notes=""/><archive date="20120905" href="Telegraph_20120905.mp3" hidden="0" playlistHref="TelegraphPlaylist_20120905.txt" notes=""/><archive date="20120906" href="Telegraph_20120906.mp3" hidden="0" playlistHref="TelegraphPlaylist_20120906.txt" notes=""/></archives>
             <technical>
                 This explanation has been removed.
             </technical>
         </program>
-        <program id="GrainCombine" processed="0">
+        <program id="GrainCombine" processed="1">
             <name>Grain Combine</name>        
             <hostedBy>
                 <person ref="Ixtel"/>            
@@ -212,7 +212,7 @@
             <description>Concrete combination of grains.</description>
             <current href="GrainCombine.mp3"/>
             <archives>
-            <archive date="20120110" href="GrainCombine_20120110.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20120110.txt" notes=""/><archive date="20120113" href="GrainCombine_20120113.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20120113.txt" notes=""/><archive date="20120114" href="GrainCombine_20120114.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20120114.txt" notes=""/><archive date="20120115" href="GrainCombine_20120115.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20120115.txt" notes=""/></archives>
+            <archive date="20120904" href="GrainCombine_20120904.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20120904.txt" notes=""/><archive date="20120907" href="GrainCombine_20120907.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20120907.txt" notes=""/><archive date="20120908" href="GrainCombine_20120908.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20120908.txt" notes=""/><archive date="20120909" href="GrainCombine_20120909.mp3" hidden="0" playlistHref="GrainCombinePlaylist_20120909.txt" notes=""/></archives>
             <technical>We take the top words as ranked by TF-IDF and convert them by TTS to sound files.  Then we cycle through the text and where the word occurs, subject it to granular manipulations.  If there is no matching word, we play a haunting granular manipulation of a sine wave.  The otherworldy sounds come from mismatched sampling rates; the TTS files are at 16000kHz, while the final composition is at 44100kHz.</technical>
         </program>
         <program id="Genealogies" processed="0">
@@ -223,7 +223,7 @@
             <description>Who begat whom?</description>
             <current href="Genealogies.mp3"/>
             <archives>
-            <archive date="20111219" href="Genealogies_20111219.mp3" hidden="0" playlistHref="GenealogiesPlaylist_20111219.txt" notes=""/><archive date="20111226" href="Genealogies_20111226.mp3" hidden="0" playlistHref="GenealogiesPlaylist_20111226.txt" notes=""/><archive date="20120102" href="Genealogies_20120102.mp3" hidden="0" playlistHref="GenealogiesPlaylist_20120102.txt" notes=""/><archive date="20120109" href="Genealogies_20120109.mp3" hidden="0" playlistHref="GenealogiesPlaylist_20120109.txt" notes=""/></archives>
+            <archive date="20120813" href="Genealogies_20120813.mp3" hidden="0" playlistHref="GenealogiesPlaylist_20120813.txt" notes=""/><archive date="20120820" href="Genealogies_20120820.mp3" hidden="0" playlistHref="GenealogiesPlaylist_20120820.txt" notes=""/><archive date="20120827" href="Genealogies_20120827.mp3" hidden="0" playlistHref="GenealogiesPlaylist_20120827.txt" notes=""/><archive date="20120903" href="Genealogies_20120903.mp3" hidden="0" playlistHref="GenealogiesPlaylist_20120903.txt" notes=""/></archives>
             <technical>In this show we take one of the top publishers in the database and, using TTS, read out the journals they have under their control.</technical>
         </program>
         <program id="Noise" processed="0">
@@ -234,7 +234,7 @@
             <description>The sound of data...</description>
             <current href="Noise.mp3"/>
             <archives>
-            <archive date="20120109" href="Noise_20120109.mp3" hidden="0" playlistHref="" notes=""/><archive date="20120112" href="Noise_20120112.mp3" hidden="0" playlistHref="" notes=""/><archive date="20120113" href="Noise_20120113.mp3" hidden="0" playlistHref="" notes=""/><archive date="20120114" href="Noise_20120114.mp3" hidden="0" playlistHref="" notes=""/></archives>
+            <archive date="20120903" href="Noise_20120903.mp3" hidden="0" playlistHref="" notes=""/><archive date="20120906" href="Noise_20120906.mp3" hidden="0" playlistHref="" notes=""/><archive date="20120907" href="Noise_20120907.mp3" hidden="0" playlistHref="" notes=""/><archive date="20120908" href="Noise_20120908.mp3" hidden="0" playlistHref="" notes=""/></archives>
             <technical>By simply opening our binary database files and writing them out again as sound files, we get a noise landscape.</technical>
         </program>
         <program id="Conjunctional" processed="0">
@@ -256,10 +256,10 @@
             <description>Droning, drone drone drone</description>
             <current href="Drone.mp3"/>
             <archives>
-            <archive date="20120105" href="Drone_20120105.mp3" hidden="0" playlistHref="DronePlaylist_20120105.txt" notes=""/><archive date="20120109" href="Drone_20120109.mp3" hidden="0" playlistHref="DronePlaylist_20120109.txt" notes=""/><archive date="20120111" href="Drone_20120111.mp3" hidden="0" playlistHref="DronePlaylist_20120111.txt" notes=""/><archive date="20120112" href="Drone_20120112.mp3" hidden="0" playlistHref="DronePlaylist_20120112.txt" notes=""/></archives>
+            <archive date="20120830" href="Drone_20120830.mp3" hidden="0" playlistHref="DronePlaylist_20120830.txt" notes=""/><archive date="20120903" href="Drone_20120903.mp3" hidden="0" playlistHref="DronePlaylist_20120903.txt" notes=""/><archive date="20120905" href="Drone_20120905.mp3" hidden="0" playlistHref="DronePlaylist_20120905.txt" notes=""/><archive date="20120906" href="Drone_20120906.mp3" hidden="0" playlistHref="DronePlaylist_20120906.txt" notes=""/></archives>
         <technical>We go through each sentence within a randomly chosen article.  Duration of the sounds are based on the number of syllables in a sentence, while frequency is determined by the length of the sentence.  The oscilating variations in the sound come from a cut-up version of the TF-IDF scores in the sentence.  The instrument was chosen to be reminiscent of the Theatre of Eternal Music.</technical>
         </program>
-        <program id="CopyHour" processed="1">
+        <program id="CopyHour" processed="0">
             <name>Copy Hour</name>        
             <hostedBy>
                 <person ref="DJLitigation"/>            
@@ -267,7 +267,7 @@
             <description>Whose rights are these anyway?</description>
             <current href="CopyHour.mp3"/>
             <archives>
-            <archive date="20120103" href="CopyHour_20120103.mp3" hidden="0" playlistHref="CopyHourPlaylist_20120103.txt" notes=""/><archive date="20120106" href="CopyHour_20120106.mp3" hidden="0" playlistHref="CopyHourPlaylist_20120106.txt" notes=""/><archive date="20120110" href="CopyHour_20120110.mp3" hidden="0" playlistHref="CopyHourPlaylist_20120110.txt" notes=""/><archive date="20120113" href="CopyHour_20120113.mp3" hidden="0" playlistHref="CopyHourPlaylist_20120113.txt" notes=""/></archives>
+            <archive date="20120828" href="CopyHour_20120828.mp3" hidden="0" playlistHref="CopyHourPlaylist_20120828.txt" notes=""/><archive date="20120831" href="CopyHour_20120831.mp3" hidden="0" playlistHref="CopyHourPlaylist_20120831.txt" notes=""/><archive date="20120904" href="CopyHour_20120904.mp3" hidden="0" playlistHref="CopyHourPlaylist_20120904.txt" notes=""/><archive date="20120907" href="CopyHour_20120907.mp3" hidden="0" playlistHref="CopyHourPlaylist_20120907.txt" notes=""/></archives>
             <technical>The content for this program comes from copyright agreements of journal publishers.</technical>
         </program>
         <program id="PhasorModFreq" processed="0">
@@ -278,7 +278,7 @@
             <description>What happens when you drink too much caffeine while reading articles.</description>
             <current href="PhasorModFreq.mp3"/>
             <archives>
-            <archive date="20120102" href="PhasorModFreq_20120102.mp3" hidden="0" playlistHref="PhasorModFreqPlaylist_20120102.txt" notes=""/><archive date="20120104" href="PhasorModFreq_20120104.mp3" hidden="0" playlistHref="PhasorModFreqPlaylist_20120104.txt" notes=""/><archive date="20120109" href="PhasorModFreq_20120109.mp3" hidden="0" playlistHref="PhasorModFreqPlaylist_20120109.txt" notes=""/><archive date="20120111" href="PhasorModFreq_20120111.mp3" hidden="0" playlistHref="PhasorModFreqPlaylist_20120111.txt" notes=""/></archives>
+            <archive date="20120827" href="PhasorModFreq_20120827.mp3" hidden="0" playlistHref="PhasorModFreqPlaylist_20120827.txt" notes=""/><archive date="20120829" href="PhasorModFreq_20120829.mp3" hidden="0" playlistHref="PhasorModFreqPlaylist_20120829.txt" notes=""/><archive date="20120903" href="PhasorModFreq_20120903.mp3" hidden="0" playlistHref="PhasorModFreqPlaylist_20120903.txt" notes=""/><archive date="20120905" href="PhasorModFreq_20120905.mp3" hidden="0" playlistHref="PhasorModFreqPlaylist_20120905.txt" notes=""/></archives>
             <technical>First, we take the number of syllables of each word and, multiplied by a scaling factor, create a rhythmic background.  Next, frequencies of the overlaying sounds are determined by word length, with the instrument phase-based FM synthesis.</technical>
         </program>
         <program id="OpenAccessHour" processed="0">
@@ -289,7 +289,7 @@
             <description>Readings from open access publishers, with an emphasis on journals associated with Open Humanities Press.</description>
             <current href="OpenAccessHour.mp3"/>
             <archives>
-            <archive date="20120108" href="OpenAccessHour_20120108.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20120108.txt" notes=""/><archive date="20120111" href="OpenAccessHour_20120111.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20120111.txt" notes=""/><archive date="20120112" href="OpenAccessHour_20120112.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20120112.txt" notes=""/><archive date="20120114" href="OpenAccessHour_20120114.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20120114.txt" notes=""/></archives>
+            <archive date="20120905" href="OpenAccessHour_20120905.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20120905.txt" notes=""/><archive date="20120906" href="OpenAccessHour_20120906.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20120906.txt" notes=""/><archive date="20120908" href="OpenAccessHour_20120908.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20120908.txt" notes=""/><archive date="20120909" href="OpenAccessHour_20120909.mp3" hidden="0" playlistHref="OpenAccessHourPlaylist_20120909.txt" notes=""/></archives>
             <technical>These documents are TTS versions of open-access articles in our database.  Our main sources are Culture Machine, Fast Capitalism, and the International Journal of Zizek Studies.</technical>
         </program>
 
@@ -328,8 +328,8 @@
             <name>DJ Freq</name>        
             <bio>Rather</bio>
         </personality>    
-        <personality id="GinsburgsGhost" href="">
-            <name>Ginsburg's Ghost</name>        
+        <personality id="BurroughsGhost" href="">
+            <name>Burroughs's Ghost</name>        
             <bio>And Cage too</bio>
         </personality>    
         <personality id="DJOA" href="">
